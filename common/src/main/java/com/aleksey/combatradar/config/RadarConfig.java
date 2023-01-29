@@ -55,6 +55,7 @@ public class RadarConfig {
     private boolean _showPlayerNames = true;
     private boolean _showExtraPlayerInfo = true;
     private boolean _logPlayerStatus = true;
+    private boolean _showYLevel = false;
     private List<RadarEntityInfo> _entityList;
     private Map<String, RadarEntityInfo> _entityMap;
     private Map<GroupType, Boolean> _groups;
@@ -150,6 +151,9 @@ public class RadarConfig {
 
     public boolean getLogPlayerStatus() { return _logPlayerStatus; }
     public void setLogPlayerStatus(boolean value) { _logPlayerStatus = value; }
+
+    public boolean getShowYLevel() { return _showYLevel; }
+    public void setShowYLevel(boolean value) { _showYLevel = value; }
 
     public List<RadarEntityInfo> getEntityList() { return _entityList; }
 

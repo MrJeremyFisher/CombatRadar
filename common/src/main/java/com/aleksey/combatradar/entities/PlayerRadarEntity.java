@@ -70,9 +70,12 @@ public class PlayerRadarEntity extends RadarEntity {
         poseStack.scale(getSettings().fontScale, getSettings().fontScale, getSettings().fontScale);
 
         String playerName = player.getScoreboardName();
-        if (getSettings().showExtraPlayerInfo) {
+        if (getSettings().showExtraPlayerInfo && getSettings().showYLevel) {
+            playerName += " (" + (int)minecraft.player.distanceTo(player) + "m)(Y" + player.getBlockY() + ")";
+        } else if (getSettings().showExtraPlayerInfo && !getSettings().showYLevel) {
             playerName += " (" + (int)minecraft.player.distanceTo(player) + "m)";
         }
+
 
         Font font = minecraft.font;
         float yOffset = -4 + (int) ((getSettings().iconScale * getSettings().radarScale + 8));

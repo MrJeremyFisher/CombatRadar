@@ -35,6 +35,7 @@ public class RadarConfigLoader {
         public String allySoundEventName;
         public String enemySoundEventName;
         public Boolean logPlayerStatus;
+        public Boolean showYLevel;
         public List<String> disabledEntities;
         public List<String> disabledGroups;
         public List<String> allyPlayers;
@@ -71,7 +72,8 @@ public class RadarConfigLoader {
         info.enemySoundEventName = enemyPlayer.soundEventName;
 
         info.logPlayerStatus = config.getLogPlayerStatus();
-        
+        info.showYLevel = config.getShowYLevel();
+
         info.disabledEntities = new ArrayList<String>();
         info.disabledGroups = new ArrayList<String>();
 
@@ -162,6 +164,7 @@ public class RadarConfigLoader {
         enemyInfo.soundEventName = SoundInfo.getByValue(info.enemySoundEventName) == null ? "pling" : info.enemySoundEventName;
 
         config.setLogPlayerStatus(info.logPlayerStatus == null || info.logPlayerStatus);
+        config.setShowYLevel(info.showYLevel == null || info.showYLevel);
 
         if(info.disabledEntities != null) {
             for(String entityName : info.disabledEntities) {

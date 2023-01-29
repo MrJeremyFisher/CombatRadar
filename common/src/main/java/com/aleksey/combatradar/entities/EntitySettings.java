@@ -16,4 +16,5 @@ public class EntitySettings {
     public Color enemyPlayerColor;
     public boolean showPlayerNames;
     public boolean showExtraPlayerInfo;
+    public boolean showYLevel;
 }
