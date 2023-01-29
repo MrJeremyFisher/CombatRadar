@@ -152,6 +152,7 @@ public class ModHelper {
             Class.forName("com.mamiyaotaru.voxelmap.VoxelMap");
         } catch (ClassNotFoundException ex) {
             _logger.info("[CombatRadar]: VoxelMap is NOT found");
+
             return false;
         }
 

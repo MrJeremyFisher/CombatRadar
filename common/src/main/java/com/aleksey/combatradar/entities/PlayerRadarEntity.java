@@ -71,7 +71,7 @@ public class PlayerRadarEntity extends RadarEntity {
 
         String playerName = player.getScoreboardName();
         if (getSettings().showExtraPlayerInfo) {
-            playerName += " (" + (int)minecraft.player.distanceTo(player) + "m)(Y" + player.getBlockY() + ")";
+            playerName += " (" + (int)minecraft.player.distanceTo(player) + "m)";
         }
 
         Font font = minecraft.font;

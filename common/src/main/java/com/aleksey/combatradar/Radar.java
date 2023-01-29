@@ -41,13 +41,13 @@ public class Radar
     private static class PlayerInfo {
         public String playerName;
         public double posX;
-        public double posY;
+//        public double posY;
         public double posZ;
 
         public PlayerInfo(AbstractClientPlayer player) {
             this.playerName = player.getScoreboardName();
             this.posX = player.getX();
-            this.posY = player.getY();
+//            this.posY = player.getY();
             this.posZ = player.getZ();
         }
     }
@@ -544,82 +544,80 @@ public class Radar
 
         text = text.append(new TextComponent(actionText).withStyle(actionColor));
 
-        if(messageInfo.playerInfo != null) {
-            Component coordText;
-
-            if(_config.getIsJourneyMapEnabled()) {
-                coordText = getJourneyMapCoord(messageInfo.playerInfo);
-            } else if(_config.getIsVoxelMapEnabled()) {
-                coordText = getVoxelMapCoord(messageInfo.playerInfo);
-            } else {
-                coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true))
-                        .withStyle(actionColor);
-            }
-
-            text = text
-                    .append(new TextComponent(" at ").withStyle(actionColor))
-                    .append(coordText);
-        }
+//        if(messageInfo.playerInfo != null) {
+//            Component coordText;
+//
+//            if(_config.getIsJourneyMapEnabled()) {
+//                coordText = getJourneyMapCoord(messageInfo.playerInfo);
+//            } else if(_config.getIsVoxelMapEnabled()) {
+//                coordText = getVoxelMapCoord(messageInfo.playerInfo);
+//            } else {
+//                coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true))
+//                        .withStyle(actionColor);
+//            }
+//
+//            text = text
+//        }
 
         minecraft.player.sendMessage(text, minecraft.player.getUUID());
     }
 
-    private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
-        MutableComponent hover = new TextComponent("JourneyMap: ")
-                .withStyle(ChatFormatting.YELLOW)
-                .append(new TextComponent("Click to create Waypoint.\nCtrl+Click to view on map.")
-                        .withStyle(ChatFormatting.AQUA)
-                );
+//    private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
+//        MutableComponent hover = new TextComponent("JourneyMap: ")
+//                .withStyle(ChatFormatting.YELLOW)
+//                .append(new TextComponent("Click to create Waypoint.\nCtrl+Click to view on map.")
+//                        .withStyle(ChatFormatting.AQUA)
+//                );
+//
+//        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+//        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true));
+//
+//        Style coordStyle = Style.EMPTY
+//                .withClickEvent(clickEvent)
+//                .withHoverEvent(hoverEvent)
+//                .withColor(ChatFormatting.AQUA);
+//
+//        return new TextComponent(getChatCoordText(playerInfo, false, true)).setStyle(coordStyle);
+//    }
 
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true));
+//    private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
+//        Component hover = new TextComponent("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
+//                .withStyle(ChatFormatting.WHITE);
+//
+//        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+//        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false));
+//
+//        Style coordStyle = Style.EMPTY
+//                .withClickEvent(clickEvent)
+//                .withHoverEvent(hoverEvent)
+//                .withColor(ChatFormatting.AQUA);
+//
+//        return new TextComponent(getChatCoordText(playerInfo, false, true)).setStyle(coordStyle);
+//    }
 
-        Style coordStyle = Style.EMPTY
-                .withClickEvent(clickEvent)
-                .withHoverEvent(hoverEvent)
-                .withColor(ChatFormatting.AQUA);
-
-        return new TextComponent(getChatCoordText(playerInfo, false, true)).setStyle(coordStyle);
-    }
-
-    private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
-        Component hover = new TextComponent("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
-                .withStyle(ChatFormatting.WHITE);
-
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false));
-
-        Style coordStyle = Style.EMPTY
-                .withClickEvent(clickEvent)
-                .withHoverEvent(hoverEvent)
-                .withColor(ChatFormatting.AQUA);
-
-        return new TextComponent(getChatCoordText(playerInfo, false, true)).setStyle(coordStyle);
-    }
-
-    private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets) {
-        StringBuilder coordText = new StringBuilder();
-
-        if(includeBrackets) {
-            coordText.append("[");
-        }
-
-        coordText.append("x:");
-        coordText.append((int)playerInfo.posX);
-        coordText.append(", y:");
-        coordText.append((int)playerInfo.posY);
-        coordText.append(", z:");
-        coordText.append((int)playerInfo.posZ);
-
-        if(includeName) {
-            coordText.append(", name:");
-            coordText.append(playerInfo.playerName);
-        }
-
-        if(includeBrackets) {
-            coordText.append("]");
-        }
-
-        return coordText.toString();
-    }
+//    private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets) {
+//        StringBuilder coordText = new StringBuilder();
+//
+//        if(includeBrackets) {
+//            coordText.append("[");
+//        }
+//
+//        coordText.append("x:");
+//        coordText.append((int)playerInfo.posX);
+//        coordText.append(", y:");
+//        coordText.append((int)playerInfo.posY);
+//        coordText.append(", z:");
+//        coordText.append((int)playerInfo.posZ);
+//
+//        if(includeName) {
+//            coordText.append(", name:");
+//            coordText.append(playerInfo.playerName);
+//        }
+//
+//        if(includeBrackets) {
+//            coordText.append("]");
+//        }
+//
+//        return coordText.toString();
+//    }
 }
