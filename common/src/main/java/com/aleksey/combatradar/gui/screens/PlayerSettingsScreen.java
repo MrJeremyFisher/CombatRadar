@@ -92,9 +92,6 @@ public class PlayerSettingsScreen extends Screen {
                 btn -> {
                     _config.setShowYLevel(!_config.getShowYLevel());
                     _config.save();
-                    MutableComponent text = new TextComponent("[CR] ").withStyle(ChatFormatting.DARK_AQUA);
-                    text = text.append(new TextComponent("Gaming").withStyle(ChatFormatting.YELLOW));
-                    minecraft.player.sendMessage(text, minecraft.player.getUUID());
                 }
         ));
 
