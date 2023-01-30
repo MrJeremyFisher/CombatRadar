@@ -548,24 +548,28 @@ public class Radar
         if(messageInfo.playerInfo != null) {
             Component coordText;
 
-            if(_config.getIsJourneyMapEnabled() && _config.getShowYLevel()) {
+            if(_config.getIsJourneyMapEnabled()) {
                 coordText = getJourneyMapCoord(messageInfo.playerInfo);
-                text = text
-                        .append(new TextComponent(" at ").withStyle(actionColor))
-                        .append(coordText);
-            } else if(_config.getIsVoxelMapEnabled() && _config.getShowYLevel()) {
+                if (_config.getShowYLevel()) {
+                    text = text
+                            .append(new TextComponent(" at ").withStyle(actionColor))
+                            .append(coordText);
+                }
+            } else if(_config.getIsVoxelMapEnabled()) {
                 coordText = getVoxelMapCoord(messageInfo.playerInfo);
-                text = text
-                        .append(new TextComponent(" at ").withStyle(actionColor))
-                        .append(coordText);
-            } else if (_config.getShowYLevel()){
+                if (_config.getShowYLevel()) {
+                    text = text
+                            .append(new TextComponent(" at ").withStyle(actionColor))
+                            .append(coordText);
+                }
+            } else {
                 coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true))
                         .withStyle(actionColor);
-                text = text
-                        .append(new TextComponent(" at ").withStyle(actionColor))
-                        .append(coordText);
-            } else {
-                return;
+                if (_config.getShowYLevel()) {
+                    text = text
+                            .append(new TextComponent(" at ").withStyle(actionColor))
+                            .append(coordText);
+                }
             }
 
 

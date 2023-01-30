@@ -4,8 +4,10 @@ import com.aleksey.combatradar.Speedometer;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 
 import java.awt.*;
@@ -20,6 +22,7 @@ public class MainScreen extends Screen {
     private Button _playerStatusButton;
     private Button _speedometerButton;
     private Button _enableButton;
+    private Button _showYLevelButton;
     private int _keyHintY;
 
     public MainScreen(Screen parent, RadarConfig config, Speedometer speedometer) {
@@ -80,6 +83,15 @@ public class MainScreen extends Screen {
         addRenderableWidget(_speedometerButton);
 
         y += 24;
+
+        addRenderableWidget(_showYLevelButton = new Button(x + 225, y, 100, 20, new TextComponent("CivMC Mode:"),
+                btn -> {
+                    _config.setShowYLevel(!_config.getShowYLevel());
+                    _config.save();
+                }
+        ));
+
+
         addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Done"),
                 btn -> this.minecraft.setScreen((_parent))));
 
@@ -91,6 +103,7 @@ public class MainScreen extends Screen {
         _playerStatusButton.setMessage(new TextComponent("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
         _enableButton.setMessage(new TextComponent("Radar: " + (_config.getEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(new TextComponent("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
+        _showYLevelButton.setMessage(new TextComponent("CivMC Mode: " + (_config.getShowYLevel() ? "Off" : "On")));
     }
 
     @Override
