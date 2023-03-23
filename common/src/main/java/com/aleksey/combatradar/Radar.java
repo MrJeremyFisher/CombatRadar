@@ -3,7 +3,6 @@ package com.aleksey.combatradar;
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.PlayerTypeInfo;
 import com.aleksey.combatradar.config.RadarConfig;
-import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.entities.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.Window;
@@ -17,8 +16,6 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -30,7 +27,6 @@ import net.minecraft.world.item.Items;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -38,6 +34,8 @@ import java.util.regex.Pattern;
  */
 public class Radar
 {
+    private static RadarConfig _config;
+
     private static class PlayerInfo {
         public String playerName;
         public double posX;
@@ -86,7 +84,6 @@ public class Radar
 
     private static final Pattern MinecraftSpecialCodes = Pattern.compile("(?i)§[0-9A-FK-OR]");
 
-    private RadarConfig _config;
 
     // Calculated settings
     private int _radarRadius;
@@ -505,17 +502,11 @@ public class Radar
         ChatFormatting playerColor;
         PlayerType playerType = _config.getPlayerType(messageInfo.playerName);
 
-        switch(playerType) {
-            case Ally:
-                playerColor = ChatFormatting.GREEN;
-                break;
-            case Enemy:
-                playerColor = ChatFormatting.DARK_RED;
-                break;
-            default:
-                playerColor = ChatFormatting.WHITE;
-                break;
-        }
+        playerColor = switch (playerType) {
+            case Ally -> ChatFormatting.GREEN;
+            case Enemy -> ChatFormatting.DARK_RED;
+            default -> ChatFormatting.WHITE;
+        };
 
         text = text.append(new TextComponent(messageInfo.playerName).withStyle(playerColor));
 
@@ -563,13 +554,13 @@ public class Radar
                             .append(coordText);
                 }
             } else {
-                coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true))
+                coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true, _config.getShowYLevel()))
                         .withStyle(actionColor);
-                if (_config.getShowYLevel()) {
+//                if (_config.getShowYLevel()) {
                     text = text
                             .append(new TextComponent(" at ").withStyle(actionColor))
                             .append(coordText);
-                }
+//                }
             }
 
 
@@ -586,14 +577,14 @@ public class Radar
                 );
 
         HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true));
+        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true, _config.getShowYLevel()));
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
                 .withHoverEvent(hoverEvent)
                 .withColor(ChatFormatting.AQUA);
 
-        return new TextComponent(getChatCoordText(playerInfo, false, true)).setStyle(coordStyle);
+        return new TextComponent(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
     }
 
     private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
@@ -601,17 +592,17 @@ public class Radar
                 .withStyle(ChatFormatting.WHITE);
 
         HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false));
+        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
                 .withHoverEvent(hoverEvent)
                 .withColor(ChatFormatting.AQUA);
 
-        return new TextComponent(getChatCoordText(playerInfo, false, true)).setStyle(coordStyle);
+        return new TextComponent(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
     }
 
-    private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets) {
+    private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets, boolean includeY) {
         StringBuilder coordText = new StringBuilder();
 
         if(includeBrackets) {
@@ -620,8 +611,10 @@ public class Radar
 
         coordText.append("x:");
         coordText.append((int)playerInfo.posX);
-        coordText.append(", y:");
-        coordText.append((int)playerInfo.posY);
+        if (includeY) {
+            coordText.append(", y:");
+            coordText.append((int) playerInfo.posY);
+        }
         coordText.append(", z:");
         coordText.append((int)playerInfo.posZ);
 
