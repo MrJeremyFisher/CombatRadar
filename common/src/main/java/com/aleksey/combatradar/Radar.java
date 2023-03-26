@@ -541,26 +541,20 @@ public class Radar
 
             if(_config.getIsJourneyMapEnabled()) {
                 coordText = getJourneyMapCoord(messageInfo.playerInfo);
-                if (_config.getShowYLevel()) {
                     text = text
                             .append(new TextComponent(" at ").withStyle(actionColor))
                             .append(coordText);
-                }
             } else if(_config.getIsVoxelMapEnabled()) {
                 coordText = getVoxelMapCoord(messageInfo.playerInfo);
-                if (_config.getShowYLevel()) {
                     text = text
                             .append(new TextComponent(" at ").withStyle(actionColor))
                             .append(coordText);
-                }
             } else {
                 coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true, _config.getShowYLevel()))
                         .withStyle(actionColor);
-//                if (_config.getShowYLevel()) {
                     text = text
                             .append(new TextComponent(" at ").withStyle(actionColor))
                             .append(coordText);
-//                }
             }
 
 
