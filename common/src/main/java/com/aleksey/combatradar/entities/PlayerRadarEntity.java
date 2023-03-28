@@ -72,7 +72,7 @@ public class PlayerRadarEntity extends RadarEntity {
         String playerName = player.getScoreboardName();
         if (getSettings().showExtraPlayerInfo && getSettings().showYLevel) {
             playerName += " (" + (int)minecraft.player.distanceTo(player) + "m)(Y" + player.getBlockY() + ")";
-        } else if (getSettings().showExtraPlayerInfo && !getSettings().showYLevel) 
+        } else if (getSettings().showExtraPlayerInfo && !getSettings().showYLevel) {
       
             double dx = player.getX() - minecraft.player.getX();
             double dz = player.getZ() - minecraft.player.getZ();
