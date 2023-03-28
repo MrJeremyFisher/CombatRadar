@@ -77,7 +77,7 @@ public class PlayerRadarEntity extends RadarEntity {
             double dx = player.getX() - minecraft.player.getX();
             double dz = player.getZ() - minecraft.player.getZ();
         
-            playerName += " (" + (int)Math.round(Math.sqrt((dx^2)+(dz^2))) + "m)";
+            playerName += " (" + (int)Math.round(Math.hypot(dx, dz)) + "m)";
         }
 
 
