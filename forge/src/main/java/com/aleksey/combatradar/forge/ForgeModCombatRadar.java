@@ -2,9 +2,10 @@ package com.aleksey.combatradar.forge;
 
 import com.aleksey.combatradar.ModHelper;
 import com.mojang.logging.LogUtils;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,6 +23,7 @@ public class ForgeModCombatRadar {
 
     private ModHelper _modHelper;
 
+
     public ForgeModCombatRadar()
     {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
@@ -32,11 +34,14 @@ public class ForgeModCombatRadar {
     public void clientSetup(final FMLClientSetupEvent event) {
         _modHelper = new ModHelper();
 
-        ClientRegistry.registerKeyBinding(_modHelper.getSettingsKey());
-
         _modHelper.init(LOGGER);
 
         LOGGER.info("[CombatRadar]: mod enabled");
+    }
+
+    @SubscribeEvent
+    public void registerBindings(RegisterKeyMappingsEvent event) {
+        event.register(_modHelper.getSettingsKey());
     }
 
     @SubscribeEvent
@@ -46,9 +51,9 @@ public class ForgeModCombatRadar {
     }
 
     @SubscribeEvent
-    public void onRender(RenderGameOverlayEvent.Post event) {
-        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
-            _modHelper.render(event.getMatrixStack(), event.getPartialTicks());
+    public void onRender(RenderGuiOverlayEvent.Post event) {
+        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type())
+            _modHelper.render(event.getPoseStack(), event.getPartialTick());
     }
 
     @SubscribeEvent

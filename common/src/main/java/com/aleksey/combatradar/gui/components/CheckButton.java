@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.awt.*;
@@ -26,8 +26,8 @@ public class CheckButton extends Button {
 
     public void setChecked(boolean value) { _checked = value; }
 
-    public CheckButton(int x, int y, int width, String name, Button.OnPress onPress) {
-        super(x, y, width, BUTTON_HEIGHT, new TextComponent(name), onPress);
+    public CheckButton(int x, int y, int width, String name, OnPress onPress) {
+        super(x, y, width, BUTTON_HEIGHT, Component.literal(name), onPress, (btn) -> Component.literal(name));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class CheckButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int xPos, int yPos, float p_93846_) {
+    public void renderWidget(PoseStack poseStack, int xPos, int yPos, float p_93846_) {
         Minecraft minecraft = Minecraft.getInstance();
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
@@ -47,10 +47,10 @@ public class CheckButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        blit(poseStack, this.x, this.y + (this.height - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+        blit(poseStack, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
         int textColor = this.isHovered ? 16777120 : Color.LIGHT_GRAY.getRGB();
 
-        minecraft.font.draw(poseStack, this.getMessage(), this.x + INDENT, this.y + (this.height - 8) / 2, textColor);
+        minecraft.font.draw(poseStack, this.getMessage(), this.getX() + INDENT, this.getY() + (this.getHeight() - 8f) / 2f, textColor);
     }
 }

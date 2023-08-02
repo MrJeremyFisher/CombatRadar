@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -14,6 +14,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -42,7 +43,7 @@ public class ItemRadarEntity extends RadarEntity {
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotationYaw));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         poseStack.scale(iconScale, iconScale, iconScale);
 
         renderGuiItem(poseStack, -8, -8);
@@ -63,7 +64,7 @@ public class ItemRadarEntity extends RadarEntity {
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        poseStack.translate(x, y, 100.0F + renderer.blitOffset);
+        poseStack.translate(x, y, 100.0F);
         poseStack.translate(8.0D, 8.0D, 0.0D);
         poseStack.scale(1.0F, -1.0F, 1.0F);
         poseStack.scale(16.0F, 16.0F, 16.0F);
@@ -75,7 +76,7 @@ public class ItemRadarEntity extends RadarEntity {
         if (notUseBlockLight)
             Lighting.setupForFlatItems();
 
-        renderer.render(_item, ItemTransforms.TransformType.GUI, false, poseStack, bufferSource, 15728880, OverlayTexture.NO_OVERLAY, bakedModel);
+        renderer.render(_item, ItemDisplayContext.valueOf("GUI"), false, poseStack, bufferSource, 15728880, OverlayTexture.NO_OVERLAY, bakedModel);
         bufferSource.endBatch();
         RenderSystem.enableDepthTest();
 

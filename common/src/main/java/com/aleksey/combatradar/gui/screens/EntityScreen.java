@@ -5,11 +5,12 @@ import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.gui.components.SmallButton;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class EntityScreen extends Screen {
         public int getTotalWidth() {
             int totalWidth = 0;
 
-            for(int i = 0; i < listColTextWidth.size(); i++)
+            for (int i = 0; i < listColTextWidth.size(); i++)
                 totalWidth += getColWidth(i);
 
             return totalWidth;
@@ -55,7 +56,7 @@ public class EntityScreen extends Screen {
     private static final int LINE_HEIGHT = 16;
     private static final int BUTTON_WIDTH = 24;
 
-    private static GroupType _activeGroupType = GroupType.Neutral;
+    private static GroupType _activeGroupType = GroupType.NEUTRAL;
 
     private RadarConfig _config;
     private Screen _parent;
@@ -73,7 +74,7 @@ public class EntityScreen extends Screen {
     private ArrayList<Button> _iconButtons;
 
     public EntityScreen(Screen parent, RadarConfig config) {
-        super(TextComponent.EMPTY);
+        super(CommonComponents.EMPTY);
         _parent = parent;
         _config = config;
         _iconButtons = new ArrayList<>();
@@ -94,27 +95,26 @@ public class EntityScreen extends Screen {
         int y = _buttonTop;
         int x = this.width / 2 - 100;
 
-        addRenderableWidget(_neutralButton = new Button(x, y, 66, 20, new TextComponent("Neutral"),
-                btn -> setActiveGroup(GroupType.Neutral)));
+        addRenderableWidget(_neutralButton = Button.builder(Component.literal("Neutral"), (btn) -> setActiveGroup(GroupType.NEUTRAL)).bounds(x, y, 66, 20).build());
 
-        addRenderableWidget(_aggressiveButton = new Button(x + 66 + 1, y, 66, 20, new TextComponent("Agressive"),
-                btn -> setActiveGroup(GroupType.Aggressive)));
+        addRenderableWidget(_aggressiveButton = Button.builder(Component.literal("Aggressive"), (btn) -> setActiveGroup(GroupType.AGGRESSIVE)).bounds(x + 66 + 1, y, 66, 20).build());
 
-        addRenderableWidget(_otherButton = new Button(x + 66 + 1 + 66 + 1, y, 66, 20, new TextComponent("Other"),
-                btn -> setActiveGroup(GroupType.Other)));
+        addRenderableWidget(_otherButton = Button.builder(Component.literal("Other"), (btn) -> setActiveGroup(GroupType.OTHER)).bounds(x + 66 + 1 + 66 + 1, y, 66, 20).build());
 
         y += 24;
-        addRenderableWidget(_enableButton = new Button(x, y, 200, 20, getEnableButtonText(),
-                btn -> {
+
+        addRenderableWidget(_enableButton = Button.builder(getEnableButtonText(),
+                (btn) -> {
                     _config.setGroupEnabled(_activeGroupType, !_config.isGroupEnabled(_activeGroupType));
                     _config.save();
                     _enableButton.setMessage(getEnableButtonText());
-                }));
+                }).bounds(x, y, 200, 20).build());
 
         y += 24;
-        addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Done"),
-                btn -> this.minecraft.setScreen(_parent)));
+
+        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
+
 
     private void addIconButtons() {
         int colIndex = 0;
@@ -129,8 +129,8 @@ public class EntityScreen extends Screen {
 
         _iconButtons.clear();
 
-        for(RadarEntityInfo info : _activeGroup.entities) {
-            if(rowIndex == MAX_ENTITIES_PER_COL) {
+        for (RadarEntityInfo info : _activeGroup.entities) {
+            if (rowIndex == MAX_ENTITIES_PER_COL) {
                 colX += _activeGroup.getColWidth(colIndex);
 
                 colIndex++;
@@ -140,9 +140,9 @@ public class EntityScreen extends Screen {
                 buttonY = _iconTop - 4;
             }
 
-            String buttonText = info.getEnabled() ? "on": "off";
+            String buttonText = info.getEnabled() ? "on" : "off";
             final String name = info.getName();
-            Button iconButton = new SmallButton(buttonX, buttonY, BUTTON_WIDTH, buttonHeight, new TextComponent(buttonText),
+            Button iconButton = new SmallButton(buttonX, buttonY, BUTTON_WIDTH, buttonHeight, Component.literal(buttonText),
                     btn -> iconButtonClicked(btn, name));
 
             addRenderableWidget(iconButton);
@@ -159,26 +159,26 @@ public class EntityScreen extends Screen {
         info.setEnabled(!info.getEnabled());
         _config.save();
 
-        String text = info.getEnabled() ? "on": "off";
+        String text = info.getEnabled() ? "on" : "off";
 
-        btn.setMessage(new TextComponent(text));
+        btn.setMessage(Component.literal(text));
     }
 
     private void createEntityGroups() {
         _groups = new HashMap<GroupType, EntityGroup>();
 
-        for(RadarEntityInfo info : _config.getEntityList()) {
+        for (RadarEntityInfo info : _config.getEntityList()) {
             EntityGroup group = _groups.get(info.getGroupType());
 
-            if(group == null)
+            if (group == null)
                 _groups.put(info.getGroupType(), group = new EntityGroup(info.getGroupType()));
 
             int colIndex = group.entities.size() / MAX_ENTITIES_PER_COL;
             int textWidth = this.font.width(info.getName());
 
-            if(group.listColTextWidth.size() <= colIndex)
+            if (group.listColTextWidth.size() <= colIndex)
                 group.listColTextWidth.add(textWidth);
-            else if(group.listColTextWidth.get(colIndex) < textWidth)
+            else if (group.listColTextWidth.get(colIndex) < textWidth)
                 group.listColTextWidth.set(colIndex, textWidth);
 
             group.entities.add(info);
@@ -190,30 +190,25 @@ public class EntityScreen extends Screen {
         _activeGroup = _groups.get(groupType);
         _iconLeft = (this.width - _activeGroup.getTotalWidth() + 25) / 2;
 
-        switch(groupType) {
-            case Neutral:
-                _groupName = "Neutral";
-                break;
-            case Aggressive:
-                _groupName = "Aggressive";
-                break;
-            case Other:
-                _groupName = "Other";
-                break;
+        switch (groupType) {
+            case NEUTRAL -> _groupName = "Neutral";
+            case AGGRESSIVE -> _groupName = "Aggressive";
+            case OTHER -> _groupName = "Other";
         }
 
         addIconButtons();
 
-        _neutralButton.active = groupType != GroupType.Neutral;
-        _aggressiveButton.active = groupType != GroupType.Aggressive;
-        _otherButton.active = groupType != GroupType.Other;
+        _neutralButton.active = groupType != GroupType.NEUTRAL;
+        _aggressiveButton.active = groupType != GroupType.AGGRESSIVE;
+        _otherButton.active = groupType != GroupType.OTHER;
 
         _enableButton.setMessage(getEnableButtonText());
     }
 
-    private TextComponent getEnableButtonText() {
+    private Component getEnableButtonText() {
         String text = _groupName + " Entities: " + (_config.isGroupEnabled(_activeGroupType) ? "On" : "Off");
-        return new TextComponent(text);
+        return Component.literal(text);
+
     }
 
     @Override
@@ -223,7 +218,7 @@ public class EntityScreen extends Screen {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        renderDirtBackground(0);
+        renderDirtBackground(poseStack);
         drawCenteredString(poseStack, this.font, "Radar Entities", this.width / 2, _titleTop, Color.WHITE.getRGB());
         renderIcons(poseStack);
 
@@ -236,8 +231,8 @@ public class EntityScreen extends Screen {
         int x = _iconLeft;
         int y = _iconTop;
 
-        for(RadarEntityInfo info : _activeGroup.entities) {
-            if(rowIndex == MAX_ENTITIES_PER_COL) {
+        for (RadarEntityInfo info : _activeGroup.entities) {
+            if (rowIndex == MAX_ENTITIES_PER_COL) {
                 x += _activeGroup.getColWidth(colIndex);
                 y = _iconTop;
 

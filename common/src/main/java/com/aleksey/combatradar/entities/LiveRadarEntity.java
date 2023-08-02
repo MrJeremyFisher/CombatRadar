@@ -2,7 +2,7 @@ package com.aleksey.combatradar.entities;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +33,7 @@ public class LiveRadarEntity extends RadarEntity {
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotationYaw));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         poseStack.scale(iconScale, iconScale, iconScale);
 
         RenderSystem.setShaderTexture(0, _resourceLocation);

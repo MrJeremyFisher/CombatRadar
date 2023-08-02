@@ -5,7 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.GlowSquid;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.animal.frog.Frog;
+import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.entity.animal.horse.*;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
@@ -16,10 +19,12 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.npc.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.ChestBoat;
 
 import java.awt.*;
 import java.io.*;
@@ -209,10 +214,10 @@ public class RadarConfig {
     }
 
     public void revertNeutralAggressive() {
-        boolean enabled = _groups.get(GroupType.Neutral) || _groups.get(GroupType.Aggressive);
+        boolean enabled = _groups.get(GroupType.NEUTRAL) || _groups.get(GroupType.AGGRESSIVE);
 
-        _groups.put(GroupType.Neutral, !enabled);
-        _groups.put(GroupType.Aggressive, !enabled);
+        _groups.put(GroupType.NEUTRAL, !enabled);
+        _groups.put(GroupType.AGGRESSIVE, !enabled);
     }
 
     public void setPlayerType(String playerName, PlayerType playerType) {
@@ -276,68 +281,68 @@ public class RadarConfig {
         _settingsKey = settingsKey;
 
         _entityList = new ArrayList<>();
-        _entityList.add(new RadarEntityInfo(Bat.class, "Bat", "icons/bat.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Chicken.class, "Chicken", "icons/chicken.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Cow.class, "Cow", "icons/cow/cow.png", GroupType.Neutral));
-        _entityList.add(new RadarHorseInfo("Horse", "icons/horse/horse_chestnut.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Mule.class, "Mule", "icons/horse/mule.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Donkey.class, "Donkey", "icons/horse/donkey.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(Bat.class, "Bat", "icons/bat.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Chicken.class, "Chicken", "icons/chicken.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Cow.class, "Cow", "icons/cow/cow.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarHorseInfo("Horse", "icons/horse/horse_chestnut.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Mule.class, "Mule", "icons/horse/mule.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Donkey.class, "Donkey", "icons/horse/donkey.png", GroupType.NEUTRAL));
         _entityList.add(
-                new RadarEntityInfo(Llama.class, "Llama", "icons/llama/llama.png", GroupType.Neutral)
+                new RadarEntityInfo(Llama.class, "Llama", "icons/llama/llama.png", GroupType.NEUTRAL)
                     .addEntity(TraderLlama.class, "icons/llama/llama_trader.png")
         );
-        _entityList.add(new RadarEntityInfo(MushroomCow.class, "Mooshroom", "icons/cow/mooshroom.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(MushroomCow.class, "Mooshroom", "icons/cow/mooshroom.png", GroupType.NEUTRAL));
         _entityList.add(
-                new RadarEntityInfo(Ocelot.class, "Ocelot", "icons/cat/ocelot.png", GroupType.Neutral)
+                new RadarEntityInfo(Ocelot.class, "Ocelot", "icons/cat/ocelot.png", GroupType.NEUTRAL)
                     .addEntity(Cat.class, "icons/cat/black.png")
         );
-        _entityList.add(new RadarEntityInfo(Pig.class, "Pig", "icons/pig/pig.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Rabbit.class, "Rabbit", "icons/rabbit/white.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Sheep.class, "Sheep", "icons/sheep/sheep.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(Pig.class, "Pig", "icons/pig/pig.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Rabbit.class, "Rabbit", "icons/rabbit/white.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Sheep.class, "Sheep", "icons/sheep/sheep.png", GroupType.NEUTRAL));
         _entityList.add(
-                new RadarEntityInfo(Squid.class, "Squid", "icons/squid.png", GroupType.Neutral)
+                new RadarEntityInfo(Squid.class, "Squid", "icons/squid.png", GroupType.NEUTRAL)
                     .addEntity(GlowSquid.class, "icons/squid_glow.png")
         );
-        _entityList.add(new RadarEntityInfo(Villager.class, "Villager", "icons/villager/villager.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Wolf.class, "Wolf", "icons/wolf/wolf.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Blaze.class, "Blaze", "icons/blaze.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(CaveSpider.class, "Cave Spider", "icons/spider/cave_spider.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Creeper.class, "Creeper", "icons/creeper.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(EnderMan.class, "Enderman", "icons/enderman/enderman.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Ghast.class, "Ghast", "icons/ghast/ghast.png", GroupType.Aggressive));
+        _entityList.add(new RadarEntityInfo(Villager.class, "Villager", "icons/villager/villager.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Wolf.class, "Wolf", "icons/wolf/wolf.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Blaze.class, "Blaze", "icons/blaze.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(CaveSpider.class, "Cave Spider", "icons/spider/cave_spider.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Creeper.class, "Creeper", "icons/creeper.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(EnderMan.class, "Enderman", "icons/enderman/enderman.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Ghast.class, "Ghast", "icons/ghast/ghast.png", GroupType.AGGRESSIVE));
         _entityList.add(
-                new RadarEntityInfo(Guardian.class, "Guardian", "icons/guardian.png", GroupType.Aggressive)
+                new RadarEntityInfo(Guardian.class, "Guardian", "icons/guardian.png", GroupType.AGGRESSIVE)
                     .addEntity(ElderGuardian.class, "icons/elder_guardian.png")
         );
-        _entityList.add(new RadarEntityInfo(IronGolem.class, "Iron Golem", "icons/iron_golem.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(MagmaCube.class, "Magma Cube", "icons/slime/magmacube.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Silverfish.class, "Silverfish", "icons/silverfish.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Skeleton.class, "Skeleton", "icons/skeleton/skeleton.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Slime.class, "Slime", "icons/slime/slime.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(SnowGolem.class, "Snow Golem", "icons/snowman.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Spider.class, "Spider", "icons/spider/spider.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Witch.class, "Witch", "icons/witch.png", GroupType.Aggressive));
+        _entityList.add(new RadarEntityInfo(IronGolem.class, "Iron Golem", "icons/iron_golem.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(MagmaCube.class, "Magma Cube", "icons/slime/magmacube.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Silverfish.class, "Silverfish", "icons/silverfish.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Skeleton.class, "Skeleton", "icons/skeleton/skeleton.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Slime.class, "Slime", "icons/slime/slime.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(SnowGolem.class, "Snow Golem", "icons/snowman.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Spider.class, "Spider", "icons/spider/spider.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Witch.class, "Witch", "icons/witch.png", GroupType.AGGRESSIVE));
         _entityList.add(
-                new RadarEntityInfo(Zombie.class, "Zombie", "icons/zombie/zombie.png", GroupType.Aggressive)
+                new RadarEntityInfo(Zombie.class, "Zombie", "icons/zombie/zombie.png", GroupType.AGGRESSIVE)
                     .addEntity(Drowned.class, "icons/zombie/drowned.png")
                     .addEntity(Husk.class, "icons/zombie/husk.png")
         );
-        _entityList.add(new RadarEntityInfo(ItemEntity.class, "Item", "icons/item.png", GroupType.Other));
-        _entityList.add(new RadarEntityInfo(Boat.class, "Boat", "icons/boat.png", GroupType.Other));
-        _entityList.add(new RadarEntityInfo(AbstractMinecart.class, "Minecart", "icons/minecart.png", GroupType.Other));
-        _entityList.add(new PlayerRadarEntityInfo(PlayerType.Neutral, "Player (Neutral)", "icons/player.png", GroupType.Other));
-        _entityList.add(new PlayerRadarEntityInfo(PlayerType.Ally, "Player (Ally)", "icons/player.png", GroupType.Other));
-        _entityList.add(new PlayerRadarEntityInfo(PlayerType.Enemy, "Player (Enemy)", "icons/player.png", GroupType.Other));
-        _entityList.add(new RadarEntityInfo(PolarBear.class, "Polar Bear", "icons/bear/polarbear.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Shulker.class, "Shulker", "icons/shulker/shulker.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Stray.class, "Stray", "icons/skeleton/stray.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(ExperienceOrb.class, "XP Orb", "icons/xp_orb.png", GroupType.Other));
-        _entityList.add(new RadarEntityInfo(WitherBoss.class, "Wither", "icons/wither/wither.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(WitherSkeleton.class, "Wither Skeleton", "icons/skeleton/wither_skeleton.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Parrot.class, "Parrot", "icons/parrot/parrot.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(ItemEntity.class, "Item", "icons/item.png", GroupType.OTHER));
+        _entityList.add(new RadarEntityInfo(Boat.class, "Boat", "icons/boat.png", GroupType.OTHER));
+        _entityList.add(new RadarEntityInfo(AbstractMinecart.class, "Minecart", "icons/minecart.png", GroupType.OTHER));
+        _entityList.add(new PlayerRadarEntityInfo(PlayerType.Neutral, "Player (Neutral)", "icons/player.png", GroupType.OTHER));
+        _entityList.add(new PlayerRadarEntityInfo(PlayerType.Ally, "Player (Ally)", "icons/player.png", GroupType.OTHER));
+        _entityList.add(new PlayerRadarEntityInfo(PlayerType.Enemy, "Player (Enemy)", "icons/player.png", GroupType.OTHER));
+        _entityList.add(new RadarEntityInfo(PolarBear.class, "Polar Bear", "icons/bear/polarbear.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Shulker.class, "Shulker", "icons/shulker/shulker.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Stray.class, "Stray", "icons/skeleton/stray.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(ExperienceOrb.class, "XP Orb", "icons/xp_orb.png", GroupType.OTHER));
+        _entityList.add(new RadarEntityInfo(WitherBoss.class, "Wither", "icons/wither/wither.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(WitherSkeleton.class, "Wither Skeleton", "icons/skeleton/wither_skeleton.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Parrot.class, "Parrot", "icons/parrot/parrot.png", GroupType.NEUTRAL));
 
         _entityList.add(
-                new RadarEntityInfo(Evoker.class, "Illager", "icons/illager/evoker.png", GroupType.Aggressive)
+                new RadarEntityInfo(Evoker.class, "Illager", "icons/illager/evoker.png", GroupType.AGGRESSIVE)
                     .addEntity(Illusioner.class, "icons/illager/illusioner.png")
                     .addEntity(Vex.class, "icons/illager/vex.png")
                     .addEntity(Vindicator.class, "icons/illager/vindicator.png")
@@ -345,35 +350,41 @@ public class RadarConfig {
                     .addEntity(Ravager.class, "icons/illager/ravager.png")
         );
 
-        // Update to 1.18.2
-        _entityList.add(new RadarEntityInfo(Axolotl.class, "Axolotl", "icons/axolotl.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(Axolotl.class, "Axolotl", "icons/axolotl.png", GroupType.NEUTRAL));
         _entityList.add(
-                new RadarEntityInfo(Salmon.class, "Fish", "icons/salmon.png", GroupType.Neutral)
+                new RadarEntityInfo(Salmon.class, "Fish", "icons/salmon.png", GroupType.NEUTRAL)
                     .addEntity(Cod.class, "icons/cod.png")
                     .addEntity(Pufferfish.class, "icons/pufferfish.png")
                     .addEntity(TropicalFish.class, "icons/tropical_fish.png")
         );
-        _entityList.add(new RadarEntityInfo(Fox.class, "Fox", "icons/fox.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Strider.class, "Strider", "icons/strider.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Turtle.class, "Turtle", "icons/turtle.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Turtle.class, "Trader", "icons/wandering_trader.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(Fox.class, "Fox", "icons/fox.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Strider.class, "Strider", "icons/strider.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Turtle.class, "Turtle", "icons/turtle.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Turtle.class, "Trader", "icons/wandering_trader.png", GroupType.NEUTRAL));
 
-        _entityList.add(new RadarEntityInfo(Bee.class, "Bee", "icons/bee.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Dolphin.class, "Dolphin", "icons/dolphin.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Goat.class, "Goat", "icons/goat.png", GroupType.Neutral));
-        _entityList.add(new RadarEntityInfo(Panda.class, "Panda", "icons/panda.png", GroupType.Neutral));
+        _entityList.add(new RadarEntityInfo(Bee.class, "Bee", "icons/bee.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Dolphin.class, "Dolphin", "icons/dolphin.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Goat.class, "Goat", "icons/goat.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Panda.class, "Panda", "icons/panda.png", GroupType.NEUTRAL));
         _entityList.add(
-                new RadarEntityInfo(Piglin.class, "Piglin", "icons/piglin.png", GroupType.Neutral)
+                new RadarEntityInfo(Piglin.class, "Piglin", "icons/piglin.png", GroupType.NEUTRAL)
                     .addEntity(ZombifiedPiglin.class, "icons/zombie_pigman.png")
         );
 
-        _entityList.add(new RadarEntityInfo(Endermite.class, "Endermite", "icons/endermite.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Endermite.class, "Hoglin", "icons/hoglin.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Phantom.class, "Phantom", "icons/phantom.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(PiglinBrute.class, "Piglin Brute", "icons/piglin_brute.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(Zoglin.class, "Zoglin", "icons/zoglin.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(ZombieVillager.class, "Zombie Villager", "icons/zombie_villager.png", GroupType.Aggressive));
-        _entityList.add(new RadarEntityInfo(EnderDragon.class, "Ender Dragon", "icons/dragon.png", GroupType.Aggressive));
+        _entityList.add(new RadarEntityInfo(Endermite.class, "Endermite", "icons/endermite.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Endermite.class, "Hoglin", "icons/hoglin.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Phantom.class, "Phantom", "icons/phantom.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(PiglinBrute.class, "Piglin Brute", "icons/piglin_brute.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Zoglin.class, "Zoglin", "icons/zoglin.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(ZombieVillager.class, "Zombie Villager", "icons/zombie_villager.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(EnderDragon.class, "Ender Dragon", "icons/dragon.png", GroupType.AGGRESSIVE));
+
+        // Update to 1.19.4
+        _entityList.add(new RadarEntityInfo(Allay.class, "Allay", "icons/allay.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Frog.class, "Frog", "icons/frog.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Tadpole.class, "Tadpole", "icons/tadpole.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Warden.class, "Warden", "icons/warden.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(ChestBoat.class, "Boat With Chest", "icons/boat_chest.png", GroupType.OTHER));
 
         Collections.sort(_entityList, new RadarEntityInfo.EntityComparator());
 
@@ -383,9 +394,9 @@ public class RadarConfig {
             _entityList.get(i).addToMap(_entityMap);
 
         _groups = new HashMap<GroupType, Boolean>();
-        _groups.put(GroupType.Neutral, true);
-        _groups.put(GroupType.Aggressive, true);
-        _groups.put(GroupType.Other, true);
+        _groups.put(GroupType.NEUTRAL, true);
+        _groups.put(GroupType.AGGRESSIVE, true);
+        _groups.put(GroupType.OTHER, true);
 
         _players = new HashMap<String, PlayerInfo>();
 
