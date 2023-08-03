@@ -23,7 +23,7 @@ public class SliderButton extends AbstractSliderButton {
     }
 
     public SliderButton(int x, int y, int width, float maxValue, float minValue, String name, float value, boolean integer) {
-        super(x, y, width, 20, Component.literal(name), value);
+        super(x, y, width, 20, Component.literal(name), (value - minValue) / (maxValue - minValue));
 
         _maxValue = maxValue;
         _minValue = minValue;
@@ -34,10 +34,12 @@ public class SliderButton extends AbstractSliderButton {
         updateMessage();
     }
 
+    @Override
     public void applyValue() {
         _value = _integer ? (float) Mth.floor(Mth.clampedLerp(this._minValue, this._maxValue, this.value)) : (float) Mth.clampedLerp(this._minValue, this._maxValue, this.value);
     }
 
+    @Override
     protected void updateMessage() {
         this.setMessage(Component.literal(String.format("%s: %s", _name, _decimalFormat.format(_value))));
     }
