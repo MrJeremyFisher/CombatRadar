@@ -127,7 +127,9 @@ public class ModHelper {
 
         if (yellow.equals(color1) || yellow.equals(color2)) {
             String messageText = message.getString();
-            return messageText.contains(" joined the game") || messageText.contains(" left the game");
+            if (!messageText.contains("[CR]")) {
+                return messageText.contains(" joined the game") || messageText.contains(" left the game");
+            }
         }
 
         return false;

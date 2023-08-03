@@ -30,6 +30,6 @@ public class FabricModCombatRadar implements ClientModInitializer {
         HudRenderCallback.EVENT.register((poseStack, partialTicks) -> _modHelper.render(poseStack, partialTicks));
         ChatCallback.EVENT.register((component) -> _modHelper.processChat(component));
 
-        LOGGER.info("[CombatRadar]: mod enabled");
+        LOGGER.info("[CombatRadar]: Enabled");
     }
 }
