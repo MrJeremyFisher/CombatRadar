@@ -19,57 +19,13 @@ import java.util.List;
  */
 public class ManagePlayersScreen extends Screen {
     private static final int SLOT_HEIGHT = 16;
-
-
-    private class PlayerListItem extends ObjectSelectionList.Entry<PlayerListItem> {
-        private final String _playerName;
-
-        public String getPlayerName() {
-            return _playerName;
-        }
-
-        public PlayerListItem(String playerName) {
-            _playerName = playerName;
-        }
-
-        @Override
-        public void render(GuiGraphics guiGraphics, int itemIndex, int y, int x, int p_93527_, int p_93528_, int p_93529_, int p_93530_, boolean p_93531_, float p_93532_) {
-            guiGraphics.drawString(ManagePlayersScreen.this.font, _playerName, x + 1, y + 1, Color.WHITE.getRGB(), true);
-        }
-
-        @Override
-        public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
-            ManagePlayersScreen.this._playerListContainer.setSelected(this);
-            ManagePlayersScreen.this._deleteButton.active = true;
-
-            return true;
-        }
-
-        @Override
-        public Component getNarration() {
-            return null;
-        }
-    }
-
-    private class PlayerListContainer extends AbstractSelectionList<PlayerListItem> {
-        public PlayerListContainer() {
-            super(ManagePlayersScreen.this.minecraft, ManagePlayersScreen.this.width, ManagePlayersScreen.this.height, 32, ManagePlayersScreen.this.height - 73, SLOT_HEIGHT);
-        }
-
-        @Override
-        public void updateNarration(NarrationElementOutput p_169042_) {
-        }
-    }
-
     private static PlayerType _activePlayerType = PlayerType.Ally;
-
-    private RadarConfig _config;
-    private Screen _parent;
+    private final RadarConfig _config;
+    private final Screen _parent;
     private Button _allyButton;
     private Button _enemyButton;
     private Button _deleteButton;
     private PlayerListContainer _playerListContainer;
-
     public ManagePlayersScreen(Screen parent, RadarConfig config) {
         super(CommonComponents.EMPTY);
         _parent = parent;
@@ -131,5 +87,45 @@ public class ManagePlayersScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.drawCenteredString(this.font, "Manage Players", this.width / 2, 20, Color.WHITE.getRGB());
+    }
+
+    private class PlayerListItem extends ObjectSelectionList.Entry<PlayerListItem> {
+        private final String _playerName;
+
+        public PlayerListItem(String playerName) {
+            _playerName = playerName;
+        }
+
+        public String getPlayerName() {
+            return _playerName;
+        }
+
+        @Override
+        public void render(GuiGraphics guiGraphics, int itemIndex, int y, int x, int p_93527_, int p_93528_, int p_93529_, int p_93530_, boolean p_93531_, float p_93532_) {
+            guiGraphics.drawString(ManagePlayersScreen.this.font, _playerName, x + 1, y + 1, Color.WHITE.getRGB(), true);
+        }
+
+        @Override
+        public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
+            ManagePlayersScreen.this._playerListContainer.setSelected(this);
+            ManagePlayersScreen.this._deleteButton.active = true;
+
+            return true;
+        }
+
+        @Override
+        public Component getNarration() {
+            return null;
+        }
+    }
+
+    private class PlayerListContainer extends AbstractSelectionList<PlayerListItem> {
+        public PlayerListContainer() {
+            super(ManagePlayersScreen.this.minecraft, ManagePlayersScreen.this.width, ManagePlayersScreen.this.height, 32, ManagePlayersScreen.this.height - 73, SLOT_HEIGHT);
+        }
+
+        @Override
+        public void updateNarration(NarrationElementOutput p_169042_) {
+        }
     }
 }

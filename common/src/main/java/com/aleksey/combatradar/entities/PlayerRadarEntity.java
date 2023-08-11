@@ -4,11 +4,9 @@ import com.aleksey.combatradar.config.PlayerType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.gui.GuiGraphics;
-import org.joml.Vector3f;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -19,7 +17,7 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class PlayerRadarEntity extends RadarEntity {
-    private PlayerType _playerType;
+    private final PlayerType _playerType;
 
     public PlayerRadarEntity(Entity entity, EntitySettings settings, PlayerType playerType) {
         super(entity, settings);
@@ -30,7 +28,7 @@ public class PlayerRadarEntity extends RadarEntity {
     protected void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         PoseStack poseStack = guiGraphics.pose();
-        RemotePlayer player = (RemotePlayer)getEntity();
+        RemotePlayer player = (RemotePlayer) getEntity();
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
         float scale = getSettings().iconScale * 1.7f;
 
@@ -75,13 +73,13 @@ public class PlayerRadarEntity extends RadarEntity {
 
         String playerName = player.getScoreboardName();
         if (getSettings().showExtraPlayerInfo && getSettings().showYLevel) {
-            playerName += " (" + (int)minecraft.player.distanceTo(player) + "m)(Y" + player.getBlockY() + ")";
+            playerName += " (" + (int) minecraft.player.distanceTo(player) + "m)(Y" + player.getBlockY() + ")";
         } else if (getSettings().showExtraPlayerInfo && !getSettings().showYLevel) {
-      
+
             double dx = player.getX() - minecraft.player.getX();
             double dz = player.getZ() - minecraft.player.getZ();
-        
-            playerName += " (" + (int)Math.round(Math.hypot(dx, dz)) + "m)";
+
+            playerName += " (" + (int) Math.round(Math.hypot(dx, dz)) + "m)";
         }
 
 

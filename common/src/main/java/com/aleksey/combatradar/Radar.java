@@ -35,73 +35,90 @@ import java.util.regex.Pattern;
  * @author Aleksey Terzi
  */
 public class Radar {
-    private static RadarConfig _config;
-
-    private static class PlayerInfo {
-        public String playerName;
-        public double posX;
-        public double posY;
-        public double posZ;
-
-        public PlayerInfo(AbstractClientPlayer player) {
-            this.playerName = player.getScoreboardName();
-            this.posX = player.getX();
-            this.posY = player.getY();
-            this.posZ = player.getZ();
-        }
-    }
-
-    private enum MessageReason {Login, Logout, Appeared, Disappeared}
-
-    private static class MessageInfo {
-        public String playerName;
-        public PlayerInfo playerInfo;
-        public MessageReason reason;
-        public boolean log;
-
-        public MessageInfo(String playerName, MessageReason reason) {
-            this.playerName = playerName;
-            this.playerInfo = null;
-            this.reason = reason;
-            this.log = true;
-        }
-
-        public MessageInfo(PlayerInfo playerInfo, MessageReason reason, boolean log) {
-            this.playerName = playerInfo.playerName;
-            this.playerInfo = playerInfo;
-            this.reason = reason;
-            this.log = log;
-        }
-    }
-
-    private static class PlayerSoundInfo {
-        public String soundEventName;
-        public UUID playerKey;
-
-        public PlayerSoundInfo(String soundEventName, UUID playerKey) {
-            this.soundEventName = soundEventName;
-            this.playerKey = playerKey;
-        }
-    }
-
     private static final Pattern MinecraftSpecialCodes = Pattern.compile("(?i)§[0-9A-FK-OR]");
-
-
+    private static RadarConfig _config;
+    private final List<RadarEntity> _entities = new ArrayList<>();
+    private final HashMap<UUID, MessageInfo> _messages = new HashMap<>();
+    private final List<PlayerSoundInfo> _sounds = new ArrayList<>();
+    private final float[] _sinList = new float[361];
+    private final float[] _cosList = new float[361];
     // Calculated settings
     private int _radarRadius;
     private float _radarScale;
     private int _radarDisplayX;
     private int _radarDisplayY;
-
-    private final List<RadarEntity> _entities = new ArrayList<>();
     private Map<UUID, PlayerInfo> _radarPlayers;
     private Map<UUID, String> _onlinePlayers;
 
-    private final HashMap<UUID, MessageInfo> _messages = new HashMap<>();
-    private final List<PlayerSoundInfo> _sounds = new ArrayList<>();
+    public Radar(RadarConfig config) {
+        _config = config;
 
-    private final float[] _sinList = new float[361];
-    private final float[] _cosList = new float[361];
+        for (int i = 0; i <= 360; i++) {
+            _sinList[i] = (float) Math.sin(i * Math.PI / 180.0D);
+            _cosList[i] = (float) Math.cos(i * Math.PI / 180.0D);
+        }
+    }
+
+    private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
+        MutableComponent hover = Component.literal("JourneyMap: ")
+                .withStyle(ChatFormatting.YELLOW)
+                .append(Component.literal("Click to create Waypoint.\nCtrl+Click to view on map.")
+                        .withStyle(ChatFormatting.AQUA)
+                );
+
+        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true, _config.getShowYLevel()));
+
+        Style coordStyle = Style.EMPTY
+                .withClickEvent(clickEvent)
+                .withHoverEvent(hoverEvent)
+                .withColor(ChatFormatting.AQUA);
+
+        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+    }
+
+    private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
+        Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
+                .withStyle(ChatFormatting.WHITE);
+
+        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
+
+        Style coordStyle = Style.EMPTY
+                .withClickEvent(clickEvent)
+                .withHoverEvent(hoverEvent)
+                .withColor(ChatFormatting.AQUA);
+
+        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+    }
+
+    private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets, boolean includeY) {
+        StringBuilder coordText = new StringBuilder();
+
+        if (includeBrackets) {
+            coordText.append("[");
+        }
+
+        coordText.append("x:");
+        coordText.append((int) playerInfo.posX);
+        if (includeY) {
+            coordText.append(", y:");
+            coordText.append((int) playerInfo.posY);
+        }
+        coordText.append(", z:");
+        coordText.append((int) playerInfo.posZ);
+
+        if (includeName) {
+            coordText.append(", name:");
+            coordText.append(playerInfo.playerName);
+        }
+
+        if (includeBrackets) {
+            coordText.append("]");
+        }
+
+        return coordText.toString();
+    }
 
     public int getRadarRadius() {
         return _radarRadius;
@@ -113,15 +130,6 @@ public class Radar {
 
     public int getRadarDisplayY() {
         return _radarDisplayY;
-    }
-
-    public Radar(RadarConfig config) {
-        _config = config;
-
-        for (int i = 0; i <= 360; i++) {
-            _sinList[i] = (float) Math.sin(i * Math.PI / 180.0D);
-            _cosList[i] = (float) Math.cos(i * Math.PI / 180.0D);
-        }
     }
 
     public void calcSettings() {
@@ -228,7 +236,6 @@ public class Radar {
         buffer.vertex(lastPose, -3f + offset, -3f + offset, 0).endVertex();
         tesselator.end();
     }
-
 
     private void renderLines(PoseStack poseStack, float radius) {
         final float cos45 = 0.7071f;
@@ -580,64 +587,50 @@ public class Radar {
         minecraft.player.displayClientMessage(text, false);
     }
 
-    private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
-        MutableComponent hover = Component.literal("JourneyMap: ")
-                .withStyle(ChatFormatting.YELLOW)
-                .append(Component.literal("Click to create Waypoint.\nCtrl+Click to view on map.")
-                        .withStyle(ChatFormatting.AQUA)
-                );
+    private enum MessageReason {Login, Logout, Appeared, Disappeared}
 
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true, _config.getShowYLevel()));
+    private static class PlayerInfo {
+        public String playerName;
+        public double posX;
+        public double posY;
+        public double posZ;
 
-        Style coordStyle = Style.EMPTY
-                .withClickEvent(clickEvent)
-                .withHoverEvent(hoverEvent)
-                .withColor(ChatFormatting.AQUA);
-
-        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+        public PlayerInfo(AbstractClientPlayer player) {
+            this.playerName = player.getScoreboardName();
+            this.posX = player.getX();
+            this.posY = player.getY();
+            this.posZ = player.getZ();
+        }
     }
 
-    private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
-        Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
-                .withStyle(ChatFormatting.WHITE);
+    private static class MessageInfo {
+        public String playerName;
+        public PlayerInfo playerInfo;
+        public MessageReason reason;
+        public boolean log;
 
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
+        public MessageInfo(String playerName, MessageReason reason) {
+            this.playerName = playerName;
+            this.playerInfo = null;
+            this.reason = reason;
+            this.log = true;
+        }
 
-        Style coordStyle = Style.EMPTY
-                .withClickEvent(clickEvent)
-                .withHoverEvent(hoverEvent)
-                .withColor(ChatFormatting.AQUA);
-
-        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+        public MessageInfo(PlayerInfo playerInfo, MessageReason reason, boolean log) {
+            this.playerName = playerInfo.playerName;
+            this.playerInfo = playerInfo;
+            this.reason = reason;
+            this.log = log;
+        }
     }
 
-    private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets, boolean includeY) {
-        StringBuilder coordText = new StringBuilder();
+    private static class PlayerSoundInfo {
+        public String soundEventName;
+        public UUID playerKey;
 
-        if (includeBrackets) {
-            coordText.append("[");
+        public PlayerSoundInfo(String soundEventName, UUID playerKey) {
+            this.soundEventName = soundEventName;
+            this.playerKey = playerKey;
         }
-
-        coordText.append("x:");
-        coordText.append((int) playerInfo.posX);
-        if (includeY) {
-            coordText.append(", y:");
-            coordText.append((int) playerInfo.posY);
-        }
-        coordText.append(", z:");
-        coordText.append((int) playerInfo.posZ);
-
-        if (includeName) {
-            coordText.append(", name:");
-            coordText.append(playerInfo.playerName);
-        }
-
-        if (includeBrackets) {
-            coordText.append("]");
-        }
-
-        return coordText.toString();
     }
 }

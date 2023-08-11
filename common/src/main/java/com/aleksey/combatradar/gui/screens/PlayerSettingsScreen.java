@@ -6,7 +6,6 @@ import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.SoundInfo;
 import com.aleksey.combatradar.gui.components.SliderButton;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,8 +18,8 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class PlayerSettingsScreen extends Screen {
-    private RadarConfig _config;
-    private Screen _parent;
+    private final RadarConfig _config;
+    private final Screen _parent;
     private SliderButton _neutralRedSlider;
     private SliderButton _neutralGreenSlider;
     private SliderButton _neutralBlueSlider;
@@ -67,7 +66,7 @@ public class PlayerSettingsScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(_neutralPingButton =  Button.builder(Component.literal("Neutral Player Ping"), (btn) -> changePing(PlayerType.Neutral)).bounds(x, y, 133, 20).build());
+        addRenderableWidget(_neutralPingButton = Button.builder(Component.literal("Neutral Player Ping"), (btn) -> changePing(PlayerType.Neutral)).bounds(x, y, 133, 20).build());
 
         addRenderableWidget(_neutralSoundButton = Button.builder(Component.literal("Sound"), (btn) -> changePingSound(PlayerType.Neutral)).bounds(x + 133 + 1, y, 66, 20).build());
 
@@ -81,7 +80,7 @@ public class PlayerSettingsScreen extends Screen {
 
         addRenderableWidget(_enemyPingButton = Button.builder(Component.literal("Enemy Player Ping"), (btn) -> changePing(PlayerType.Enemy)).bounds(x, y, 133, 20).build());
 
-        addRenderableWidget(_enemySoundButton = Button.builder(Component.literal("Sound"), (btn) -> changePingSound(PlayerType.Enemy)).bounds(x  + 133 + 1, y, 66, 20).build());
+        addRenderableWidget(_enemySoundButton = Button.builder(Component.literal("Sound"), (btn) -> changePingSound(PlayerType.Enemy)).bounds(x + 133 + 1, y, 66, 20).build());
 
         y += 24;
 
@@ -100,17 +99,17 @@ public class PlayerSettingsScreen extends Screen {
 
     @Override
     public void tick() {
-        boolean isChanged = false;
+        boolean isChanged;
 
         Color neutralColor = new Color(_neutralRedSlider.getValue(), _neutralGreenSlider.getValue(), _neutralBlueSlider.getValue());
         Color allyColor = new Color(_allyRedSlider.getValue(), _allyGreenSlider.getValue(), _allyBlueSlider.getValue());
         Color enemyColor = new Color(_enemyRedSlider.getValue(), _enemyGreenSlider.getValue(), _enemyBlueSlider.getValue());
 
-        isChanged = changeColor(PlayerType.Neutral, neutralColor) || isChanged;
+        isChanged = changeColor(PlayerType.Neutral, neutralColor);
         isChanged = changeColor(PlayerType.Ally, allyColor) || isChanged;
         isChanged = changeColor(PlayerType.Enemy, enemyColor) || isChanged;
 
-        if(isChanged)
+        if (isChanged)
             _config.save();
 
         PlayerTypeInfo neutralPlayer = _config.getPlayerTypeInfo(PlayerType.Neutral);
@@ -128,7 +127,7 @@ public class PlayerSettingsScreen extends Screen {
     private boolean changeColor(PlayerType playerType, Color color) {
         PlayerTypeInfo info = _config.getPlayerTypeInfo(playerType);
 
-        if(info.color == color)
+        if (info.color == color)
             return false;
 
         info.color = color;

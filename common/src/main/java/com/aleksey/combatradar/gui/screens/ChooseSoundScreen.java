@@ -5,7 +5,6 @@ import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.SoundInfo;
 import com.aleksey.combatradar.gui.components.CheckButton;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,8 +23,8 @@ public class ChooseSoundScreen extends Screen {
     private final RadarConfig _config;
     private final Screen _parent;
     private final PlayerType _playerType;
-    private int _titleTop;
     private final ArrayList<CheckButton> _checkButtons;
+    private int _titleTop;
 
     public ChooseSoundScreen(Screen parent, RadarConfig config, PlayerType playerType) {
         super(CommonComponents.EMPTY);
@@ -47,7 +46,7 @@ public class ChooseSoundScreen extends Screen {
 
         String sound = _config.getPlayerTypeInfo(_playerType).soundEventName;
 
-        for(int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
+        for (int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
             SoundInfo info = SoundInfo.SOUND_LIST[i];
             final int soundIndex = i;
 
@@ -58,7 +57,7 @@ public class ChooseSoundScreen extends Screen {
 
             addRenderableWidget(chk);
 
-            if(i == MAX_BUTTON_PER_COL - 1) {
+            if (i == MAX_BUTTON_PER_COL - 1) {
                 y = topY;
                 x = leftX + 80;
             } else {
@@ -77,7 +76,7 @@ public class ChooseSoundScreen extends Screen {
     }
 
     private void chooseSound(int index) {
-        for(int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
+        for (int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
             boolean isChecked = i == index;
             _checkButtons.get(i).setChecked(isChecked);
         }

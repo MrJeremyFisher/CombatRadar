@@ -15,9 +15,8 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class CheckButton extends Button {
-    private static final ResourceLocation _texture = new ResourceLocation("combatradar", "textures/gui/checkbox.png");
     public static final int BUTTON_HEIGHT = 14;
-
+    private static final ResourceLocation _texture = new ResourceLocation("combatradar", "textures/gui/checkbox.png");
     private static final int TEXTURE_SIZE = 7;
     private static final int CHECKED_TEXTURE_X = 8;
     private static final int UNCHECKED_TEXTURE_X = 0;
@@ -25,10 +24,12 @@ public class CheckButton extends Button {
 
     private boolean _checked;
 
-    public void setChecked(boolean value) { _checked = value; }
-
     public CheckButton(int x, int y, int width, String name, OnPress onPress) {
         super(x, y, width, BUTTON_HEIGHT, Component.literal(name), onPress, (btn) -> Component.literal(name));
+    }
+
+    public void setChecked(boolean value) {
+        _checked = value;
     }
 
     @Override

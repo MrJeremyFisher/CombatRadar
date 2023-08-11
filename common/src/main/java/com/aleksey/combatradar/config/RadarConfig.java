@@ -2,6 +2,8 @@ package com.aleksey.combatradar.config;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.GlowSquid;
 import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.*;
@@ -10,43 +12,39 @@ import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
-import net.minecraft.world.entity.animal.horse.*;
+import net.minecraft.world.entity.animal.horse.Donkey;
+import net.minecraft.world.entity.animal.horse.Llama;
+import net.minecraft.world.entity.animal.horse.Mule;
+import net.minecraft.world.entity.animal.horse.TraderLlama;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.entity.monster.warden.Warden;
-import net.minecraft.world.entity.npc.*;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.ChestBoat;
 
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.io.File;
 import java.util.List;
+import java.util.*;
 
 /**
  * @author Aleksey Terzi
  */
 public class RadarConfig {
-    private static class PlayerInfo {
-        public String name;
-        public PlayerType type;
-
-        public PlayerInfo(String name, PlayerType type) {
-            this.name = name;
-            this.type = type;
-        }
-    }
-
     private final File _configFile;
     private final KeyMapping _settingsKey;
+    private final List<RadarEntityInfo> _entityList;
+    private final Map<String, RadarEntityInfo> _entityMap;
+    private final Map<GroupType, Boolean> _groups;
+    private final Map<String, PlayerInfo> _players;
+    private final Map<PlayerType, PlayerTypeInfo> _playerTypes;
     private boolean _enabled = true;
     private boolean _speedometerEnabled = false;
     private float _radarOpacity = 0.5f;
@@ -61,219 +59,10 @@ public class RadarConfig {
     private boolean _showExtraPlayerInfo = true;
     private boolean _logPlayerStatus = true;
     private boolean _showYLevel = false;
-    private final List<RadarEntityInfo> _entityList;
-    private final Map<String, RadarEntityInfo> _entityMap;
-    private final Map<GroupType, Boolean> _groups;
-    private final Map<String, PlayerInfo> _players;
-    private final Map<PlayerType, PlayerTypeInfo> _playerTypes;
     private List<String> _playersExcludedFromLog;
-
     // Calculated settings
     private boolean _isJourneyMapEnabled;
     private boolean _isVoxelMapEnabled;
-
-    public KeyMapping getSettingsKey() { return _settingsKey; }
-
-    public boolean getEnabled() { return _enabled; }
-    public void setEnabled(boolean value) { _enabled = value; }
-
-    public boolean getSpeedometerEnabled() { return _speedometerEnabled; }
-    public void setSpeedometerEnabled(boolean value) { _speedometerEnabled = value; }
-
-    public float getRadarOpacity() { return _radarOpacity; }
-    public boolean setRadarOpacity(float value) {
-        if(_radarOpacity == value)
-            return false;
-
-        _radarOpacity = value;
-
-        return true;
-    }
-
-    public Color getRadarColor() { return _radarColor; }
-    public boolean setRadarColor(Color value) {
-        if(_radarColor == value)
-            return false;
-
-        _radarColor = value;
-
-        return true;
-    }
-
-    public float getRadarSize() { return _radarSize; }
-    public boolean setRadarSize(float value) {
-        if(_radarSize == value)
-            return false;
-
-        _radarSize = value;
-
-        return true;
-    }
-
-    public int getRadarDistance() { return _radarDistance; }
-    public boolean setRadarDistance(int value) {
-        if(_radarDistance == value)
-            return false;
-
-        _radarDistance = value;
-
-        return true;
-    }
-
-    public float getRadarX() { return _radarX; }
-    public void setRadarX(float value) { _radarX = value; }
-
-    public float getRadarY() { return _radarY; }
-    public void setRadarY(float value) { _radarY = value; }
-
-    public float getIconScale() { return _iconScale; }
-    public boolean setIconScale(float value) {
-        if(_iconScale == value)
-            return false;
-
-        _iconScale = value;
-
-        return true;
-    }
-
-    public float getFontScale() { return _fontScale; }
-    public boolean setFontScale(float value) {
-        if(_fontScale == value)
-            return false;
-
-        _fontScale = value;
-
-        return true;
-    }
-
-    public PlayerTypeInfo getPlayerTypeInfo(PlayerType playerType) { return _playerTypes.get(playerType); }
-
-    public boolean getShowPlayerNames() { return _showPlayerNames; }
-    public void setShowPlayerNames(boolean value) { _showPlayerNames = value; }
-
-    public boolean getShowExtraPlayerInfo() { return _showExtraPlayerInfo; }
-    public void setShowExtraPlayerInfo(boolean value) { _showExtraPlayerInfo = value; }
-
-    public boolean getLogPlayerStatus() { return _logPlayerStatus; }
-    public void setLogPlayerStatus(boolean value) { _logPlayerStatus = value; }
-
-    public boolean getShowYLevel() { return _showYLevel; }
-    public void setShowYLevel(boolean value) { _showYLevel = value; }
-
-    public List<RadarEntityInfo> getEntityList() { return _entityList; }
-
-    public RadarEntityInfo getEntity(String name) {
-        for(RadarEntityInfo info : _entityList) {
-            if(info.getName().equalsIgnoreCase(name))
-                return info;
-        }
-
-        return null;
-    }
-
-    public void setEntityEnabled(String name, boolean enabled) {
-        getEntity(name).setEnabled(enabled);
-    }
-
-    public ResourceLocation getEnabledIcon(Entity entity) {
-        String entityClass;
-
-        if(entity instanceof ItemEntity) {
-            entityClass = ItemEntity.class.getCanonicalName();
-        } else if(entity instanceof Boat) {
-            entityClass = Boat.class.getCanonicalName();
-        } else if(entity instanceof AbstractMinecart) {
-            entityClass = AbstractMinecart.class.getCanonicalName();
-        } else if(entity instanceof Player) {
-            var playerType = getPlayerType(entity.getName().getString());
-            entityClass = Player.class.getCanonicalName() + "." + playerType;
-        } else {
-            entityClass = entity.getClass().getCanonicalName();
-        }
-
-        var info = _entityMap.getOrDefault(entityClass, null);
-
-        return info != null && info.getEnabled() && _groups.get(info.getGroupType())
-                ? info.getIcon(entity)
-                : null;
-    }
-
-    public boolean isGroupEnabled(GroupType groupType) {
-        return _groups.get(groupType);
-    }
-
-    public void setGroupEnabled(GroupType groupType, boolean value) {
-        _groups.put(groupType, value);
-    }
-
-    public PlayerType getPlayerType(String playerName) {
-        String key = playerName.toLowerCase();
-        PlayerInfo info = _players.get(key);
-
-        return info != null ? info.type : PlayerType.Neutral;
-    }
-
-    public void revertNeutralAggressive() {
-        boolean enabled = _groups.get(GroupType.NEUTRAL) || _groups.get(GroupType.AGGRESSIVE);
-
-        _groups.put(GroupType.NEUTRAL, !enabled);
-        _groups.put(GroupType.AGGRESSIVE, !enabled);
-    }
-
-    public void setPlayerType(String playerName, PlayerType playerType) {
-        String key = playerName.toLowerCase();
-
-        if(playerType == PlayerType.Neutral) {
-            _players.remove(key);
-            return;
-        }
-
-        PlayerInfo info = _players.get(key);
-
-        if(info == null)
-            _players.put(key, new PlayerInfo(playerName, playerType));
-        else
-            info.type = playerType;
-    }
-
-    public List<String> getPlayers(PlayerType playerType) {
-        List<String> result = new ArrayList<String>();
-
-        for(PlayerInfo info : _players.values()) {
-            if(info.type == playerType)
-                result.add(info.name);
-        }
-
-        Collections.sort(result);
-
-        return result;
-    }
-
-    public boolean getIsJourneyMapEnabled() { return _isJourneyMapEnabled; }
-    public void setIsJourneyMapEnabled(boolean value) { _isJourneyMapEnabled = value; }
-
-    public boolean getIsVoxelMapEnabled() { return _isVoxelMapEnabled; }
-    public void setIsVoxelMapEnabled(boolean value) { _isVoxelMapEnabled = value; }
-
-    public List<String> getPlayersExcludedFromLog() { return _playersExcludedFromLog; }
-    public void setPlayersExcludedFromLog(List<String> value) {
-        _playersExcludedFromLog = value;
-
-        _playersExcludedFromLog.replaceAll(String::toUpperCase);
-    }
-
-    public boolean isPlayerExcluded(String playerName) {
-        String upperPlayerName = playerName.toUpperCase();
-
-        for(String p : _playersExcludedFromLog) {
-            if(upperPlayerName.startsWith(p)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public RadarConfig(File file, KeyMapping settingsKey) {
         _configFile = file;
         _settingsKey = settingsKey;
@@ -287,19 +76,19 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Donkey.class, "Donkey", "icons/horse/donkey.png", GroupType.NEUTRAL));
         _entityList.add(
                 new RadarEntityInfo(Llama.class, "Llama", "icons/llama/llama.png", GroupType.NEUTRAL)
-                    .addEntity(TraderLlama.class, "icons/llama/llama_trader.png")
+                        .addEntity(TraderLlama.class, "icons/llama/llama_trader.png")
         );
         _entityList.add(new RadarEntityInfo(MushroomCow.class, "Mooshroom", "icons/cow/mooshroom.png", GroupType.NEUTRAL));
         _entityList.add(
                 new RadarEntityInfo(Ocelot.class, "Ocelot", "icons/cat/ocelot.png", GroupType.NEUTRAL)
-                    .addEntity(Cat.class, "icons/cat/black.png")
+                        .addEntity(Cat.class, "icons/cat/black.png")
         );
         _entityList.add(new RadarEntityInfo(Pig.class, "Pig", "icons/pig/pig.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Rabbit.class, "Rabbit", "icons/rabbit/white.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Sheep.class, "Sheep", "icons/sheep/sheep.png", GroupType.NEUTRAL));
         _entityList.add(
                 new RadarEntityInfo(Squid.class, "Squid", "icons/squid.png", GroupType.NEUTRAL)
-                    .addEntity(GlowSquid.class, "icons/squid_glow.png")
+                        .addEntity(GlowSquid.class, "icons/squid_glow.png")
         );
         _entityList.add(new RadarEntityInfo(Villager.class, "Villager", "icons/villager/villager.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Wolf.class, "Wolf", "icons/wolf/wolf.png", GroupType.NEUTRAL));
@@ -310,7 +99,7 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Ghast.class, "Ghast", "icons/ghast/ghast.png", GroupType.AGGRESSIVE));
         _entityList.add(
                 new RadarEntityInfo(Guardian.class, "Guardian", "icons/guardian.png", GroupType.AGGRESSIVE)
-                    .addEntity(ElderGuardian.class, "icons/elder_guardian.png")
+                        .addEntity(ElderGuardian.class, "icons/elder_guardian.png")
         );
         _entityList.add(new RadarEntityInfo(IronGolem.class, "Iron Golem", "icons/iron_golem.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(MagmaCube.class, "Magma Cube", "icons/slime/magmacube.png", GroupType.AGGRESSIVE));
@@ -322,8 +111,8 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Witch.class, "Witch", "icons/witch.png", GroupType.AGGRESSIVE));
         _entityList.add(
                 new RadarEntityInfo(Zombie.class, "Zombie", "icons/zombie/zombie.png", GroupType.AGGRESSIVE)
-                    .addEntity(Drowned.class, "icons/zombie/drowned.png")
-                    .addEntity(Husk.class, "icons/zombie/husk.png")
+                        .addEntity(Drowned.class, "icons/zombie/drowned.png")
+                        .addEntity(Husk.class, "icons/zombie/husk.png")
         );
         _entityList.add(new RadarEntityInfo(ItemEntity.class, "Item", "icons/item.png", GroupType.OTHER));
         _entityList.add(new RadarEntityInfo(Boat.class, "Boat", "icons/boat.png", GroupType.OTHER));
@@ -341,19 +130,19 @@ public class RadarConfig {
 
         _entityList.add(
                 new RadarEntityInfo(Evoker.class, "Illager", "icons/illager/evoker.png", GroupType.AGGRESSIVE)
-                    .addEntity(Illusioner.class, "icons/illager/illusioner.png")
-                    .addEntity(Vex.class, "icons/illager/vex.png")
-                    .addEntity(Vindicator.class, "icons/illager/vindicator.png")
-                    .addEntity(Pillager.class, "icons/illager/pillager.png")
-                    .addEntity(Ravager.class, "icons/illager/ravager.png")
+                        .addEntity(Illusioner.class, "icons/illager/illusioner.png")
+                        .addEntity(Vex.class, "icons/illager/vex.png")
+                        .addEntity(Vindicator.class, "icons/illager/vindicator.png")
+                        .addEntity(Pillager.class, "icons/illager/pillager.png")
+                        .addEntity(Ravager.class, "icons/illager/ravager.png")
         );
 
         _entityList.add(new RadarEntityInfo(Axolotl.class, "Axolotl", "icons/axolotl.png", GroupType.NEUTRAL));
         _entityList.add(
                 new RadarEntityInfo(Salmon.class, "Fish", "icons/salmon.png", GroupType.NEUTRAL)
-                    .addEntity(Cod.class, "icons/cod.png")
-                    .addEntity(Pufferfish.class, "icons/pufferfish.png")
-                    .addEntity(TropicalFish.class, "icons/tropical_fish.png")
+                        .addEntity(Cod.class, "icons/cod.png")
+                        .addEntity(Pufferfish.class, "icons/pufferfish.png")
+                        .addEntity(TropicalFish.class, "icons/tropical_fish.png")
         );
         _entityList.add(new RadarEntityInfo(Fox.class, "Fox", "icons/fox.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Strider.class, "Strider", "icons/strider.png", GroupType.NEUTRAL));
@@ -366,7 +155,7 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Panda.class, "Panda", "icons/panda.png", GroupType.NEUTRAL));
         _entityList.add(
                 new RadarEntityInfo(Piglin.class, "Piglin", "icons/piglin.png", GroupType.NEUTRAL)
-                    .addEntity(ZombifiedPiglin.class, "icons/zombie_pigman.png")
+                        .addEntity(ZombifiedPiglin.class, "icons/zombie_pigman.png")
         );
 
         _entityList.add(new RadarEntityInfo(Endermite.class, "Endermite", "icons/endermite.png", GroupType.AGGRESSIVE));
@@ -406,11 +195,300 @@ public class RadarConfig {
         _playersExcludedFromLog.add("~BTLP SLOT");
     }
 
+    public KeyMapping getSettingsKey() {
+        return _settingsKey;
+    }
+
+    public boolean getEnabled() {
+        return _enabled;
+    }
+
+    public void setEnabled(boolean value) {
+        _enabled = value;
+    }
+
+    public boolean getSpeedometerEnabled() {
+        return _speedometerEnabled;
+    }
+
+    public void setSpeedometerEnabled(boolean value) {
+        _speedometerEnabled = value;
+    }
+
+    public float getRadarOpacity() {
+        return _radarOpacity;
+    }
+
+    public boolean setRadarOpacity(float value) {
+        if (_radarOpacity == value)
+            return false;
+
+        _radarOpacity = value;
+
+        return true;
+    }
+
+    public Color getRadarColor() {
+        return _radarColor;
+    }
+
+    public boolean setRadarColor(Color value) {
+        if (_radarColor == value)
+            return false;
+
+        _radarColor = value;
+
+        return true;
+    }
+
+    public float getRadarSize() {
+        return _radarSize;
+    }
+
+    public boolean setRadarSize(float value) {
+        if (_radarSize == value)
+            return false;
+
+        _radarSize = value;
+
+        return true;
+    }
+
+    public int getRadarDistance() {
+        return _radarDistance;
+    }
+
+    public boolean setRadarDistance(int value) {
+        if (_radarDistance == value)
+            return false;
+
+        _radarDistance = value;
+
+        return true;
+    }
+
+    public float getRadarX() {
+        return _radarX;
+    }
+
+    public void setRadarX(float value) {
+        _radarX = value;
+    }
+
+    public float getRadarY() {
+        return _radarY;
+    }
+
+    public void setRadarY(float value) {
+        _radarY = value;
+    }
+
+    public float getIconScale() {
+        return _iconScale;
+    }
+
+    public boolean setIconScale(float value) {
+        if (_iconScale == value)
+            return false;
+
+        _iconScale = value;
+
+        return true;
+    }
+
+    public float getFontScale() {
+        return _fontScale;
+    }
+
+    public boolean setFontScale(float value) {
+        if (_fontScale == value)
+            return false;
+
+        _fontScale = value;
+
+        return true;
+    }
+
+    public PlayerTypeInfo getPlayerTypeInfo(PlayerType playerType) {
+        return _playerTypes.get(playerType);
+    }
+
+    public boolean getShowPlayerNames() {
+        return _showPlayerNames;
+    }
+
+    public void setShowPlayerNames(boolean value) {
+        _showPlayerNames = value;
+    }
+
+    public boolean getShowExtraPlayerInfo() {
+        return _showExtraPlayerInfo;
+    }
+
+    public void setShowExtraPlayerInfo(boolean value) {
+        _showExtraPlayerInfo = value;
+    }
+
+    public boolean getLogPlayerStatus() {
+        return _logPlayerStatus;
+    }
+
+    public void setLogPlayerStatus(boolean value) {
+        _logPlayerStatus = value;
+    }
+
+    public boolean getShowYLevel() {
+        return _showYLevel;
+    }
+
+    public void setShowYLevel(boolean value) {
+        _showYLevel = value;
+    }
+
+    public List<RadarEntityInfo> getEntityList() {
+        return _entityList;
+    }
+
+    public RadarEntityInfo getEntity(String name) {
+        for (RadarEntityInfo info : _entityList) {
+            if (info.getName().equalsIgnoreCase(name))
+                return info;
+        }
+
+        return null;
+    }
+
+    public void setEntityEnabled(String name, boolean enabled) {
+        getEntity(name).setEnabled(enabled);
+    }
+
+    public ResourceLocation getEnabledIcon(Entity entity) {
+        String entityClass;
+
+        if (entity instanceof ItemEntity) {
+            entityClass = ItemEntity.class.getCanonicalName();
+        } else if (entity instanceof Boat) {
+            entityClass = Boat.class.getCanonicalName();
+        } else if (entity instanceof AbstractMinecart) {
+            entityClass = AbstractMinecart.class.getCanonicalName();
+        } else if (entity instanceof Player) {
+            var playerType = getPlayerType(entity.getName().getString());
+            entityClass = Player.class.getCanonicalName() + "." + playerType;
+        } else {
+            entityClass = entity.getClass().getCanonicalName();
+        }
+
+        var info = _entityMap.getOrDefault(entityClass, null);
+
+        return info != null && info.getEnabled() && _groups.get(info.getGroupType())
+                ? info.getIcon(entity)
+                : null;
+    }
+
+    public boolean isGroupEnabled(GroupType groupType) {
+        return _groups.get(groupType);
+    }
+
+    public void setGroupEnabled(GroupType groupType, boolean value) {
+        _groups.put(groupType, value);
+    }
+
+    public PlayerType getPlayerType(String playerName) {
+        String key = playerName.toLowerCase();
+        PlayerInfo info = _players.get(key);
+
+        return info != null ? info.type : PlayerType.Neutral;
+    }
+
+    public void revertNeutralAggressive() {
+        boolean enabled = _groups.get(GroupType.NEUTRAL) || _groups.get(GroupType.AGGRESSIVE);
+
+        _groups.put(GroupType.NEUTRAL, !enabled);
+        _groups.put(GroupType.AGGRESSIVE, !enabled);
+    }
+
+    public void setPlayerType(String playerName, PlayerType playerType) {
+        String key = playerName.toLowerCase();
+
+        if (playerType == PlayerType.Neutral) {
+            _players.remove(key);
+            return;
+        }
+
+        PlayerInfo info = _players.get(key);
+
+        if (info == null)
+            _players.put(key, new PlayerInfo(playerName, playerType));
+        else
+            info.type = playerType;
+    }
+
+    public List<String> getPlayers(PlayerType playerType) {
+        List<String> result = new ArrayList<>();
+
+        for (PlayerInfo info : _players.values()) {
+            if (info.type == playerType)
+                result.add(info.name);
+        }
+
+        Collections.sort(result);
+
+        return result;
+    }
+
+    public boolean getIsJourneyMapEnabled() {
+        return _isJourneyMapEnabled;
+    }
+
+    public void setIsJourneyMapEnabled(boolean value) {
+        _isJourneyMapEnabled = value;
+    }
+
+    public boolean getIsVoxelMapEnabled() {
+        return _isVoxelMapEnabled;
+    }
+
+    public void setIsVoxelMapEnabled(boolean value) {
+        _isVoxelMapEnabled = value;
+    }
+
+    public List<String> getPlayersExcludedFromLog() {
+        return _playersExcludedFromLog;
+    }
+
+    public void setPlayersExcludedFromLog(List<String> value) {
+        _playersExcludedFromLog = value;
+
+        _playersExcludedFromLog.replaceAll(String::toUpperCase);
+    }
+
+    public boolean isPlayerExcluded(String playerName) {
+        String upperPlayerName = playerName.toUpperCase();
+
+        for (String p : _playersExcludedFromLog) {
+            if (upperPlayerName.startsWith(p)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void save() {
         RadarConfigLoader.save(this, _configFile);
     }
 
     public boolean load() {
         return RadarConfigLoader.load(this, _configFile);
+    }
+
+    private static class PlayerInfo {
+        public String name;
+        public PlayerType type;
+
+        public PlayerInfo(String name, PlayerType type) {
+            this.name = name;
+            this.type = type;
+        }
     }
 }

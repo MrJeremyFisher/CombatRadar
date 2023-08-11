@@ -4,13 +4,11 @@ import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.components.SliderButton;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import org.lwjgl.glfw.GLFW;
-import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 
@@ -18,8 +16,8 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class LocationAndColorScreen extends Screen {
-    private RadarConfig _config;
-    private Screen _parent;
+    private final RadarConfig _config;
+    private final Screen _parent;
     private SliderButton _redSlider;
     private SliderButton _greenSlider;
     private SliderButton _blueSlider;
@@ -76,19 +74,19 @@ public class LocationAndColorScreen extends Screen {
         var xSpeed = 1.f / window.getGuiScaledWidth();
         var ySpeed = 1.f / window.getGuiScaledHeight();
 
-        if(InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT)) {
+        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT)) {
             _config.setRadarX(_config.getRadarX() - xSpeed);
             isChanged = true;
         }
-        if(InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT)) {
+        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT)) {
             _config.setRadarX(_config.getRadarX() + xSpeed);
             isChanged = true;
         }
-        if(InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_UP)) {
+        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_UP)) {
             _config.setRadarY(_config.getRadarY() - ySpeed);
             isChanged = true;
         }
-        if(InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_DOWN)) {
+        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_DOWN)) {
             _config.setRadarY(_config.getRadarY() + ySpeed);
             isChanged = true;
         }
@@ -98,11 +96,11 @@ public class LocationAndColorScreen extends Screen {
         isChanged = _config.setRadarColor(radarColor) || isChanged;
         isChanged = _config.setRadarOpacity(_opacitySlider.getValue()) || isChanged;
         isChanged = _config.setRadarSize(_sizeSlider.getValue()) || isChanged;
-        isChanged = _config.setRadarDistance((int)(_rangeSlider.getValue() * 16)) || isChanged;
+        isChanged = _config.setRadarDistance((int) (_rangeSlider.getValue() * 16)) || isChanged;
         isChanged = _config.setIconScale(_iconScaleSlider.getValue() * 3f) || isChanged;
         isChanged = _config.setFontScale(_fontScaleSlider.getValue() * 3f) || isChanged;
 
-        if(isChanged)
+        if (isChanged)
             _config.save();
     }
 

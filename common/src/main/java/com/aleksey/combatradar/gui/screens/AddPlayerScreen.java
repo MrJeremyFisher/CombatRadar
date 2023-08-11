@@ -2,7 +2,6 @@ package com.aleksey.combatradar.gui.screens;
 
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -17,9 +16,9 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class AddPlayerScreen extends Screen {
-    private RadarConfig _config;
-    private Screen _parent;
-    private PlayerType _playerType;
+    private final RadarConfig _config;
+    private final Screen _parent;
+    private final PlayerType _playerType;
     private EditBox _playerNameEditBox;
 
     public AddPlayerScreen(Screen parent, RadarConfig config, PlayerType playerType) {
@@ -39,7 +38,6 @@ public class AddPlayerScreen extends Screen {
         addRenderableWidget(_playerNameEditBox);
 
         y += 24;
-
 
 
         addRenderableWidget(Button.builder(Component.literal("Add"), (button) -> actionAdd()).bounds(x, y, 200, 20).build());
@@ -69,8 +67,7 @@ public class AddPlayerScreen extends Screen {
     private void actionAdd() {
         String playerName = _playerNameEditBox.getValue().trim();
 
-        if(playerName.length() == 0)
-            return;
+        if (playerName.isEmpty()) return;
 
         _config.setPlayerType(playerName, _playerType);
         _config.save();

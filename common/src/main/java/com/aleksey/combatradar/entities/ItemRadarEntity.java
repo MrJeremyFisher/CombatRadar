@@ -8,7 +8,6 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
@@ -22,12 +21,12 @@ import net.minecraft.world.item.ItemStack;
  * @author Aleksey Terzi
  */
 public class ItemRadarEntity extends RadarEntity {
-    private ItemStack _item;
+    private final ItemStack _item;
 
     public ItemRadarEntity(Entity entity, EntitySettings settings) {
         super(entity, settings);
 
-        _item = ((ItemEntity)getEntity()).getItem();
+        _item = ((ItemEntity) getEntity()).getItem();
     }
 
     public ItemRadarEntity(Entity entity, EntitySettings settings, ItemStack item) {
@@ -41,7 +40,7 @@ public class ItemRadarEntity extends RadarEntity {
         Minecraft minecraft = Minecraft.getInstance();
         PoseStack poseStack = guiGraphics.pose();
         float iconScale = getSettings().iconScale;
-        float rotationYaw = minecraft.player.getViewYRot(partialTicks);;
+        float rotationYaw = minecraft.player.getViewYRot(partialTicks);
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);

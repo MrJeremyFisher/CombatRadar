@@ -31,7 +31,7 @@ public class Speedometer {
         for (double speed : _speedList)
             sum += speed;
 
-        double avgSpeed = (double)Math.round(10.0 * sum / _speedList.size()) / 10.0;
+        double avgSpeed = (double) Math.round(10.0 * sum / _speedList.size()) / 10.0;
 
         _speedText = String.format("%.1f m/s", avgSpeed);
     }

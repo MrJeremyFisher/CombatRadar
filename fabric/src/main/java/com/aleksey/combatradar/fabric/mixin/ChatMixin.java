@@ -1,7 +1,6 @@
 package com.aleksey.combatradar.fabric.mixin;
 
 import com.aleksey.combatradar.fabric.ChatCallback;
-import com.mojang.logging.LogUtils;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;

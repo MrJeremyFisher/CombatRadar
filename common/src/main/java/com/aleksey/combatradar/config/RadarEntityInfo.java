@@ -11,19 +11,25 @@ import java.util.Map;
  * @author Aleksey Terzi
  */
 public class RadarEntityInfo {
-    public static class EntityComparator implements Comparator<RadarEntityInfo> {
-        @Override
-        public int compare(RadarEntityInfo i1, RadarEntityInfo i2) {
-            return i1._name.compareTo(i2._name);
-        }
-    }
-
     private final Map<String, ResourceLocation> _entities;
     private final ResourceLocation _defaultIcon;
     private final String _name;
     private final GroupType _groupType;
     private final String _entityClassName;
     private boolean _enabled;
+    public RadarEntityInfo(Class<? extends Entity> entityClass, String name, String iconPath, GroupType groupType) {
+        this(entityClass.getCanonicalName(), name, iconPath, groupType);
+    }
+
+    protected RadarEntityInfo(String entityClass, String name, String iconPath, GroupType groupType) {
+        _name = name;
+        _groupType = groupType;
+        _enabled = true;
+        _entityClassName = entityClass;
+
+        _entities = new HashMap<>();
+        _entities.put(entityClass, _defaultIcon = new ResourceLocation("combatradar", iconPath));
+    }
 
     public String getName() {
         return _name;
@@ -61,20 +67,6 @@ public class RadarEntityInfo {
         _enabled = value;
     }
 
-    public RadarEntityInfo(Class<? extends Entity> entityClass, String name, String iconPath, GroupType groupType) {
-        this(entityClass.getCanonicalName(), name, iconPath, groupType);
-    }
-
-    protected RadarEntityInfo(String entityClass, String name, String iconPath, GroupType groupType) {
-        _name = name;
-        _groupType = groupType;
-        _enabled = true;
-        _entityClassName = entityClass;
-
-        _entities = new HashMap<>();
-        _entities.put(entityClass, _defaultIcon = new ResourceLocation("combatradar", iconPath));
-    }
-
     public RadarEntityInfo addEntity(Class<? extends Entity> entityClass, String iconPath) {
         var icon = iconPath != null ? new ResourceLocation("combatradar", iconPath) : null;
         _entities.put(entityClass.getCanonicalName(), icon);
@@ -84,5 +76,12 @@ public class RadarEntityInfo {
     public void addToMap(Map<String, RadarEntityInfo> map) {
         for (var entityClass : _entities.keySet())
             map.put(entityClass, this);
+    }
+
+    public static class EntityComparator implements Comparator<RadarEntityInfo> {
+        @Override
+        public int compare(RadarEntityInfo i1, RadarEntityInfo i2) {
+            return i1._name.compareTo(i2._name);
+        }
     }
 }

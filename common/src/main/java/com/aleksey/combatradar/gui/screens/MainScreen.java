@@ -3,7 +3,6 @@ package com.aleksey.combatradar.gui.screens;
 import com.aleksey.combatradar.Speedometer;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -16,9 +15,9 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class MainScreen extends Screen {
-    private RadarConfig _config;
-    private Speedometer _speedometer;
-    private Screen _parent;
+    private final RadarConfig _config;
+    private final Speedometer _speedometer;
+    private final Screen _parent;
     private Button _playerStatusButton;
     private Button _speedometerButton;
     private Button _enableButton;

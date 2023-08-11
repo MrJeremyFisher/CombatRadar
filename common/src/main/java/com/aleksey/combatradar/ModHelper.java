@@ -3,7 +3,6 @@ package com.aleksey.combatradar;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.screens.MainScreen;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -22,13 +21,14 @@ public class ModHelper {
     private Radar _radar;
     private Speedometer _speedometer;
 
-    private KeyMapping _settingsKey;
-    public KeyMapping getSettingsKey() {
-        return _settingsKey;
-    }
+    private final KeyMapping _settingsKey;
 
     public ModHelper() {
         _settingsKey = new KeyMapping("Combat Radar Settings", GLFW.GLFW_KEY_R, "Combat Radar");
+    }
+
+    public KeyMapping getSettingsKey() {
+        return _settingsKey;
     }
 
     public void init(Logger logger) {
@@ -36,14 +36,14 @@ public class ModHelper {
 
         File gameDirectory = Minecraft.getInstance().gameDirectory;
         File configDir = new File(gameDirectory, "/combatradar/");
-        if(!configDir.isDirectory())
+        if (!configDir.isDirectory())
             configDir.mkdir();
 
         File configFile = new File(configDir, "config.json");
 
         _config = new RadarConfig(configFile, _settingsKey);
 
-        if(!configFile.isFile()) {
+        if (!configFile.isFile()) {
             try {
                 configFile.createNewFile();
             } catch (Exception e) {
@@ -51,7 +51,7 @@ public class ModHelper {
             }
             _config.save();
         } else {
-            if(!_config.load())
+            if (!_config.load())
                 _config.save();
         }
 
@@ -65,7 +65,7 @@ public class ModHelper {
     public void tick() {
         Minecraft minecraft = Minecraft.getInstance();
 
-        if(minecraft.level == null)
+        if (minecraft.level == null)
             return;
 
         if (_config.getEnabled()) {
@@ -81,10 +81,10 @@ public class ModHelper {
         if (!minecraft.options.hideGui && minecraft.screen == null && _config.getSettingsKey().consumeClick()) {
             var windowId = minecraft.getWindow().getWindow();
 
-            if(InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_CONTROL)
+            if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_CONTROL)
                     || InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT_CONTROL)
             ) {
-                if(InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_ALT)
+                if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_ALT)
                         || InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT_ALT)
                 ) {
                     _config.setEnabled(!_config.getEnabled());
@@ -116,13 +116,13 @@ public class ModHelper {
     }
 
     public boolean processChat(Component message) {
-        if(!_config.getLogPlayerStatus() || message == null)
+        if (!_config.getLogPlayerStatus() || message == null)
             return false;
 
         TextColor color1 = message.getStyle().getColor();
 
         List<Component> siblings = message.getSiblings();
-        TextColor color2 = siblings != null && siblings.size() > 1 ? siblings.get(1).getStyle().getColor() : null;
+        TextColor color2 = siblings.size() > 1 ? siblings.get(1).getStyle().getColor() : null;
 
         TextColor yellow = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
