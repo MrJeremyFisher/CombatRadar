@@ -18,10 +18,6 @@ public class SliderButton extends AbstractSliderButton {
     private final String _name;
     private final boolean _integer;
 
-    public float getValue() {
-        return _value;
-    }
-
     public SliderButton(int x, int y, int width, float maxValue, float minValue, String name, float value, boolean integer) {
         super(x, y, width, 20, Component.literal(name), (value - minValue) / (maxValue - minValue));
 
@@ -48,5 +44,9 @@ public class SliderButton extends AbstractSliderButton {
     }
 
     public void onRelease(double d, double e) {
+    }
+
+    public float getValue() {
+        return _value;
     }
 }
