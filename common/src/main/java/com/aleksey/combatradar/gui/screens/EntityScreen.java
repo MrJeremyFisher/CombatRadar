@@ -7,10 +7,12 @@ import com.aleksey.combatradar.gui.components.SmallButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -217,15 +219,15 @@ public class EntityScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        renderDirtBackground(poseStack);
-        drawCenteredString(poseStack, this.font, "Radar Entities", this.width / 2, _titleTop, Color.WHITE.getRGB());
-        renderIcons(poseStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderDirtBackground(guiGraphics);
+        guiGraphics.drawCenteredString(this.font, "Radar Entities", this.width / 2, _titleTop, Color.WHITE.getRGB());
+        renderIcons(guiGraphics);
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    private void renderIcons(PoseStack poseStack) {
+    private void renderIcons(GuiGraphics guiGraphics) {
         int colIndex = 0;
         int rowIndex = 0;
         int x = _iconLeft;
@@ -240,11 +242,11 @@ public class EntityScreen extends Screen {
                 rowIndex = 0;
             }
 
-            renderIcon(poseStack, x, y + 4, info);
+            renderIcon(guiGraphics, x, y + 4, info);
 
             boolean isEnabled = info.getEnabled() && _config.isGroupEnabled(_activeGroupType);
             Color color = isEnabled ? Color.WHITE : Color.DARK_GRAY;
-            this.font.drawShadow(poseStack, info.getName(), x + ICON_WIDTH, y, color.getRGB());
+            guiGraphics.drawString(this.font, info.getName(), x + ICON_WIDTH, y, color.getRGB(), true);
 
             y += LINE_HEIGHT;
 
@@ -252,16 +254,17 @@ public class EntityScreen extends Screen {
         }
     }
 
-    private void renderIcon(PoseStack poseStack, float x, float y, RadarEntityInfo info) {
+    private void renderIcon(GuiGraphics guiGraphics, float x, float y, RadarEntityInfo info) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
+        PoseStack poseStack = guiGraphics.pose();
 
         poseStack.pushPose();
         poseStack.translate(x, y, 0);
         poseStack.scale(0.6f, 0.6f, 0.6f);
 
-        RenderSystem.setShaderTexture(0, info.getIcon(null));
+        RenderSystem.setShaderTexture(0, info.getIcon((Entity) null));
 
-        Gui.blit(poseStack, -8, -8, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popPose();
     }

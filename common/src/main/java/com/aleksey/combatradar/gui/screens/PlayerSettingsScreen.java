@@ -7,6 +7,7 @@ import com.aleksey.combatradar.config.SoundInfo;
 import com.aleksey.combatradar.gui.components.SliderButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -136,15 +137,15 @@ public class PlayerSettingsScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderColor(1, 1, 1, 0.75f);
 
-        renderBackground(poseStack);
-        drawCenteredString(poseStack, this.font, "Player Settings", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
-        drawCenteredString(poseStack, this.font, "Neutral", this.width / 2, _neutralRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Neutral).color.getRGB());
-        drawCenteredString(poseStack, this.font, "Ally", this.width / 2, _allyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Ally).color.getRGB());
-        drawCenteredString(poseStack, this.font, "Enemy", this.width / 2, _enemyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Enemy).color.getRGB());
+        renderBackground(guiGraphics);
+        guiGraphics.drawCenteredString(this.font, "Player Settings", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        guiGraphics.drawCenteredString(this.font, "Neutral", this.width / 2, _neutralRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Neutral).color.getRGB());
+        guiGraphics.drawCenteredString(this.font, "Ally", this.width / 2, _allyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Ally).color.getRGB());
+        guiGraphics.drawCenteredString(this.font, "Enemy", this.width / 2, _enemyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Enemy).color.getRGB());
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

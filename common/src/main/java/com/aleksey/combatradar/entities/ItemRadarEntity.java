@@ -6,6 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -36,8 +37,9 @@ public class ItemRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(PoseStack poseStack, double displayX, double displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
         float iconScale = getSettings().iconScale;
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);;
 

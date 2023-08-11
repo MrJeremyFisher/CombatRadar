@@ -1,9 +1,8 @@
 package com.aleksey.combatradar.config;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +18,26 @@ public class RadarEntityInfo {
         }
     }
 
-    private Map<String, ResourceLocation> _entities;
-    private ResourceLocation _defaultIcon;
-    private String _name;
-    private GroupType _groupType;
+    private final Map<String, ResourceLocation> _entities;
+    private final ResourceLocation _defaultIcon;
+    private final String _name;
+    private final GroupType _groupType;
+    private final String _entityClassName;
     private boolean _enabled;
 
-    public String getName() { return _name; }
-    public GroupType getGroupType() { return _groupType; }
+    public String getName() {
+        return _name;
+    }
 
-    public ResourceLocation getIcon(Entity entity)
-    {
+    public GroupType getGroupType() {
+        return _groupType;
+    }
+
+    public String getEntityClassName() {
+        return _entityClassName;
+    }
+
+    public ResourceLocation getIcon(Entity entity) {
         if (entity == null || _entities.size() == 1)
             return _defaultIcon;
 
@@ -38,8 +46,20 @@ public class RadarEntityInfo {
         return _entities.get(entityClassName);
     }
 
-    public boolean getEnabled() { return _enabled; }
-    public void setEnabled(boolean value) { _enabled = value; }
+    public ResourceLocation getIcon(String entity) {
+        if (entity == null || _entities.size() == 1)
+            return _defaultIcon;
+
+        return _entities.get(entity);
+    }
+
+    public boolean getEnabled() {
+        return _enabled;
+    }
+
+    public void setEnabled(boolean value) {
+        _enabled = value;
+    }
 
     public RadarEntityInfo(Class<? extends Entity> entityClass, String name, String iconPath, GroupType groupType) {
         this(entityClass.getCanonicalName(), name, iconPath, groupType);
@@ -49,6 +69,7 @@ public class RadarEntityInfo {
         _name = name;
         _groupType = groupType;
         _enabled = true;
+        _entityClassName = entityClass;
 
         _entities = new HashMap<>();
         _entities.put(entityClass, _defaultIcon = new ResourceLocation("combatradar", iconPath));

@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
  * @author Aleksey Terzi
  */
 public class PlayerRadarEntityInfo extends RadarEntityInfo {
-    private PlayerType _playerType;
+    private final PlayerType _playerType;
 
     public PlayerType getPlayerType() {
         return _playerType;

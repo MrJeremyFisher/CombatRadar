@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import org.lwjgl.glfw.GLFW;
@@ -98,7 +99,7 @@ public class ModHelper {
         }
     }
 
-    public void render(PoseStack poseStack, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
 
         if (!_config.getEnabled()
@@ -108,10 +109,10 @@ public class ModHelper {
             return;
         }
 
-        _radar.render(poseStack, partialTicks);
+        _radar.render(guiGraphics, partialTicks);
 
         if (_config.getSpeedometerEnabled())
-            _speedometer.render(poseStack, _radar.getRadarDisplayX(), _radar.getRadarDisplayY(), _radar.getRadarRadius());
+            _speedometer.render(guiGraphics, _radar.getRadarDisplayX(), _radar.getRadarDisplayY(), _radar.getRadarRadius());
     }
 
     public boolean processChat(Component message) {

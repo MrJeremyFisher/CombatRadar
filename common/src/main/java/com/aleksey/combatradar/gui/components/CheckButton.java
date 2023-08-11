@@ -3,6 +3,7 @@ package com.aleksey.combatradar.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -35,8 +36,9 @@ public class CheckButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int xPos, int yPos, float p_93846_) {
+    public void renderWidget(GuiGraphics guiGraphics, int xPos, int yPos, float p_93846_) {
         Minecraft minecraft = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 
@@ -47,10 +49,10 @@ public class CheckButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        blit(poseStack, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+        guiGraphics.blit(_texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
         int textColor = this.isHovered ? 16777120 : Color.LIGHT_GRAY.getRGB();
 
-        minecraft.font.draw(poseStack, this.getMessage(), this.getX() + INDENT, this.getY() + (this.getHeight() - 8f) / 2f, textColor);
+        guiGraphics.drawString(minecraft.font, this.getMessage(), this.getX() + INDENT, (int) (this.getY() + (this.getHeight() - 8f) / 2f), textColor);
     }
 }

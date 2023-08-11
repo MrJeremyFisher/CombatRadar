@@ -3,6 +3,7 @@ package com.aleksey.combatradar.gui.screens;
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -82,14 +83,13 @@ public class AddPlayerScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         String playerTypeName = _playerType == PlayerType.Ally ? "Ally" : "Enemy";
+        renderDirtBackground(guiGraphics);
 
-        renderDirtBackground(poseStack);
+        guiGraphics.drawCenteredString(this.font, "Add " + playerTypeName + " Player", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        guiGraphics.drawString(this.font, "Player username", (int) (this.width / 2f - 100), _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB(), true);
 
-        drawCenteredString(poseStack, this.font, "Add " + playerTypeName + " Player", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
-        this.font.drawShadow(poseStack, "Player username", this.width / 2f - 100, _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB());
-
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

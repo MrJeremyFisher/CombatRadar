@@ -4,6 +4,7 @@ import com.aleksey.combatradar.config.PlayerType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.gui.GuiGraphics;
 import org.joml.Vector3f;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.Minecraft;
@@ -26,8 +27,9 @@ public class PlayerRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(PoseStack poseStack, double displayX, double displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
         RemotePlayer player = (RemotePlayer)getEntity();
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
         float scale = getSettings().iconScale * 1.7f;
@@ -41,27 +43,28 @@ public class PlayerRadarEntity extends RadarEntity {
 
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
-        renderPlayerIcon(poseStack, player);
+        renderPlayerIcon(guiGraphics, player);
         poseStack.popPose();
 
         RenderSystem.disableBlend();
 
         if (getSettings().showPlayerNames)
-            renderPlayerName(poseStack, player);
+            renderPlayerName(guiGraphics, player);
 
         poseStack.popPose();
     }
 
-    private void renderPlayerIcon(PoseStack poseStack, RemotePlayer player) {
+    private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
         ResourceLocation skin = player.getSkinTextureLocation();
 
         RenderSystem.setShaderTexture(0, skin);
 
-        Gui.blit(poseStack, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64);
     }
 
-    private void renderPlayerName(PoseStack poseStack, RemotePlayer player) {
+    private void renderPlayerName(GuiGraphics guiGraphics, RemotePlayer player) {
         Minecraft minecraft = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
 
         Color color = _playerType == PlayerType.Ally
                 ? getSettings().allyPlayerColor
@@ -83,10 +86,10 @@ public class PlayerRadarEntity extends RadarEntity {
 
 
         Font font = minecraft.font;
-        float yOffset = -4 + (int) ((getSettings().iconScale * getSettings().radarScale + 8));
-        float xOffset = -font.width(playerName) / 2;
+        int yOffset = -4 + (int) ((getSettings().iconScale * getSettings().radarScale + 8));
+        int xOffset = -font.width(playerName) / 2;
 
-        font.draw(poseStack, playerName, xOffset, yOffset, color.getRGB());
+        guiGraphics.drawString(font, playerName, xOffset, yOffset, color.getRGB());
 
         poseStack.popPose();
     }

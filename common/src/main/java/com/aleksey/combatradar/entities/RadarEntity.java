@@ -2,6 +2,7 @@ package com.aleksey.combatradar.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Mth;
@@ -26,7 +27,7 @@ public abstract class RadarEntity {
         return _settings;
     }
 
-    public final void render(PoseStack poseStack, float partialTicks) {
+    public final void render(GuiGraphics guiGraphics, float partialTicks) {
         Player player = Minecraft.getInstance().player;
 
         double displayX = getPartialX(player, partialTicks) - getPartialX(_entity, partialTicks);
@@ -36,7 +37,7 @@ public abstract class RadarEntity {
         if(distanceSq > _settings.radarDistanceSq)
             return;
 
-        renderInternal(poseStack, displayX, displayZ, partialTicks);
+        renderInternal(guiGraphics, displayX, displayZ, partialTicks);
     }
 
     private static double getPartialX(Entity entity, float partialTicks) {
@@ -51,5 +52,5 @@ public abstract class RadarEntity {
         return oldValue + (newValue - oldValue) * partialTicks;
     }
 
-    protected abstract void renderInternal(PoseStack poseStack, double displayX, double displayY, float partialTicks);
+    protected abstract void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks);
 }

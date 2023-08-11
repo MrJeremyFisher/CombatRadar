@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -92,12 +93,12 @@ public class Radar {
     private int _radarDisplayX;
     private int _radarDisplayY;
 
-    private List<RadarEntity> _entities = new ArrayList<>();
+    private final List<RadarEntity> _entities = new ArrayList<>();
     private Map<UUID, PlayerInfo> _radarPlayers;
     private Map<UUID, String> _onlinePlayers;
 
-    private HashMap<UUID, MessageInfo> _messages = new HashMap<>();
-    private List<PlayerSoundInfo> _sounds = new ArrayList<>();
+    private final HashMap<UUID, MessageInfo> _messages = new HashMap<>();
+    private final List<PlayerSoundInfo> _sounds = new ArrayList<>();
 
     private final float[] _sinList = new float[361];
     private final float[] _cosList = new float[361];
@@ -138,7 +139,9 @@ public class Radar {
         _radarScale = (float) _radarRadius / _config.getRadarDistance();
     }
 
-    public void render(PoseStack poseStack, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, float partialTicks) {
+        PoseStack poseStack = guiGraphics.pose();
+
         if (_radarRadius == 0)
             return;
 
@@ -152,36 +155,40 @@ public class Radar {
         renderCircleBorder(poseStack, _radarRadius);
         renderLines(poseStack, _radarRadius);
 
-        renderNonPlayerEntities(poseStack, partialTicks);
+        renderNonPlayerEntities(guiGraphics, partialTicks);
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         renderTriangle(poseStack);
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(-rotationYaw));
-        renderPlayerEntities(poseStack, partialTicks);
+        renderPlayerEntities(guiGraphics, partialTicks);
 
         poseStack.popPose();
     }
 
-    private void renderNonPlayerEntities(PoseStack poseStack, float partialTicks) {
+    private void renderNonPlayerEntities(GuiGraphics guiGraphics, float partialTicks) {
+        PoseStack poseStack = guiGraphics.pose();
+
         poseStack.pushPose();
         poseStack.scale(_radarScale, _radarScale, _radarScale);
 
         for (RadarEntity radarEntity : _entities) {
             if (!(radarEntity instanceof PlayerRadarEntity))
-                radarEntity.render(poseStack, partialTicks);
+                radarEntity.render(guiGraphics, partialTicks);
         }
 
         poseStack.popPose();
     }
 
-    private void renderPlayerEntities(PoseStack poseStack, float partialTicks) {
+    private void renderPlayerEntities(GuiGraphics guiGraphics, float partialTicks) {
+        PoseStack poseStack = guiGraphics.pose();
+
         poseStack.pushPose();
         poseStack.scale(_radarScale, _radarScale, _radarScale);
 
         for (RadarEntity radarEntity : _entities) {
             if (radarEntity instanceof PlayerRadarEntity)
-                radarEntity.render(poseStack, partialTicks);
+                radarEntity.render(guiGraphics, partialTicks);
         }
 
         poseStack.popPose();
@@ -227,7 +234,6 @@ public class Radar {
         final float cos45 = 0.7071f;
         final float a = 0.25f;
         float length = radius - a;
-        float b = length;
         float d = cos45 * length;
         float c = d + a / cos45;
 
@@ -246,15 +252,15 @@ public class Radar {
         BufferBuilder buffer = tesselator.getBuilder();
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
 
-        buffer.vertex(lastPose, -a, -b, 0f).endVertex();
-        buffer.vertex(lastPose, -a, b, 0f).endVertex();
-        buffer.vertex(lastPose, a, b, 0f).endVertex();
-        buffer.vertex(lastPose, a, -b, 0f).endVertex();
+        buffer.vertex(lastPose, -a, -length, 0f).endVertex();
+        buffer.vertex(lastPose, -a, length, 0f).endVertex();
+        buffer.vertex(lastPose, a, length, 0f).endVertex();
+        buffer.vertex(lastPose, a, -length, 0f).endVertex();
 
-        buffer.vertex(lastPose, -b, a, 0f).endVertex();
-        buffer.vertex(lastPose, b, a, 0f).endVertex();
-        buffer.vertex(lastPose, b, -a, 0f).endVertex();
-        buffer.vertex(lastPose, -b, -a, 0f).endVertex();
+        buffer.vertex(lastPose, -length, a, 0f).endVertex();
+        buffer.vertex(lastPose, length, a, 0f).endVertex();
+        buffer.vertex(lastPose, length, -a, 0f).endVertex();
+        buffer.vertex(lastPose, -length, -a, 0f).endVertex();
 
         buffer.vertex(lastPose, -c, -d, 0f).endVertex();
         buffer.vertex(lastPose, d, c, 0f).endVertex();
@@ -336,7 +342,7 @@ public class Radar {
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
     }
 
-    public int scanEntities() {
+    public void scanEntities() {
         _entities.clear();
         _sounds.clear();
         _messages.clear();
@@ -347,7 +353,6 @@ public class Radar {
             scanOnlinePlayers();
         }
 
-        return _entities.size();
     }
 
     private void scanRadarEntities() {
@@ -525,24 +530,25 @@ public class Radar {
         ChatFormatting actionColor;
 
         switch (messageInfo.reason) {
-            case Login:
+            case Login -> {
                 actionText = " joined the game";
                 actionColor = messageInfo.playerInfo != null ? ChatFormatting.YELLOW : ChatFormatting.DARK_GREEN;
-                break;
-            case Logout:
+            }
+            case Logout -> {
                 actionText = " left the game";
                 actionColor = ChatFormatting.DARK_GREEN;
-                break;
-            case Appeared:
+            }
+            case Appeared -> {
                 actionText = " appeared on radar";
                 actionColor = ChatFormatting.YELLOW;
-                break;
-            case Disappeared:
+            }
+            case Disappeared -> {
                 actionText = " disappeared from radar";
                 actionColor = ChatFormatting.YELLOW;
-                break;
-            default:
+            }
+            default -> {
                 return;
+            }
         }
 
         text = text.append(Component.literal(actionText).withStyle(actionColor));

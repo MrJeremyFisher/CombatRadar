@@ -45,8 +45,8 @@ public class RadarConfig {
         }
     }
 
-    private File _configFile;
-    private KeyMapping _settingsKey;
+    private final File _configFile;
+    private final KeyMapping _settingsKey;
     private boolean _enabled = true;
     private boolean _speedometerEnabled = false;
     private float _radarOpacity = 0.5f;
@@ -61,11 +61,11 @@ public class RadarConfig {
     private boolean _showExtraPlayerInfo = true;
     private boolean _logPlayerStatus = true;
     private boolean _showYLevel = false;
-    private List<RadarEntityInfo> _entityList;
-    private Map<String, RadarEntityInfo> _entityMap;
-    private Map<GroupType, Boolean> _groups;
-    private Map<String, PlayerInfo> _players;
-    private Map<PlayerType, PlayerTypeInfo> _playerTypes;
+    private final List<RadarEntityInfo> _entityList;
+    private final Map<String, RadarEntityInfo> _entityMap;
+    private final Map<GroupType, Boolean> _groups;
+    private final Map<String, PlayerInfo> _players;
+    private final Map<PlayerType, PlayerTypeInfo> _playerTypes;
     private List<String> _playersExcludedFromLog;
 
     // Calculated settings
@@ -259,9 +259,7 @@ public class RadarConfig {
     public void setPlayersExcludedFromLog(List<String> value) {
         _playersExcludedFromLog = value;
 
-        for(int i = 0; i < _playersExcludedFromLog.size(); i++) {
-            _playersExcludedFromLog.set(i, _playersExcludedFromLog.get(i).toUpperCase());
-        }
+        _playersExcludedFromLog.replaceAll(String::toUpperCase);
     }
 
     public boolean isPlayerExcluded(String playerName) {
@@ -386,26 +384,25 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Warden.class, "Warden", "icons/warden.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(ChestBoat.class, "Boat With Chest", "icons/boat_chest.png", GroupType.OTHER));
 
-        Collections.sort(_entityList, new RadarEntityInfo.EntityComparator());
+        _entityList.sort(new RadarEntityInfo.EntityComparator());
 
         _entityMap = new HashMap<>();
 
-        for(int i = 0; i < _entityList.size(); i++)
-            _entityList.get(i).addToMap(_entityMap);
+        for (RadarEntityInfo radarEntityInfo : _entityList) radarEntityInfo.addToMap(_entityMap);
 
-        _groups = new HashMap<GroupType, Boolean>();
+        _groups = new HashMap<>();
         _groups.put(GroupType.NEUTRAL, true);
         _groups.put(GroupType.AGGRESSIVE, true);
         _groups.put(GroupType.OTHER, true);
 
-        _players = new HashMap<String, PlayerInfo>();
+        _players = new HashMap<>();
 
-        _playerTypes = new HashMap<PlayerType, PlayerTypeInfo>();
+        _playerTypes = new HashMap<>();
         _playerTypes.put(PlayerType.Neutral, new PlayerTypeInfo(Color.WHITE));
         _playerTypes.put(PlayerType.Ally, new PlayerTypeInfo(Color.GREEN));
         _playerTypes.put(PlayerType.Enemy, new PlayerTypeInfo(Color.YELLOW));
 
-        _playersExcludedFromLog = new ArrayList<String>();
+        _playersExcludedFromLog = new ArrayList<>();
         _playersExcludedFromLog.add("~BTLP SLOT");
     }
 
