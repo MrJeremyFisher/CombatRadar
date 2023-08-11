@@ -3,6 +3,7 @@ package com.aleksey.combatradar;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 
 import java.awt.*;
@@ -30,7 +31,7 @@ public class Speedometer {
         for (double speed : _speedList)
             sum += speed;
 
-        double avgSpeed = (double)Math.round(10.0 * sum / _speedList.size()) / 10.0;
+        double avgSpeed = (double) Math.round(10.0 * sum / _speedList.size()) / 10.0;
 
         _speedText = String.format("%.1f m/s", avgSpeed);
     }
@@ -68,10 +69,11 @@ public class Speedometer {
         return speed;
     }
 
-    public void render(PoseStack poseStack, int radarDisplayX, int radarDisplayY, int radarRadius) {
+    public void render(GuiGraphics guiGraphics, int radarDisplayX, int radarDisplayY, int radarRadius) {
         final int yMargin = 2;
 
         Minecraft minecraft = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
         Font font = minecraft.font;
         int windowHeight = minecraft.getWindow().getGuiScaledHeight();
 
@@ -84,7 +86,7 @@ public class Speedometer {
         poseStack.pushPose();
         poseStack.translate(radarDisplayX, radarDisplayY, 0);
 
-        font.draw(poseStack, _speedText, xOffset, yOffset, Color.WHITE.getRGB());
+        guiGraphics.drawString(font, _speedText, (int) xOffset, (int) yOffset, Color.WHITE.getRGB());
 
         poseStack.popPose();
     }

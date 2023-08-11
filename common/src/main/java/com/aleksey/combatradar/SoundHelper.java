@@ -12,7 +12,7 @@ import java.util.UUID;
  */
 public class SoundHelper {
     public static void playSound(String soundEventName, UUID playerKey) {
-        if("none".equalsIgnoreCase(soundEventName))
+        if ("none".equalsIgnoreCase(soundEventName))
             return;
 
         Minecraft minecraft = Minecraft.getInstance();

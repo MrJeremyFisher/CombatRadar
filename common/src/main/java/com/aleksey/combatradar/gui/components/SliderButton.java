@@ -11,12 +11,11 @@ import java.text.DecimalFormat;
  */
 public class SliderButton extends AbstractSliderButton {
     private static final DecimalFormat _decimalFormat = new DecimalFormat("#.##");
-
-    private float _value;
     private final float _minValue;
     private final float _maxValue;
     private final String _name;
     private final boolean _integer;
+    private float _value;
 
     public SliderButton(int x, int y, int width, float maxValue, float minValue, String name, float value, boolean integer) {
         super(x, y, width, 20, Component.literal(name), (value - minValue) / (maxValue - minValue));

@@ -24,8 +24,7 @@ public class ForgeModCombatRadar {
     private ModHelper _modHelper;
 
 
-    public ForgeModCombatRadar()
-    {
+    public ForgeModCombatRadar() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
 
         MinecraftForge.EVENT_BUS.register(this);
@@ -46,14 +45,14 @@ public class ForgeModCombatRadar {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if(event.phase == TickEvent.Phase.START)
+        if (event.phase == TickEvent.Phase.START)
             _modHelper.tick();
     }
 
     @SubscribeEvent
     public void onRender(RenderGuiOverlayEvent.Post event) {
         if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type())
-            _modHelper.render(event.getPoseStack(), event.getPartialTick());
+            _modHelper.render(event.getGuiGraphics(), event.getPartialTick());
     }
 
     @SubscribeEvent

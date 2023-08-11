@@ -5,7 +5,7 @@ import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.SoundInfo;
 import com.aleksey.combatradar.gui.components.CheckButton;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -20,11 +20,11 @@ import java.util.ArrayList;
 public class ChooseSoundScreen extends Screen {
     private static final int MAX_BUTTON_PER_COL = 6;
 
-    private RadarConfig _config;
-    private Screen _parent;
-    private PlayerType _playerType;
+    private final RadarConfig _config;
+    private final Screen _parent;
+    private final PlayerType _playerType;
+    private final ArrayList<CheckButton> _checkButtons;
     private int _titleTop;
-    private ArrayList<CheckButton> _checkButtons;
 
     public ChooseSoundScreen(Screen parent, RadarConfig config, PlayerType playerType) {
         super(CommonComponents.EMPTY);
@@ -46,7 +46,7 @@ public class ChooseSoundScreen extends Screen {
 
         String sound = _config.getPlayerTypeInfo(_playerType).soundEventName;
 
-        for(int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
+        for (int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
             SoundInfo info = SoundInfo.SOUND_LIST[i];
             final int soundIndex = i;
 
@@ -57,7 +57,7 @@ public class ChooseSoundScreen extends Screen {
 
             addRenderableWidget(chk);
 
-            if(i == MAX_BUTTON_PER_COL - 1) {
+            if (i == MAX_BUTTON_PER_COL - 1) {
                 y = topY;
                 x = leftX + 80;
             } else {
@@ -76,7 +76,7 @@ public class ChooseSoundScreen extends Screen {
     }
 
     private void chooseSound(int index) {
-        for(int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
+        for (int i = 0; i < SoundInfo.SOUND_LIST.length; i++) {
             boolean isChecked = i == index;
             _checkButtons.get(i).setChecked(isChecked);
         }
@@ -90,7 +90,7 @@ public class ChooseSoundScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         String playerTypeName = switch (_playerType) {
             case Ally -> "Ally";
             case Enemy -> "Enemy";
@@ -99,10 +99,10 @@ public class ChooseSoundScreen extends Screen {
 
         String title = "Ping Sound for " + playerTypeName + " Players";
 
-        renderDirtBackground(poseStack);
+        renderDirtBackground(guiGraphics);
 
-        drawCenteredString(poseStack, this.font, title, this.width / 2, _titleTop, Color.WHITE.getRGB());
+        guiGraphics.drawCenteredString(this.font, title, this.width / 2, _titleTop, Color.WHITE.getRGB());
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

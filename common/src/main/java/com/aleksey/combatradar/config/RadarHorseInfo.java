@@ -31,7 +31,7 @@ public class RadarHorseInfo extends RadarEntityInfo {
         if (entity instanceof SkeletonHorse)
             return _skeletonHorse;
 
-        Horse horseEntity = (Horse)entity;
+        Horse horseEntity = (Horse) entity;
         int horseVariant = horseEntity.getVariant().ordinal() % 7;
 
         return _icons[horseVariant];

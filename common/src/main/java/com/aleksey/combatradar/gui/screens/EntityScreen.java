@@ -6,11 +6,12 @@ import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.gui.components.SmallButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,46 +23,14 @@ import java.util.Map;
  * @author Aleksey Terzi
  */
 public class EntityScreen extends Screen {
-    private static class EntityGroup {
-        public GroupType groupType;
-        public List<RadarEntityInfo> entities;
-        public List<Integer> listColTextWidth;
-
-        public int getColWidth(int colIndex) {
-            return ICON_WIDTH + listColTextWidth.get(colIndex) + BUTTON_WIDTH + 25;
-        }
-
-        public int getIconAndTextWidth(int colIndex) {
-            return ICON_WIDTH + listColTextWidth.get(colIndex) + 1;
-        }
-
-        public int getTotalWidth() {
-            int totalWidth = 0;
-
-            for (int i = 0; i < listColTextWidth.size(); i++)
-                totalWidth += getColWidth(i);
-
-            return totalWidth;
-        }
-
-        public EntityGroup(GroupType groupType) {
-            this.groupType = groupType;
-            this.entities = new ArrayList<RadarEntityInfo>();
-            this.listColTextWidth = new ArrayList<Integer>();
-        }
-    }
-
     private static final int MAX_ENTITIES_PER_COL = 8;
     private static final int ICON_WIDTH = 12;
     private static final int LINE_HEIGHT = 16;
     private static final int BUTTON_WIDTH = 24;
-
     private static GroupType _activeGroupType = GroupType.NEUTRAL;
-
-    private RadarConfig _config;
-    private Screen _parent;
+    private final RadarConfig _config;
+    private final Screen _parent;
     private Button _enableButton;
-
     private Map<GroupType, EntityGroup> _groups;
     private int _titleTop;
     private int _buttonTop;
@@ -71,8 +40,7 @@ public class EntityScreen extends Screen {
     private Button _neutralButton;
     private Button _aggressiveButton;
     private Button _otherButton;
-    private ArrayList<Button> _iconButtons;
-
+    private final ArrayList<Button> _iconButtons;
     public EntityScreen(Screen parent, RadarConfig config) {
         super(CommonComponents.EMPTY);
         _parent = parent;
@@ -114,7 +82,6 @@ public class EntityScreen extends Screen {
 
         addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
-
 
     private void addIconButtons() {
         int colIndex = 0;
@@ -165,7 +132,7 @@ public class EntityScreen extends Screen {
     }
 
     private void createEntityGroups() {
-        _groups = new HashMap<GroupType, EntityGroup>();
+        _groups = new HashMap<>();
 
         for (RadarEntityInfo info : _config.getEntityList()) {
             EntityGroup group = _groups.get(info.getGroupType());
@@ -217,15 +184,15 @@ public class EntityScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        renderDirtBackground(poseStack);
-        drawCenteredString(poseStack, this.font, "Radar Entities", this.width / 2, _titleTop, Color.WHITE.getRGB());
-        renderIcons(poseStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderDirtBackground(guiGraphics);
+        guiGraphics.drawCenteredString(this.font, "Radar Entities", this.width / 2, _titleTop, Color.WHITE.getRGB());
+        renderIcons(guiGraphics);
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-    private void renderIcons(PoseStack poseStack) {
+    private void renderIcons(GuiGraphics guiGraphics) {
         int colIndex = 0;
         int rowIndex = 0;
         int x = _iconLeft;
@@ -240,11 +207,11 @@ public class EntityScreen extends Screen {
                 rowIndex = 0;
             }
 
-            renderIcon(poseStack, x, y + 4, info);
+            renderIcon(guiGraphics, x, y + 4, info);
 
             boolean isEnabled = info.getEnabled() && _config.isGroupEnabled(_activeGroupType);
             Color color = isEnabled ? Color.WHITE : Color.DARK_GRAY;
-            this.font.drawShadow(poseStack, info.getName(), x + ICON_WIDTH, y, color.getRGB());
+            guiGraphics.drawString(this.font, info.getName(), x + ICON_WIDTH, y, color.getRGB(), true);
 
             y += LINE_HEIGHT;
 
@@ -252,17 +219,47 @@ public class EntityScreen extends Screen {
         }
     }
 
-    private void renderIcon(PoseStack poseStack, float x, float y, RadarEntityInfo info) {
+    private void renderIcon(GuiGraphics guiGraphics, float x, float y, RadarEntityInfo info) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
+        PoseStack poseStack = guiGraphics.pose();
 
         poseStack.pushPose();
         poseStack.translate(x, y, 0);
         poseStack.scale(0.6f, 0.6f, 0.6f);
 
-        RenderSystem.setShaderTexture(0, info.getIcon(null));
+        RenderSystem.setShaderTexture(0, info.getIcon((Entity) null));
 
-        Gui.blit(poseStack, -8, -8, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popPose();
+    }
+
+    private static class EntityGroup {
+        public GroupType groupType;
+        public List<RadarEntityInfo> entities;
+        public List<Integer> listColTextWidth;
+
+        public EntityGroup(GroupType groupType) {
+            this.groupType = groupType;
+            this.entities = new ArrayList<>();
+            this.listColTextWidth = new ArrayList<>();
+        }
+
+        public int getColWidth(int colIndex) {
+            return ICON_WIDTH + listColTextWidth.get(colIndex) + BUTTON_WIDTH + 25;
+        }
+
+        public int getIconAndTextWidth(int colIndex) {
+            return ICON_WIDTH + listColTextWidth.get(colIndex) + 1;
+        }
+
+        public int getTotalWidth() {
+            int totalWidth = 0;
+
+            for (int i = 0; i < listColTextWidth.size(); i++)
+                totalWidth += getColWidth(i);
+
+            return totalWidth;
+        }
     }
 }

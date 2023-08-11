@@ -3,6 +3,7 @@ package com.aleksey.combatradar.gui.components;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -14,9 +15,8 @@ import java.awt.*;
  * @author Aleksey Terzi
  */
 public class CheckButton extends Button {
-    private static final ResourceLocation _texture = new ResourceLocation("combatradar", "textures/gui/checkbox.png");
     public static final int BUTTON_HEIGHT = 14;
-
+    private static final ResourceLocation _texture = new ResourceLocation("combatradar", "textures/gui/checkbox.png");
     private static final int TEXTURE_SIZE = 7;
     private static final int CHECKED_TEXTURE_X = 8;
     private static final int UNCHECKED_TEXTURE_X = 0;
@@ -24,10 +24,12 @@ public class CheckButton extends Button {
 
     private boolean _checked;
 
-    public void setChecked(boolean value) { _checked = value; }
-
     public CheckButton(int x, int y, int width, String name, OnPress onPress) {
         super(x, y, width, BUTTON_HEIGHT, Component.literal(name), onPress, (btn) -> Component.literal(name));
+    }
+
+    public void setChecked(boolean value) {
+        _checked = value;
     }
 
     @Override
@@ -35,8 +37,9 @@ public class CheckButton extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int xPos, int yPos, float p_93846_) {
+    public void renderWidget(GuiGraphics guiGraphics, int xPos, int yPos, float p_93846_) {
         Minecraft minecraft = Minecraft.getInstance();
+        PoseStack poseStack = guiGraphics.pose();
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 
@@ -47,10 +50,10 @@ public class CheckButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        blit(poseStack, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+        guiGraphics.blit(_texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
 
         int textColor = this.isHovered ? 16777120 : Color.LIGHT_GRAY.getRGB();
 
-        minecraft.font.draw(poseStack, this.getMessage(), this.getX() + INDENT, this.getY() + (this.getHeight() - 8f) / 2f, textColor);
+        guiGraphics.drawString(minecraft.font, this.getMessage(), this.getX() + INDENT, (int) (this.getY() + (this.getHeight() - 8f) / 2f), textColor);
     }
 }

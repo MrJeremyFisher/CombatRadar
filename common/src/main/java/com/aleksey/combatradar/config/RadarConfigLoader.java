@@ -14,35 +14,6 @@ import java.util.List;
  * @author Aleksey Terzi
  */
 public class RadarConfigLoader {
-    private static class Info {
-        public boolean enabled;
-        public float radarOpacity;
-        public int radarColor;
-        public float radarSize;
-        public int radarDistance;
-        public float radarX;
-        public float radarY;
-        public float iconScale;
-        public float fontScale;
-        public boolean speedometerEnabled;
-        public int neutralPlayerColor;
-        public int allyPlayerColor;
-        public int enemyPlayerColor;
-        public boolean neutralPlayerPing;
-        public boolean allyPlayerPing;
-        public boolean enemyPlayerPing;
-        public String neutralSoundEventName;
-        public String allySoundEventName;
-        public String enemySoundEventName;
-        public Boolean logPlayerStatus;
-        public Boolean showYLevel;
-        public List<String> disabledEntities;
-        public List<String> disabledGroups;
-        public List<String> allyPlayers;
-        public List<String> enemyPlayers;
-        public List<String> playersExcludedFromLog;
-    }
-
     public static void save(RadarConfig config, File file) {
         Info info = new Info();
         info.enabled = config.getEnabled();
@@ -74,19 +45,19 @@ public class RadarConfigLoader {
         info.logPlayerStatus = config.getLogPlayerStatus();
         info.showYLevel = config.getShowYLevel();
 
-        info.disabledEntities = new ArrayList<String>();
-        info.disabledGroups = new ArrayList<String>();
+        info.disabledEntities = new ArrayList<>();
+        info.disabledGroups = new ArrayList<>();
 
-        for(RadarEntityInfo entityInfo : config.getEntityList()) {
-            if(!entityInfo.getEnabled())
+        for (RadarEntityInfo entityInfo : config.getEntityList()) {
+            if (!entityInfo.getEnabled())
                 info.disabledEntities.add(entityInfo.getName());
         }
 
-        if(!config.isGroupEnabled(GroupType.NEUTRAL))
+        if (!config.isGroupEnabled(GroupType.NEUTRAL))
             info.disabledGroups.add("Neutral");
-        if(!config.isGroupEnabled(GroupType.AGGRESSIVE))
+        if (!config.isGroupEnabled(GroupType.AGGRESSIVE))
             info.disabledGroups.add("Aggressive");
-        if(!config.isGroupEnabled(GroupType.OTHER))
+        if (!config.isGroupEnabled(GroupType.OTHER))
             info.disabledGroups.add("Other");
 
         info.allyPlayers = config.getPlayers(PlayerType.Ally);
@@ -103,9 +74,8 @@ public class RadarConfigLoader {
             writer.write(json);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
-            if(writer != null) {
+        } finally {
+            if (writer != null) {
                 try {
                     writer.close();
                 } catch (Exception e) {
@@ -125,7 +95,7 @@ public class RadarConfigLoader {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if(reader != null) {
+            if (reader != null) {
                 try {
                     reader.close();
                 } catch (Exception e) {
@@ -134,7 +104,7 @@ public class RadarConfigLoader {
             }
         }
 
-        if(info == null)
+        if (info == null)
             return false;
 
         config.setEnabled(info.enabled);
@@ -166,39 +136,68 @@ public class RadarConfigLoader {
         config.setLogPlayerStatus(info.logPlayerStatus == null || info.logPlayerStatus);
         config.setShowYLevel(info.showYLevel == null || info.showYLevel);
 
-        if(info.disabledEntities != null) {
-            for(String entityName : info.disabledEntities) {
+        if (info.disabledEntities != null) {
+            for (String entityName : info.disabledEntities) {
                 config.setEntityEnabled(entityName, false);
             }
         }
 
-        if(info.disabledGroups != null) {
-            for(String groupName : info.disabledGroups) {
-                if(groupName.equalsIgnoreCase("Neutral"))
+        if (info.disabledGroups != null) {
+            for (String groupName : info.disabledGroups) {
+                if (groupName.equalsIgnoreCase("Neutral"))
                     config.setGroupEnabled(GroupType.NEUTRAL, false);
-                else if(groupName.equalsIgnoreCase("Aggressive"))
+                else if (groupName.equalsIgnoreCase("Aggressive"))
                     config.setGroupEnabled(GroupType.AGGRESSIVE, false);
-                else if(groupName.equalsIgnoreCase("Other"))
+                else if (groupName.equalsIgnoreCase("Other"))
                     config.setGroupEnabled(GroupType.OTHER, false);
             }
         }
 
-        if(info.allyPlayers != null) {
-            for(String playerName : info.allyPlayers) {
+        if (info.allyPlayers != null) {
+            for (String playerName : info.allyPlayers) {
                 config.setPlayerType(playerName, PlayerType.Ally);
             }
         }
 
-        if(info.enemyPlayers != null) {
-            for(String playerName : info.enemyPlayers) {
+        if (info.enemyPlayers != null) {
+            for (String playerName : info.enemyPlayers) {
                 config.setPlayerType(playerName, PlayerType.Enemy);
             }
         }
 
-        if(info.playersExcludedFromLog != null) {
+        if (info.playersExcludedFromLog != null) {
             config.setPlayersExcludedFromLog(info.playersExcludedFromLog);
         }
 
         return true;
+    }
+
+    private static class Info {
+        public boolean enabled;
+        public float radarOpacity;
+        public int radarColor;
+        public float radarSize;
+        public int radarDistance;
+        public float radarX;
+        public float radarY;
+        public float iconScale;
+        public float fontScale;
+        public boolean speedometerEnabled;
+        public int neutralPlayerColor;
+        public int allyPlayerColor;
+        public int enemyPlayerColor;
+        public boolean neutralPlayerPing;
+        public boolean allyPlayerPing;
+        public boolean enemyPlayerPing;
+        public String neutralSoundEventName;
+        public String allySoundEventName;
+        public String enemySoundEventName;
+        public Boolean logPlayerStatus;
+        public Boolean showYLevel;
+        public List<String> disabledEntities;
+        public List<String> disabledGroups;
+        public List<String> allyPlayers;
+        public List<String> enemyPlayers;
+        public List<String> playersExcludedFromLog;
     }
 }
