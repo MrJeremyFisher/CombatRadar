@@ -4,11 +4,10 @@ import com.aleksey.combatradar.Speedometer;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 
@@ -26,7 +25,7 @@ public class MainScreen extends Screen {
     private int _keyHintY;
 
     public MainScreen(Screen parent, RadarConfig config, Speedometer speedometer) {
-        super(TextComponent.EMPTY);
+        super(CommonComponents.EMPTY);
         _parent = parent;
         _config = config;
         _speedometer = speedometer;
@@ -39,71 +38,64 @@ public class MainScreen extends Screen {
 
         final Screen screen = this;
 
-        addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Location and Color"),
-                btn -> this.minecraft.setScreen(new LocationAndColorScreen(screen, _config))));
+        addRenderableWidget(Button.builder(Component.literal("Location and Color"), (btn) -> this.minecraft.setScreen(new LocationAndColorScreen(screen, _config))).bounds(x, y, 200, 20).build());
 
         y += 24;
-        addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Player Settings"),
-                btn -> this.minecraft.setScreen(new PlayerSettingsScreen(screen, _config))));
+
+        addRenderableWidget(Button.builder(Component.literal("Player Settings"), (btn) -> this.minecraft.setScreen(new PlayerSettingsScreen(screen, _config))).bounds(x, y, 200, 20).build());
 
         y += 24;
-        addRenderableWidget(new Button(x, y, 100, 20, new TextComponent("Radar Entities"),
-                btn -> this.minecraft.setScreen(new EntityScreen(screen, _config))));
 
-        addRenderableWidget(new Button(x + 101, y, 100, 20, new TextComponent("Manage Players"),
-                btn -> this.minecraft.setScreen(new ManagePlayersScreen(screen, _config))));
+        addRenderableWidget(Button.builder(Component.literal("Radar Entities"), (btn) -> this.minecraft.setScreen(new EntityScreen(screen, _config))).bounds(x, y, 100, 20).build());
+
+        addRenderableWidget(Button.builder(Component.literal("Manage Players"), (btn) -> this.minecraft.setScreen(new ManagePlayersScreen(screen, _config))).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
-        _playerStatusButton = new Button(x, y, 200, 20, new TextComponent("Log Players Statuses:"),
-                btn -> {
-                    _config.setLogPlayerStatus(!_config.getLogPlayerStatus());
-                    _config.save();
-                }
-        );
+
+        _playerStatusButton = Button.builder(Component.literal("Log Players Statuses:"), (btn) -> {
+            _config.setLogPlayerStatus(!_config.getLogPlayerStatus());
+            _config.save();
+        }).bounds(x, y, 200, 20).build();
+
         addRenderableWidget(_playerStatusButton);
 
         y += 24;
-        _enableButton = new Button(x, y, 100, 20, new TextComponent("Radar:"),
-                btn -> {
-                    _config.setEnabled(!_config.getEnabled());
-                    _config.save();
-                }
-        );
+
+        _enableButton = Button.builder(Component.literal("Radar:"), (btn) -> {
+            _config.setEnabled(!_config.getEnabled());
+            _config.save();
+        }).bounds(x, y, 100, 20).build();
+
         addRenderableWidget(_enableButton);
 
-        _speedometerButton = new Button(x + 101, y, 100, 20, new TextComponent("Speed:"),
-                btn -> {
-                    _config.setSpeedometerEnabled(!_config.getSpeedometerEnabled());
-                    _config.save();
+        _speedometerButton = Button.builder(Component.literal("Speed:"), (btn) -> {
+            _config.setSpeedometerEnabled(!_config.getSpeedometerEnabled());
+            _config.save();
 
-                    if (!_config.getSpeedometerEnabled())
-                        _speedometer.clearSpeed();
-                }
-        );
+            if (!_config.getSpeedometerEnabled())
+                _speedometer.clearSpeed();
+        }).bounds(x + 101, y, 100, 20).build();
+
         addRenderableWidget(_speedometerButton);
 
         y += 24;
 
-        addRenderableWidget(_showYLevelButton = new Button(x + 225, y, 100, 20, new TextComponent("CivMC Mode:"),
-                btn -> {
-                    _config.setShowYLevel(!_config.getShowYLevel());
-                    _config.save();
-                }
-        ));
+        addRenderableWidget(_showYLevelButton = Button.builder(Component.literal("CivMC Mode:"), (btn) -> {
+            _config.setShowYLevel(!_config.getShowYLevel());
+            _config.save();
+        }).bounds(x + 201, y, 100, 20).build());
 
-
-        addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Done"),
-                btn -> this.minecraft.setScreen((_parent))));
+        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen((_parent))).bounds(x, y, 200, 20).build());
 
         _keyHintY = y + 24;
     }
 
     @Override
     public void tick() {
-        _playerStatusButton.setMessage(new TextComponent("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
-        _enableButton.setMessage(new TextComponent("Radar: " + (_config.getEnabled() ? "On" : "Off")));
-        _speedometerButton.setMessage(new TextComponent("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
-        _showYLevelButton.setMessage(new TextComponent("CivMC Mode: " + (_config.getShowYLevel() ? "Off" : "On")));
+        _playerStatusButton.setMessage(Component.literal("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
+        _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
+        _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
+        _showYLevelButton.setMessage(Component.literal("CivMC Mode: " + (_config.getShowYLevel() ? "Off" : "On")));
     }
 
     @Override

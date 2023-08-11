@@ -8,7 +8,8 @@ import com.aleksey.combatradar.gui.components.CheckButton;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class ChooseSoundScreen extends Screen {
     private ArrayList<CheckButton> _checkButtons;
 
     public ChooseSoundScreen(Screen parent, RadarConfig config, PlayerType playerType) {
-        super(TextComponent.EMPTY);
+        super(CommonComponents.EMPTY);
         _parent = parent;
         _config = config;
         _playerType = playerType;
@@ -64,14 +65,9 @@ public class ChooseSoundScreen extends Screen {
             }
         }
 
-        addRenderableWidget(new Button(
-                this.width / 2 - 100,
-                y,
-                200,
-                20,
-                new TextComponent("Done"),
-                btn -> this.minecraft.setScreen(_parent)
-        ));
+        addRenderableWidget(Button.builder(Component.literal("Done"), (button) -> this.minecraft.setScreen(_parent)).bounds(this.width / 2 - 100, y, 200, 20).build());
+
+
     }
 
     @Override
@@ -95,23 +91,15 @@ public class ChooseSoundScreen extends Screen {
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        String playerTypeName;
-
-        switch(_playerType) {
-            case Ally:
-                playerTypeName = "Ally";
-                break;
-            case Enemy:
-                playerTypeName = "Enemy";
-                break;
-            default:
-                playerTypeName = "Neutral";
-                break;
-        }
+        String playerTypeName = switch (_playerType) {
+            case Ally -> "Ally";
+            case Enemy -> "Enemy";
+            default -> "Neutral";
+        };
 
         String title = "Ping Sound for " + playerTypeName + " Players";
 
-        renderDirtBackground(0);
+        renderDirtBackground(poseStack);
 
         drawCenteredString(poseStack, this.font, title, this.width / 2, _titleTop, Color.WHITE.getRGB());
 

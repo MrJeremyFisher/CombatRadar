@@ -3,11 +3,14 @@ package com.aleksey.combatradar.gui.screens;
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.realmsclient.gui.screens.RealmsBackupInfoScreen;
+import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.components.AbstractSelectionList;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 import java.util.List;
@@ -18,7 +21,8 @@ import java.util.List;
 public class ManagePlayersScreen extends Screen {
     private static final int SLOT_HEIGHT = 16;
 
-    private class PlayerListItem extends AbstractSelectionList.Entry<PlayerListItem> {
+
+    private class PlayerListItem extends ObjectSelectionList.Entry<PlayerListItem> {
         private final String _playerName;
 
         public String getPlayerName() {
@@ -42,6 +46,11 @@ public class ManagePlayersScreen extends Screen {
 
             return true;
         }
+
+        @Override
+        public Component getNarration() {
+            return null;
+        }
     }
 
     private class PlayerListContainer extends AbstractSelectionList<PlayerListItem> {
@@ -63,7 +72,7 @@ public class ManagePlayersScreen extends Screen {
     private PlayerListContainer _playerListContainer;
 
     public ManagePlayersScreen(Screen parent, RadarConfig config) {
-        super(TextComponent.EMPTY);
+        super(CommonComponents.EMPTY);
         _parent = parent;
         _config = config;
     }
@@ -73,24 +82,25 @@ public class ManagePlayersScreen extends Screen {
         int x = this.width / 2 - 100;
         int y = this.height - 72;
 
+
+
         addRenderableWidget(_playerListContainer = new PlayerListContainer());
 
-        addRenderableWidget(_allyButton = new Button(x, y, 100, 20, new TextComponent("Allies"),
-                btn -> loadPlayers(PlayerType.Ally)));
+        addRenderableWidget(_allyButton = Button.builder(Component.literal("Allies"), (btn) -> loadPlayers(PlayerType.Ally)).bounds(x, y, 100, 20).build());
 
-        addRenderableWidget(_enemyButton = new Button(x + 101, y, 100, 20, new TextComponent("Enemies"),
-                btn -> loadPlayers(PlayerType.Enemy)));
+        addRenderableWidget(_enemyButton = Button.builder(Component.literal("Enemies"), (btn) -> loadPlayers(PlayerType.Enemy)).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
-        addRenderableWidget(new Button(x, y, 100, 20, new TextComponent("Add Player"),
-                btn -> this.minecraft.setScreen(new AddPlayerScreen(this, _config, _activePlayerType))));
 
-        addRenderableWidget(_deleteButton = new Button(x + 101, y, 100, 20, new TextComponent("Delete Player"),
-                btn -> deletePlayer()));
+        addRenderableWidget(Button.builder(Component.literal("Add Player"), (btn) -> {
+                    this.minecraft.setScreen(new AddPlayerScreen(this, _config, _activePlayerType));
+                }).bounds(x, y, 100, 20).build());
+
+        addRenderableWidget(_deleteButton = Button.builder(Component.literal("Delete Player"), (btn) -> deletePlayer()).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
-        addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Done"),
-                btn -> this.minecraft.setScreen(_parent)));
+
+        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
 
         loadPlayers(_activePlayerType);
     }

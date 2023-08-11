@@ -82,11 +82,11 @@ public class RadarConfigLoader {
                 info.disabledEntities.add(entityInfo.getName());
         }
 
-        if(!config.isGroupEnabled(GroupType.Neutral))
+        if(!config.isGroupEnabled(GroupType.NEUTRAL))
             info.disabledGroups.add("Neutral");
-        if(!config.isGroupEnabled(GroupType.Aggressive))
+        if(!config.isGroupEnabled(GroupType.AGGRESSIVE))
             info.disabledGroups.add("Aggressive");
-        if(!config.isGroupEnabled(GroupType.Other))
+        if(!config.isGroupEnabled(GroupType.OTHER))
             info.disabledGroups.add("Other");
 
         info.allyPlayers = config.getPlayers(PlayerType.Ally);
@@ -175,11 +175,11 @@ public class RadarConfigLoader {
         if(info.disabledGroups != null) {
             for(String groupName : info.disabledGroups) {
                 if(groupName.equalsIgnoreCase("Neutral"))
-                    config.setGroupEnabled(GroupType.Neutral, false);
+                    config.setGroupEnabled(GroupType.NEUTRAL, false);
                 else if(groupName.equalsIgnoreCase("Aggressive"))
-                    config.setGroupEnabled(GroupType.Aggressive, false);
+                    config.setGroupEnabled(GroupType.AGGRESSIVE, false);
                 else if(groupName.equalsIgnoreCase("Other"))
-                    config.setGroupEnabled(GroupType.Other, false);
+                    config.setGroupEnabled(GroupType.OTHER, false);
             }
         }
 

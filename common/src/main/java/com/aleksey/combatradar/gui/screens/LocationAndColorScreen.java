@@ -7,8 +7,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.CommonComponents;
 import org.lwjgl.glfw.GLFW;
+import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 
@@ -28,7 +29,7 @@ public class LocationAndColorScreen extends Screen {
     private SliderButton _fontScaleSlider;
 
     public LocationAndColorScreen(Screen parent, RadarConfig config) {
-        super(TextComponent.EMPTY);
+        super(CommonComponents.EMPTY);
         _parent = parent;
         _config = config;
     }
@@ -45,18 +46,18 @@ public class LocationAndColorScreen extends Screen {
         addRenderableWidget(_opacitySlider = new SliderButton(x, y, 200, 1, 0, "Radar Opacity", _config.getRadarOpacity(), false));
         y += 24;
         addRenderableWidget(_sizeSlider = new SliderButton(x, y, 100, 1, 0.1f, "Radar Size", _config.getRadarSize(), false));
-        addRenderableWidget(_rangeSlider = new SliderButton(x + 101, y, 100, 8, 3, "Radar Range", _config.getRadarDistance() / 16f, true));
+        addRenderableWidget(_rangeSlider = new SliderButton(x + 101, y, 100, 8f, 3f, "Radar Range", _config.getRadarDistance() / 16f, true));
         y += 24;
         addRenderableWidget(_iconScaleSlider = new SliderButton(x, y, 100, 1f, 0.1f, "Icon Size", _config.getIconScale() / 3f, false));
         addRenderableWidget(_fontScaleSlider = new SliderButton(x + 101, y, 100, 1f, 0.2f, "Font Size", _config.getFontScale() / 3f, false));
         y += 24 + 24;
-        addRenderableWidget(new Button(x, y, 100, 20, new TextComponent("Snap top left"), btn -> setRadar(0, 0)));
-        addRenderableWidget(new Button(x + 101, y, 100, 20, new TextComponent("Snap top right"), btn -> setRadar(1, 0)));
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Snap top left"), (btn) -> setRadar(0, 0)).bounds(x, y, 100, 20).build());
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Snap top right"), (btn) -> setRadar(1, 0)).bounds(x + 101, y, 100, 20).build());
         y += 24;
-        addRenderableWidget(new Button(x, y, 100, 20, new TextComponent("Snap bottom left"), btn -> setRadar(0, 1)));
-        addRenderableWidget(new Button(x + 101, y, 100, 20, new TextComponent("Snap bottom right"), btn -> setRadar(1, 1)));
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Snap bottom left"), (btn) -> setRadar(0, 1)).bounds(x, y, 100, 20).build());
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Snap bottom right"), (btn) -> setRadar(1, 1)).bounds(x + 101, y, 100, 20).build());
         y += 24;
-        addRenderableWidget(new Button(x, y, 200, 20, new TextComponent("Done"), btn -> this.minecraft.setScreen(_parent)));
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
 
     private void setRadar(float x, float y) {
@@ -110,7 +111,7 @@ public class LocationAndColorScreen extends Screen {
 
         renderBackground(poseStack);
         drawCenteredString(poseStack, this.font, "Location and Color", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
-        drawCenteredString(poseStack, this.font, "Use arrow keys to reposition radar", this.width / 2, _iconScaleSlider.y + 24 + 12, Color.WHITE.getRGB());
+        drawCenteredString(poseStack, this.font, "Use arrow keys to reposition radar", this.width / 2, _iconScaleSlider.getY() + 24 + 12, Color.WHITE.getRGB());
 
         super.render(poseStack, mouseX, mouseY, partialTicks);
     }

@@ -3,7 +3,8 @@ package com.aleksey.combatradar.entities;
 import com.aleksey.combatradar.config.PlayerType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
+import org.joml.Vector3f;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -36,7 +37,7 @@ public class PlayerRadarEntity extends RadarEntity {
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotationYaw));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
 
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);

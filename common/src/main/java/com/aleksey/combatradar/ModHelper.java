@@ -127,8 +127,9 @@ public class ModHelper {
 
         if (yellow.equals(color1) || yellow.equals(color2)) {
             String messageText = message.getString();
-            if (messageText.contains(" joined the game") || messageText.contains(" left the game"))
-                return true;
+            if (!messageText.contains("[CR]")) {
+                return messageText.contains(" joined the game") || messageText.contains(" left the game");
+            }
         }
 
         return false;
@@ -138,11 +139,11 @@ public class ModHelper {
         try {
             Class.forName("journeymap.common.Journeymap");
         } catch (ClassNotFoundException ex) {
-            _logger.info("[CombatRadar]: JourneyMap is NOT found");
+            _logger.info("[CombatRadar]: JourneyMap not found");
             return false;
         }
 
-        _logger.info("[CombatRadar]: JourneyMap is found");
+        _logger.info("[CombatRadar]: JourneyMap found");
 
         return true;
     }
@@ -151,12 +152,12 @@ public class ModHelper {
         try {
             Class.forName("com.mamiyaotaru.voxelmap.VoxelMap");
         } catch (ClassNotFoundException ex) {
-            _logger.info("[CombatRadar]: VoxelMap is NOT found");
+            _logger.info("[CombatRadar]: VoxelMap not found");
 
             return false;
         }
 
-        _logger.info("[CombatRadar]: VoxelMap is found");
+        _logger.info("[CombatRadar]: VoxelMap found");
 
         return true;
     }

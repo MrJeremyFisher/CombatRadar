@@ -8,8 +8,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -22,8 +21,10 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.*;
@@ -32,8 +33,7 @@ import java.util.regex.Pattern;
 /**
  * @author Aleksey Terzi
  */
-public class Radar
-{
+public class Radar {
     private static RadarConfig _config;
 
     private static class PlayerInfo {
@@ -50,7 +50,8 @@ public class Radar
         }
     }
 
-    private enum MessageReason { Login, Logout, Appeared, Disappeared}
+    private enum MessageReason {Login, Logout, Appeared, Disappeared}
+
     private static class MessageInfo {
         public String playerName;
         public PlayerInfo playerInfo;
@@ -101,16 +102,24 @@ public class Radar
     private final float[] _sinList = new float[361];
     private final float[] _cosList = new float[361];
 
-    public int getRadarRadius() { return _radarRadius; }
-    public int getRadarDisplayX() { return _radarDisplayX; }
-    public int getRadarDisplayY() { return _radarDisplayY; }
+    public int getRadarRadius() {
+        return _radarRadius;
+    }
+
+    public int getRadarDisplayX() {
+        return _radarDisplayX;
+    }
+
+    public int getRadarDisplayY() {
+        return _radarDisplayY;
+    }
 
     public Radar(RadarConfig config) {
         _config = config;
 
         for (int i = 0; i <= 360; i++) {
-            _sinList[i] = (float)Math.sin(i * Math.PI / 180.0D);
-            _cosList[i] = (float)Math.cos(i * Math.PI / 180.0D);
+            _sinList[i] = (float) Math.sin(i * Math.PI / 180.0D);
+            _cosList[i] = (float) Math.cos(i * Math.PI / 180.0D);
         }
     }
 
@@ -123,22 +132,21 @@ public class Radar
         int windowInnerWidth = window.getGuiScaledWidth() - radarDiameter;
         int windowInnerHeight = window.getGuiScaledHeight() - radarDiameter;
 
-        _radarDisplayX = _radarRadius + 1 + (int)(_config.getRadarX() * (windowInnerWidth - 2));
-        _radarDisplayY = _radarRadius + 1 + (int)(_config.getRadarY() * (windowInnerHeight - 2));
+        _radarDisplayX = _radarRadius + 1 + (int) (_config.getRadarX() * (windowInnerWidth - 2));
+        _radarDisplayY = _radarRadius + 1 + (int) (_config.getRadarY() * (windowInnerHeight - 2));
 
         _radarScale = (float) _radarRadius / _config.getRadarDistance();
     }
 
-    public void render(PoseStack poseStack, float partialTicks)
-    {
-        if(_radarRadius == 0)
+    public void render(PoseStack poseStack, float partialTicks) {
+        if (_radarRadius == 0)
             return;
 
         float rotationYaw = Minecraft.getInstance().player.getViewYRot(partialTicks);
 
         poseStack.pushPose();
         poseStack.translate(_radarDisplayX, _radarDisplayY, 0);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-rotationYaw));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-rotationYaw));
 
         renderCircleBg(poseStack, _radarRadius);
         renderCircleBorder(poseStack, _radarRadius);
@@ -146,10 +154,10 @@ public class Radar
 
         renderNonPlayerEntities(poseStack, partialTicks);
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(rotationYaw));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         renderTriangle(poseStack);
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-rotationYaw));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-rotationYaw));
         renderPlayerEntities(poseStack, partialTicks);
 
         poseStack.popPose();
@@ -159,8 +167,8 @@ public class Radar
         poseStack.pushPose();
         poseStack.scale(_radarScale, _radarScale, _radarScale);
 
-        for(RadarEntity radarEntity : _entities) {
-            if(!(radarEntity instanceof PlayerRadarEntity))
+        for (RadarEntity radarEntity : _entities) {
+            if (!(radarEntity instanceof PlayerRadarEntity))
                 radarEntity.render(poseStack, partialTicks);
         }
 
@@ -171,8 +179,8 @@ public class Radar
         poseStack.pushPose();
         poseStack.scale(_radarScale, _radarScale, _radarScale);
 
-        for(RadarEntity radarEntity : _entities) {
-            if(radarEntity instanceof PlayerRadarEntity)
+        for (RadarEntity radarEntity : _entities) {
+            if (radarEntity instanceof PlayerRadarEntity)
                 radarEntity.render(poseStack, partialTicks);
         }
 
@@ -182,10 +190,10 @@ public class Radar
     private void renderTriangle(PoseStack poseStack) {
         Matrix4f lastPose = poseStack.last().pose();
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
+//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
 
@@ -196,10 +204,10 @@ public class Radar
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
-        RenderSystem.enableTexture();
+//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(-180));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
     }
 
     private void renderTriangle(Matrix4f lastPose, float color, float offset) {
@@ -230,7 +238,7 @@ public class Radar
 
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
+//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
 
@@ -260,7 +268,7 @@ public class Radar
 
         tesselator.end();
 
-        RenderSystem.enableTexture();
+//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
@@ -271,7 +279,7 @@ public class Radar
         Matrix4f lastPose = poseStack.last().pose();
 
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
+//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
@@ -288,7 +296,7 @@ public class Radar
 
         tesselator.end();
 
-        RenderSystem.enableTexture();
+//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -299,7 +307,7 @@ public class Radar
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
+//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
@@ -317,11 +325,12 @@ public class Radar
             float y2 = cos * radius;
 
             buffer.vertex(lastPose, x1, y1, 0).endVertex();
-            buffer.vertex(lastPose, x2, y2, 0).endVertex();        }
+            buffer.vertex(lastPose, x2, y2, 0).endVertex();
+        }
 
         tesselator.end();
 
-        RenderSystem.enableTexture();
+//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
@@ -334,7 +343,7 @@ public class Radar
 
         scanRadarEntities();
 
-        if(_config.getLogPlayerStatus()) {
+        if (_config.getLogPlayerStatus()) {
             scanOnlinePlayers();
         }
 
@@ -351,8 +360,8 @@ public class Radar
         EntitySettings settings = createEntitySettings();
 
         Iterable<Entity> entities = minecraft.level.entitiesForRendering();
-        for(Entity entity : entities) {
-            if(entity == minecraft.player)
+        for (Entity entity : entities) {
+            if (entity == minecraft.player)
                 continue;
 
             ResourceLocation icon = _config.getEnabledIcon(entity);
@@ -360,13 +369,13 @@ public class Radar
                 addEntity(entity, settings, oldPlayers, icon);
         }
 
-        if(oldPlayers != null) {
-            for(UUID playerKey : oldPlayers.keySet()) {
+        if (oldPlayers != null) {
+            for (UUID playerKey : oldPlayers.keySet()) {
                 PlayerInfo playerInfo = oldPlayers.get(playerKey);
                 PlayerType playerType = _config.getPlayerType(playerInfo.playerName);
                 PlayerTypeInfo playerTypeInfo = _config.getPlayerTypeInfo(playerType);
 
-                if(playerTypeInfo.ping || _config.getLogPlayerStatus()) {
+                if (playerTypeInfo.ping || _config.getLogPlayerStatus()) {
                     _messages.put(playerKey, new MessageInfo(playerInfo, MessageReason.Disappeared, playerTypeInfo.ping));
                 }
             }
@@ -385,23 +394,25 @@ public class Radar
             radarEntity = new PlayerRadarEntity(entity, settings, playerType);
 
             UUID playerKey = entity.getUUID();
-            PlayerInfo playerInfo = new PlayerInfo((RemotePlayer)entity);
+            PlayerInfo playerInfo = new PlayerInfo((RemotePlayer) entity);
 
             _radarPlayers.put(playerKey, playerInfo);
 
-            if(oldPlayers == null || !oldPlayers.containsKey(playerKey)) {
+            if (oldPlayers == null || !oldPlayers.containsKey(playerKey)) {
                 PlayerTypeInfo playerTypeInfo = _config.getPlayerTypeInfo(playerType);
 
-                if(playerTypeInfo.ping) {
+                if (playerTypeInfo.ping) {
                     _sounds.add(new PlayerSoundInfo(playerTypeInfo.soundEventName, playerKey));
                 }
 
-                if(playerTypeInfo.ping || _config.getLogPlayerStatus()) {
+                if (playerTypeInfo.ping || _config.getLogPlayerStatus()) {
                     _messages.put(playerKey, new MessageInfo(playerInfo, MessageReason.Appeared, playerTypeInfo.ping));
                 }
             } else {
                 oldPlayers.remove(playerKey);
             }
+        } else if (entity instanceof ChestBoat) {
+            radarEntity = new ItemRadarEntity(entity, settings, new ItemStack(Items.OAK_CHEST_BOAT));
         } else if (entity instanceof Boat) {
             radarEntity = new ItemRadarEntity(entity, settings, new ItemStack(Items.OAK_BOAT));
         } else if (entity instanceof AbstractMinecart) {
@@ -438,24 +449,24 @@ public class Radar
 
         _onlinePlayers = new HashMap<>();
 
-        for(net.minecraft.client.multiplayer.PlayerInfo p : players) {
+        for (net.minecraft.client.multiplayer.PlayerInfo p : players) {
             GameProfile profile = p.getProfile();
             UUID playerKey = profile.getId();
 
-            if(playerKey.equals(currentPlayerId))
+            if (playerKey.equals(currentPlayerId))
                 continue;
 
             String playerName = profile.getName();
             String playerNameTrimmed = MinecraftSpecialCodes.matcher(playerName).replaceAll("");
-            if(_config.isPlayerExcluded(playerNameTrimmed))
+            if (_config.isPlayerExcluded(playerNameTrimmed))
                 continue;
 
             _onlinePlayers.put(playerKey, playerName);
 
-            if(oldOnlinePlayers == null || !oldOnlinePlayers.containsKey(playerKey)) {
+            if (oldOnlinePlayers == null || !oldOnlinePlayers.containsKey(playerKey)) {
                 MessageInfo message = _messages.get(playerKey);
 
-                if(message != null) {
+                if (message != null) {
                     message.reason = MessageReason.Login;
                     message.log = true;
                 } else {
@@ -466,7 +477,7 @@ public class Radar
             }
         }
 
-        if(oldOnlinePlayers != null) {
+        if (oldOnlinePlayers != null) {
             for (UUID playerKey : oldOnlinePlayers.keySet()) {
                 MessageInfo message = _messages.get(playerKey);
 
@@ -481,7 +492,7 @@ public class Radar
     }
 
     public void playSounds() {
-        for(PlayerSoundInfo sound : _sounds) {
+        for (PlayerSoundInfo sound : _sounds) {
             SoundHelper.playSound(sound.soundEventName, sound.playerKey);
         }
     }
@@ -489,15 +500,15 @@ public class Radar
     public void sendMessages() {
         Minecraft minecraft = Minecraft.getInstance();
 
-        for(MessageInfo message : _messages.values()) {
-            if(message.log) {
+        for (MessageInfo message : _messages.values()) {
+            if (message.log) {
                 sendMessage(minecraft, message);
             }
         }
     }
 
     private void sendMessage(Minecraft minecraft, MessageInfo messageInfo) {
-        MutableComponent text = new TextComponent("[CR] ").withStyle(ChatFormatting.DARK_AQUA);
+        MutableComponent text = Component.literal("[CR] ").withStyle(ChatFormatting.DARK_AQUA);
 
         ChatFormatting playerColor;
         PlayerType playerType = _config.getPlayerType(messageInfo.playerName);
@@ -508,12 +519,12 @@ public class Radar
             default -> ChatFormatting.WHITE;
         };
 
-        text = text.append(new TextComponent(messageInfo.playerName).withStyle(playerColor));
+        text = text.append(Component.literal(messageInfo.playerName).withStyle(playerColor));
 
         String actionText;
         ChatFormatting actionColor;
 
-        switch(messageInfo.reason) {
+        switch (messageInfo.reason) {
             case Login:
                 actionText = " joined the game";
                 actionColor = messageInfo.playerInfo != null ? ChatFormatting.YELLOW : ChatFormatting.DARK_GREEN;
@@ -534,39 +545,39 @@ public class Radar
                 return;
         }
 
-        text = text.append(new TextComponent(actionText).withStyle(actionColor));
+        text = text.append(Component.literal(actionText).withStyle(actionColor));
 
-        if(messageInfo.playerInfo != null) {
+        if (messageInfo.playerInfo != null) {
             Component coordText;
 
-            if(_config.getIsJourneyMapEnabled()) {
+            if (_config.getIsJourneyMapEnabled()) {
                 coordText = getJourneyMapCoord(messageInfo.playerInfo);
-                    text = text
-                            .append(new TextComponent(" at ").withStyle(actionColor))
-                            .append(coordText);
-            } else if(_config.getIsVoxelMapEnabled()) {
+                text = text
+                        .append(Component.literal(" at ").withStyle(actionColor))
+                        .append(coordText);
+            } else if (_config.getIsVoxelMapEnabled()) {
                 coordText = getVoxelMapCoord(messageInfo.playerInfo);
-                    text = text
-                            .append(new TextComponent(" at ").withStyle(actionColor))
-                            .append(coordText);
+                text = text
+                        .append(Component.literal(" at ").withStyle(actionColor))
+                        .append(coordText);
             } else {
-                coordText = new TextComponent(getChatCoordText(messageInfo.playerInfo, false, true, _config.getShowYLevel()))
+                coordText = Component.literal(getChatCoordText(messageInfo.playerInfo, false, true, _config.getShowYLevel()))
                         .withStyle(actionColor);
-                    text = text
-                            .append(new TextComponent(" at ").withStyle(actionColor))
-                            .append(coordText);
+                text = text
+                        .append(Component.literal(" at ").withStyle(actionColor))
+                        .append(coordText);
             }
 
 
         }
 
-        minecraft.player.sendMessage(text, minecraft.player.getUUID());
+        minecraft.player.displayClientMessage(text, false);
     }
 
     private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
-        MutableComponent hover = new TextComponent("JourneyMap: ")
+        MutableComponent hover = Component.literal("JourneyMap: ")
                 .withStyle(ChatFormatting.YELLOW)
-                .append(new TextComponent("Click to create Waypoint.\nCtrl+Click to view on map.")
+                .append(Component.literal("Click to create Waypoint.\nCtrl+Click to view on map.")
                         .withStyle(ChatFormatting.AQUA)
                 );
 
@@ -578,11 +589,11 @@ public class Radar
                 .withHoverEvent(hoverEvent)
                 .withColor(ChatFormatting.AQUA);
 
-        return new TextComponent(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
     }
 
     private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
-        Component hover = new TextComponent("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
+        Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
                 .withStyle(ChatFormatting.WHITE);
 
         HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
@@ -593,31 +604,31 @@ public class Radar
                 .withHoverEvent(hoverEvent)
                 .withColor(ChatFormatting.AQUA);
 
-        return new TextComponent(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
     }
 
     private static String getChatCoordText(PlayerInfo playerInfo, boolean includeName, boolean includeBrackets, boolean includeY) {
         StringBuilder coordText = new StringBuilder();
 
-        if(includeBrackets) {
+        if (includeBrackets) {
             coordText.append("[");
         }
 
         coordText.append("x:");
-        coordText.append((int)playerInfo.posX);
+        coordText.append((int) playerInfo.posX);
         if (includeY) {
             coordText.append(", y:");
             coordText.append((int) playerInfo.posY);
         }
         coordText.append(", z:");
-        coordText.append((int)playerInfo.posZ);
+        coordText.append((int) playerInfo.posZ);
 
-        if(includeName) {
+        if (includeName) {
             coordText.append(", name:");
             coordText.append(playerInfo.playerName);
         }
 
-        if(includeBrackets) {
+        if (includeBrackets) {
             coordText.append("]");
         }
 

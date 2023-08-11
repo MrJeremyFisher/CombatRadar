@@ -1,66 +1,52 @@
 package com.aleksey.combatradar.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.text.DecimalFormat;
 
 /**
  * @author Aleksey Terzi
  */
-public class SliderButton extends Button {
-    private static DecimalFormat _decimalFormat = new DecimalFormat("#.##");
+public class SliderButton extends AbstractSliderButton {
+    private static final DecimalFormat _decimalFormat = new DecimalFormat("#.##");
 
     private float _value;
-    private float _minValue;
-    private float _maxValue;
-    private String _name;
-    private boolean _integer;
+    private final float _minValue;
+    private final float _maxValue;
+    private final String _name;
+    private final boolean _integer;
 
-    public float getValue() { return _value; }
+    public float getValue() {
+        return _value;
+    }
 
     public SliderButton(int x, int y, int width, float maxValue, float minValue, String name, float value, boolean integer) {
-        super(x, y, width, 20, new TextComponent(name), btn -> {});
+        super(x, y, width, 20, Component.literal(name), (value - minValue) / (maxValue - minValue));
+
         _maxValue = maxValue;
         _minValue = minValue;
         _value = value;
         _name = name;
         _integer = integer;
+
+        updateMessage();
     }
 
     @Override
-    protected int getYImage(boolean hovered) {
-        return 0;
+    public void applyValue() {
+        _value = _integer ? (float) Mth.floor(Mth.clampedLerp(this._minValue, this._maxValue, this.value)) : (float) Mth.clampedLerp(this._minValue, this._maxValue, this.value);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY) {
-        String text = _name + ": " + _decimalFormat.format(_value);
-        setMessage(new TextComponent(text));
-
-        int xOffset = (int)((_value - _minValue) / (_maxValue - _minValue) * (this.width - 8));
-        int textureYOffset = this.isHovered ? 86 : 66;
-
-        blit(poseStack, this.x + xOffset, this.y, 0, textureYOffset, 4, 20);
-        blit(poseStack, this.x + xOffset + 4, this.y, 196, textureYOffset, 4, 20);
+    protected void updateMessage() {
+        this.setMessage(Component.literal(String.format("%s: %s", _name, _decimalFormat.format(_value))));
     }
 
-    @Override
-    protected void onDrag(double mouseX, double p_93592_, double p_93593_, double p_93594_) {
-        calculateValue(mouseX);
+    public void onClick(double d, double e) {
     }
 
-    private void calculateValue(double mouseX) {
-        _value = ((float) (mouseX - 4 - this.x)) * (_maxValue - _minValue) / (width - 8) + _minValue;
-
-        if(_integer)
-            _value = Math.round(_value);
-
-        if (_value < _minValue)
-            _value = _minValue;
-        else if (_value > _maxValue)
-            _value = _maxValue;
+    public void onRelease(double d, double e) {
     }
 }
