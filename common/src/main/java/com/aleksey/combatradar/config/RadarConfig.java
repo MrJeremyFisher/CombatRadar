@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ambient.Bat;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
+import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.animal.horse.Donkey;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.animal.horse.Mule;
 import net.minecraft.world.entity.animal.horse.TraderLlama;
+import net.minecraft.world.entity.animal.sniffer.Sniffer;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -172,6 +174,10 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Tadpole.class, "Tadpole", "icons/tadpole.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Warden.class, "Warden", "icons/warden.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(ChestBoat.class, "Boat With Chest", "icons/boat_chest.png", GroupType.OTHER));
+
+        // Update to 1.20.1
+        _entityList.add(new RadarEntityInfo(Camel.class, "Camel", "icons/camel.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Sniffer.class, "Sniffer", "icons/sniffer.png", GroupType.NEUTRAL));
 
         _entityList.sort(new RadarEntityInfo.EntityComparator());
 
