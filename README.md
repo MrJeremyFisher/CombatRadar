@@ -1,6 +1,6 @@
 # CombatRadar:
 
-Radar that helps you to find mobs and players.
+Radar that helps you find mobs and players. Updated builds (.jar files) are now provided on [modrinth](https://modrinth.com/mod/combatradar).
 
 ### Requirements:
 
