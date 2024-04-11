@@ -38,10 +38,10 @@ public class AddPlayerScreen extends Screen {
 
         y += 24;
 
-
         addRenderableWidget(Button.builder(Component.literal("Add"), (button) -> actionAdd()).bounds(x, y, 200, 20).build());
 
         y += 24;
+
         addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, (button) -> actionCancel()).bounds(x, y, 200, 20).build());
 
         setInitialFocus(_playerNameEditBox);

@@ -10,7 +10,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -31,15 +30,9 @@ public class ForgeModCombatRadar {
 
         LOGGER.info("[CombatRadar]: mod enabled");
 
-        // FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-
         MinecraftForge.EVENT_BUS.register(this);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerBindings);
-    }
-
-    public void clientSetup(final FMLCommonSetupEvent event) {
-        // This is called after RegisterKeyMappingsEvent for some reason, so the logic from here is moved to the constructor
     }
 
     @SubscribeEvent

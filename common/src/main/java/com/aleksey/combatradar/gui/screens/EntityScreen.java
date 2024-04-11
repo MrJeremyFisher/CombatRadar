@@ -185,11 +185,10 @@ public class EntityScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderDirtBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
         renderIcons(guiGraphics);
-
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     private void renderIcons(GuiGraphics guiGraphics) {
@@ -261,5 +260,10 @@ public class EntityScreen extends Screen {
 
             return totalWidth;
         }
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderDirtBackground(guiGraphics);
     }
 }

@@ -121,7 +121,7 @@ public class ManagePlayersScreen extends Screen {
 
     private class PlayerListContainer extends AbstractSelectionList<PlayerListItem> {
         public PlayerListContainer() {
-            super(ManagePlayersScreen.this.minecraft, ManagePlayersScreen.this.width, ManagePlayersScreen.this.height - 152, 32, SLOT_HEIGHT);
+            super(ManagePlayersScreen.this.minecraft, ManagePlayersScreen.this.width, ManagePlayersScreen.this.height - 108, 32, SLOT_HEIGHT);
         }
 
         @Override
