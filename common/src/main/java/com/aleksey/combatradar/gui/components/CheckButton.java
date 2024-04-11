@@ -1,7 +1,6 @@
 package com.aleksey.combatradar.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -39,7 +38,6 @@ public class CheckButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int xPos, int yPos, float p_93846_) {
         Minecraft minecraft = Minecraft.getInstance();
-        PoseStack poseStack = guiGraphics.pose();
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 

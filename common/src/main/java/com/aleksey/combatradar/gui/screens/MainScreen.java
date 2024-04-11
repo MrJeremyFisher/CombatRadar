@@ -25,7 +25,7 @@ public class MainScreen extends Screen {
     private int _keyHintY;
 
     public MainScreen(Screen parent, RadarConfig config, Speedometer speedometer) {
-        super(CommonComponents.EMPTY);
+        super(Component.literal("Combat Radar Settings"));
         _parent = parent;
         _config = config;
         _speedometer = speedometer;
@@ -80,12 +80,12 @@ public class MainScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(_showYLevelButton = Button.builder(Component.literal("CivMC Mode:"), (btn) -> {
+        addRenderableWidget(_showYLevelButton = Button.builder(Component.literal("Use Y Levels:"), (btn) -> {
             _config.setShowYLevel(!_config.getShowYLevel());
             _config.save();
         }).bounds(x + 201, y, 100, 20).build());
 
-        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen((_parent))).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen((_parent))).bounds(x, y, 200, 20).build());
 
         _keyHintY = y + 24;
     }
@@ -95,7 +95,7 @@ public class MainScreen extends Screen {
         _playerStatusButton.setMessage(Component.literal("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
         _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
-        _showYLevelButton.setMessage(Component.literal("CivMC Mode: " + (_config.getShowYLevel() ? "Off" : "On")));
+        _showYLevelButton.setMessage(Component.literal("Use Y Levels: " + (_config.getShowYLevel() ? "Off" : "On")));
     }
 
     @Override
@@ -103,9 +103,9 @@ public class MainScreen extends Screen {
         String keyName = _config.getSettingsKey().getTranslatedKeyMessage().getString().toUpperCase();
 
         RenderSystem.setShaderColor(1, 1, 1, 0.75f);
-
-        renderBackground(guiGraphics);
-        guiGraphics.drawCenteredString(this.font, "Combat Radar Settings", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        
+        renderTransparentBackground(guiGraphics);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ctrl+Alt+" + keyName + " - enable/disable radar", this.width / 2, _keyHintY, Color.LIGHT_GRAY.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ctrl+" + keyName + " - enable/disable mobs", this.width / 2, _keyHintY + 12, Color.LIGHT_GRAY.getRGB());
 

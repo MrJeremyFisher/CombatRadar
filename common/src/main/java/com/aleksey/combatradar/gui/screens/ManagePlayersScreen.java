@@ -26,8 +26,9 @@ public class ManagePlayersScreen extends Screen {
     private Button _enemyButton;
     private Button _deleteButton;
     private PlayerListContainer _playerListContainer;
+
     public ManagePlayersScreen(Screen parent, RadarConfig config) {
-        super(CommonComponents.EMPTY);
+        super(Component.literal("Manage Players"));
         _parent = parent;
         _config = config;
     }
@@ -37,12 +38,11 @@ public class ManagePlayersScreen extends Screen {
         int x = this.width / 2 - 100;
         int y = this.height - 72;
 
+        _playerListContainer = addRenderableWidget(new PlayerListContainer());
 
-        addRenderableWidget(_playerListContainer = new PlayerListContainer());
+        _allyButton = addRenderableWidget(Button.builder(Component.literal("Allies"), (btn) -> loadPlayers(PlayerType.Ally)).bounds(x, y, 100, 20).build());
 
-        addRenderableWidget(_allyButton = Button.builder(Component.literal("Allies"), (btn) -> loadPlayers(PlayerType.Ally)).bounds(x, y, 100, 20).build());
-
-        addRenderableWidget(_enemyButton = Button.builder(Component.literal("Enemies"), (btn) -> loadPlayers(PlayerType.Enemy)).bounds(x + 101, y, 100, 20).build());
+        _enemyButton = addRenderableWidget(Button.builder(Component.literal("Enemies"), (btn) -> loadPlayers(PlayerType.Enemy)).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
 
@@ -50,11 +50,11 @@ public class ManagePlayersScreen extends Screen {
             this.minecraft.setScreen(new AddPlayerScreen(this, _config, _activePlayerType));
         }).bounds(x, y, 100, 20).build());
 
-        addRenderableWidget(_deleteButton = Button.builder(Component.literal("Delete Player"), (btn) -> deletePlayer()).bounds(x + 101, y, 100, 20).build());
+        _deleteButton = addRenderableWidget(Button.builder(Component.literal("Delete Player"), (btn) -> deletePlayer()).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
 
-        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
 
         loadPlayers(_activePlayerType);
     }
@@ -86,7 +86,7 @@ public class ManagePlayersScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        guiGraphics.drawCenteredString(this.font, "Manage Players", this.width / 2, 20, Color.WHITE.getRGB());
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, Color.WHITE.getRGB());
     }
 
     private class PlayerListItem extends ObjectSelectionList.Entry<PlayerListItem> {
@@ -106,7 +106,7 @@ public class ManagePlayersScreen extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double p_94737_, double p_94738_, int p_94739_) {
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
             ManagePlayersScreen.this._playerListContainer.setSelected(this);
             ManagePlayersScreen.this._deleteButton.active = true;
 
@@ -121,11 +121,16 @@ public class ManagePlayersScreen extends Screen {
 
     private class PlayerListContainer extends AbstractSelectionList<PlayerListItem> {
         public PlayerListContainer() {
-            super(ManagePlayersScreen.this.minecraft, ManagePlayersScreen.this.width, ManagePlayersScreen.this.height, 32, ManagePlayersScreen.this.height - 73, SLOT_HEIGHT);
+            super(ManagePlayersScreen.this.minecraft, ManagePlayersScreen.this.width, ManagePlayersScreen.this.height - 152, 32, SLOT_HEIGHT);
         }
 
         @Override
-        public void updateNarration(NarrationElementOutput p_169042_) {
+        protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         }
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderDirtBackground(guiGraphics);
     }
 }

@@ -53,7 +53,7 @@ public class PlayerRadarEntity extends RadarEntity {
     }
 
     private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
-        ResourceLocation skin = player.getSkinTextureLocation();
+        ResourceLocation skin = player.getSkin().texture();
 
         RenderSystem.setShaderTexture(0, skin);
 

@@ -42,7 +42,7 @@ public class EntityScreen extends Screen {
     private Button _otherButton;
     private final ArrayList<Button> _iconButtons;
     public EntityScreen(Screen parent, RadarConfig config) {
-        super(CommonComponents.EMPTY);
+        super(Component.literal("Radar Entities"));
         _parent = parent;
         _config = config;
         _iconButtons = new ArrayList<>();
@@ -80,7 +80,7 @@ public class EntityScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
 
     private void addIconButtons() {
@@ -186,7 +186,7 @@ public class EntityScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderDirtBackground(guiGraphics);
-        guiGraphics.drawCenteredString(this.font, "Radar Entities", this.width / 2, _titleTop, Color.WHITE.getRGB());
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
         renderIcons(guiGraphics);
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);

@@ -107,8 +107,8 @@ public class LocationAndColorScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.setShaderColor(1, 1, 1, 0.75f);
-
-        renderBackground(guiGraphics);
+        
+        renderTransparentBackground(guiGraphics);
         guiGraphics.drawCenteredString(this.font, "Location and Color", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawCenteredString(this.font, "Use arrow keys to reposition radar", this.width / 2, _iconScaleSlider.getY() + 24 + 12, Color.WHITE.getRGB());
 

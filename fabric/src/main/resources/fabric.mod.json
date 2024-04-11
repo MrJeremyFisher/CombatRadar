@@ -5,9 +5,11 @@
   "name": "CombatRadar",
   "description": "",
   "authors": [
-    "Aleksey Terzi"
+    "Aleksey Terzi",
+    "MrJeremyFisher"
   ],
   "license": "Apache",
+  "issues": "${issues_url}",
   "environment": "client",
   "entrypoints": {
     "client": [
@@ -16,7 +18,7 @@
   },
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.18.2"
+    "minecraft": ">=1.20.4"
   },
   "mixins": [
     "combatradar.mixins.json"

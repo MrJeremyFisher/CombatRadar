@@ -27,7 +27,11 @@ public class ChooseSoundScreen extends Screen {
     private int _titleTop;
 
     public ChooseSoundScreen(Screen parent, RadarConfig config, PlayerType playerType) {
-        super(CommonComponents.EMPTY);
+        super(Component.literal(switch (playerType) {
+            case Ally -> "Ally";
+            case Enemy -> "Enemy";
+            default -> "Neutral";
+        }));
         _parent = parent;
         _config = config;
         _playerType = playerType;
@@ -65,9 +69,7 @@ public class ChooseSoundScreen extends Screen {
             }
         }
 
-        addRenderableWidget(Button.builder(Component.literal("Done"), (button) -> this.minecraft.setScreen(_parent)).bounds(this.width / 2 - 100, y, 200, 20).build());
-
-
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> this.minecraft.setScreen(_parent)).bounds(this.width / 2 - 100, y, 200, 20).build());
     }
 
     @Override
@@ -91,18 +93,15 @@ public class ChooseSoundScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        String playerTypeName = switch (_playerType) {
-            case Ally -> "Ally";
-            case Enemy -> "Enemy";
-            default -> "Neutral";
-        };
-
-        String title = "Ping Sound for " + playerTypeName + " Players";
-
         renderDirtBackground(guiGraphics);
 
-        guiGraphics.drawCenteredString(this.font, title, this.width / 2, _titleTop, Color.WHITE.getRGB());
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderDirtBackground(guiGraphics);
     }
 }

@@ -22,8 +22,7 @@ public class AddPlayerScreen extends Screen {
     private EditBox _playerNameEditBox;
 
     public AddPlayerScreen(Screen parent, RadarConfig config, PlayerType playerType) {
-        super(CommonComponents.EMPTY);
-
+        super(Component.literal(playerType == PlayerType.Ally ? "Ally" : "Enemy"));
         _parent = parent;
         _config = config;
         _playerType = playerType;
@@ -43,7 +42,7 @@ public class AddPlayerScreen extends Screen {
         addRenderableWidget(Button.builder(Component.literal("Add"), (button) -> actionAdd()).bounds(x, y, 200, 20).build());
 
         y += 24;
-        addRenderableWidget(Button.builder(Component.literal("Cancel"), (button) -> actionCancel()).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, (button) -> actionCancel()).bounds(x, y, 200, 20).build());
 
         setInitialFocus(_playerNameEditBox);
     }
@@ -81,12 +80,16 @@ public class AddPlayerScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        String playerTypeName = _playerType == PlayerType.Ally ? "Ally" : "Enemy";
         renderDirtBackground(guiGraphics);
 
-        guiGraphics.drawCenteredString(this.font, "Add " + playerTypeName + " Player", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawString(this.font, "Player username", (int) (this.width / 2f - 100), _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB(), true);
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        this.renderDirtBackground(guiGraphics);
     }
 }
