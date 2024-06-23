@@ -9,7 +9,9 @@
     "MrJeremyFisher"
   ],
   "license": "Apache",
-  "issues": "${issues_url}",
+  "contact": {
+    "issues": "${issues_url}"
+  },
   "environment": "client",
   "entrypoints": {
     "client": [
