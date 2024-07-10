@@ -95,7 +95,7 @@ public class MainScreen extends Screen {
         _playerStatusButton.setMessage(Component.literal("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
         _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
-        _showYLevelButton.setMessage(Component.literal("Use Y Levels: " + (_config.getShowYLevel() ? "Off" : "On")));
+        _showYLevelButton.setMessage(Component.literal("Use Y Levels: " + (_config.getShowYLevel() ? "On" : "Off")));
     }
 
     @Override
