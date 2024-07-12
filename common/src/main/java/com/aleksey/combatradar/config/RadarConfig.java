@@ -239,7 +239,7 @@ public class RadarConfig {
     }
 
     public boolean setRadarColor(Color value) {
-        if (_radarColor == value)
+        if (Objects.equals(_radarColor, value))
             return false;
 
         _radarColor = value;
