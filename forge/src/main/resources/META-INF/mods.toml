@@ -10,7 +10,7 @@ displayName = "CombatRadar"
 authors = "Aleksey Terzi, MrJeremyFisher"
 description = '''
 '''
-#logoFile = ""
+logoFile = "icon.png"
 
 [[dependencies.combatradar]]
 modId = "forge"

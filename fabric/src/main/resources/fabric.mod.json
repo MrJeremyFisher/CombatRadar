@@ -3,6 +3,7 @@
   "id": "combatradar",
   "version": "${version}",
   "name": "CombatRadar",
+  "icon": "icon.png",
   "description": "",
   "authors": [
     "Aleksey Terzi",
