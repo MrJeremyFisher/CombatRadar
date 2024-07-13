@@ -208,7 +208,6 @@ public class Radar {
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
         RenderSystem.enableBlend();
-//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
 
@@ -219,7 +218,6 @@ public class Radar {
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
-//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
@@ -251,7 +249,6 @@ public class Radar {
 
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
         RenderSystem.enableBlend();
-//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
 
@@ -280,8 +277,6 @@ public class Radar {
         buffer.vertex(lastPose, -c, d, 0f).endVertex();
 
         tesselator.end();
-
-//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
@@ -292,7 +287,6 @@ public class Radar {
         Matrix4f lastPose = poseStack.last().pose();
 
         RenderSystem.enableBlend();
-//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
@@ -308,8 +302,6 @@ public class Radar {
         }
 
         tesselator.end();
-
-//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
@@ -320,7 +312,6 @@ public class Radar {
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
         RenderSystem.enableBlend();
-//        RenderSystem.disableTexture();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionShader);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
@@ -342,8 +333,6 @@ public class Radar {
         }
 
         tesselator.end();
-
-//        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
