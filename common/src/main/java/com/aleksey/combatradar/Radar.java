@@ -70,6 +70,10 @@ public class Radar {
         return Objects.requireNonNull(instance);
     }
 
+    public static @NotNull RadarConfig getConfig() {
+        return Objects.requireNonNull(_config);
+    }
+
     private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
         MutableComponent hover = Component.literal("JourneyMap: ")
                 .withStyle(ChatFormatting.YELLOW)
