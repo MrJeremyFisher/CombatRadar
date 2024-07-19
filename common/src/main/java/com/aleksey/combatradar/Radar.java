@@ -25,6 +25,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -51,12 +52,26 @@ public class Radar {
     private Map<UUID, String> _onlinePlayers;
 
     public Radar(RadarConfig config) {
+        if (instance != null) {
+            throw new IllegalStateException("Radar instance has already been initialized");
+        }
+        instance = this;
+
         _config = config;
 
         for (int i = 0; i <= 360; i++) {
             _sinList[i] = (float) Math.sin(i * Math.PI / 180.0D);
             _cosList[i] = (float) Math.cos(i * Math.PI / 180.0D);
         }
+    }
+
+    private static Radar instance;
+    public static @NotNull Radar getInstance() {
+        return Objects.requireNonNull(instance);
+    }
+
+    public static @NotNull RadarConfig getConfig() {
+        return Objects.requireNonNull(_config);
     }
 
     private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
