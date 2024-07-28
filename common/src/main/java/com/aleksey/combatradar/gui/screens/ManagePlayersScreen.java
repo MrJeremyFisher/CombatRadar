@@ -128,9 +128,4 @@ public class ManagePlayersScreen extends Screen {
         protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         }
     }
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderDirtBackground(guiGraphics);
-    }
 }

@@ -102,13 +102,22 @@ public class MainScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         String keyName = _config.getSettingsKey().getTranslatedKeyMessage().getString().toUpperCase();
 
-        RenderSystem.setShaderColor(1, 1, 1, 0.75f);
-        
-        renderTransparentBackground(guiGraphics);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ctrl+Alt+" + keyName + " - enable/disable radar", this.width / 2, _keyHintY, Color.LIGHT_GRAY.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ctrl+" + keyName + " - enable/disable mobs", this.width / 2, _keyHintY + 12, Color.LIGHT_GRAY.getRGB());
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderTransparentBackground(guiGraphics);
+    }
+
+    @Override
+    public void renderTransparentBackground(GuiGraphics guiGraphics) {
+        guiGraphics.fillGradient(0, 0, this.width, this.height, 0, 0);
     }
 }

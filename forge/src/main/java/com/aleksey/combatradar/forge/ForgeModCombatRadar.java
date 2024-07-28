@@ -1,4 +1,4 @@
-package com.aleksey.combatradar.forge;
+package com.aleksey.combatradar.neoforge;
 
 import com.aleksey.combatradar.ModHelper;
 import com.mojang.logging.LogUtils;

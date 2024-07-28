@@ -136,14 +136,23 @@ public class PlayerSettingsScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderColor(1, 1, 1, 0.75f);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        renderTransparentBackground(guiGraphics);
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawCenteredString(this.font, "Neutral", this.width / 2, _neutralRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Neutral).color.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ally", this.width / 2, _allyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Ally).color.getRGB());
         guiGraphics.drawCenteredString(this.font, "Enemy", this.width / 2, _enemyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Enemy).color.getRGB());
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderTransparentBackground(guiGraphics);
+    }
+
+    @Override
+    public void renderTransparentBackground(GuiGraphics guiGraphics) {
+        guiGraphics.fillGradient(0, 0, this.width, this.height, 0, 0);
     }
 }

@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL="${issues_url}"
+license = "Apache"
+
+[[mods]]
+modId = "combatradar"
+version = "${version}"
+displayName = "CombatRadar"
+authors = "Aleksey Terzi, MrJeremyFisher"
+description = '''
+'''
+logoFile = "icon.png"
+
+[[dependencies.combatradar]]
+modId = "neoforge"
+mandatory = true
+versionRange = "[20.6,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.combatradar]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.6,)"
+ordering = "NONE"
+side = "CLIENT"

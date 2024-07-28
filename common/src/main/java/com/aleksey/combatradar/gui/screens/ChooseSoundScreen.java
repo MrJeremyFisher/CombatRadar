@@ -93,15 +93,8 @@ public class ChooseSoundScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderDirtBackground(guiGraphics);
-
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderDirtBackground(guiGraphics);
     }
 }

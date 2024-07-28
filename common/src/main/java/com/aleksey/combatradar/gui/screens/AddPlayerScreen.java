@@ -80,16 +80,9 @@ public class AddPlayerScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderDirtBackground(guiGraphics);
-
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawString(this.font, "Player username", (int) (this.width / 2f - 100), _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB(), true);
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.renderDirtBackground(guiGraphics);
     }
 }
