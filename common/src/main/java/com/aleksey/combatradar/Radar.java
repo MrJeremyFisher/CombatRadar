@@ -3,11 +3,20 @@ package com.aleksey.combatradar;
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.PlayerTypeInfo;
 import com.aleksey.combatradar.config.RadarConfig;
-import com.aleksey.combatradar.entities.*;
+import com.aleksey.combatradar.entities.CustomRadarEntity;
+import com.aleksey.combatradar.entities.EntitySettings;
+import com.aleksey.combatradar.entities.ItemRadarEntity;
+import com.aleksey.combatradar.entities.LiveRadarEntity;
+import com.aleksey.combatradar.entities.PlayerRadarEntity;
+import com.aleksey.combatradar.entities.RadarEntity;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,7 +24,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -29,7 +42,13 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -98,6 +117,31 @@ public class Radar {
 
         HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
         ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
+
+        Style coordStyle = Style.EMPTY
+                .withClickEvent(clickEvent)
+                .withHoverEvent(hoverEvent)
+                .withColor(ChatFormatting.AQUA);
+
+        return Component.literal(getChatCoordText(playerInfo, false, true, _config.getShowYLevel())).setStyle(coordStyle);
+    }
+
+    private static Component getXaerosCoord(PlayerInfo playerInfo) {
+        Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
+                .withStyle(ChatFormatting.WHITE);
+
+        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
+        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+                "/xaero_waypoint_add:"
+                        + playerInfo.playerName + ":"
+                        + playerInfo.playerName.substring(0, 2) + ":"
+                        + (int) playerInfo.posX + ":"
+                        + (_config.getShowYLevel() ? (int) playerInfo.posY : "~") + ":"
+                        + (int) playerInfo.posZ + ":"
+                        + 0 + ":" // color
+                        + false + ":" // should set rotation?
+                        + 0 // yaw
+        );
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
@@ -574,6 +618,11 @@ public class Radar {
                         .append(coordText);
             } else if (_config.getIsVoxelMapEnabled()) {
                 coordText = getVoxelMapCoord(messageInfo.playerInfo);
+                text = text
+                        .append(Component.literal(" at ").withStyle(actionColor))
+                        .append(coordText);
+            } else if (_config.getIsXaerosEnabled()) {
+                coordText = getXaerosCoord(messageInfo.playerInfo);
                 text = text
                         .append(Component.literal(" at ").withStyle(actionColor))
                         .append(coordText);

@@ -65,6 +65,7 @@ public class RadarConfig {
     // Calculated settings
     private boolean _isJourneyMapEnabled;
     private boolean _isVoxelMapEnabled;
+    private boolean _isXaerosEnabled;
     public RadarConfig(File file, KeyMapping settingsKey) {
         _configFile = file;
         _settingsKey = settingsKey;
@@ -456,6 +457,14 @@ public class RadarConfig {
 
     public void setIsVoxelMapEnabled(boolean value) {
         _isVoxelMapEnabled = value;
+    }
+
+    public boolean getIsXaerosEnabled() {
+        return _isXaerosEnabled;
+    }
+
+    public void setIsXaerosEnabled(boolean value) {
+        _isXaerosEnabled = value;
     }
 
     public List<String> getPlayersExcludedFromLog() {

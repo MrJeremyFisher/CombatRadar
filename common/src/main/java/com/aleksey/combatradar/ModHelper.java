@@ -57,6 +57,7 @@ public class ModHelper {
 
         _config.setIsJourneyMapEnabled(isJourneyMapEnabled());
         _config.setIsVoxelMapEnabled(isVoxelMapEnabled());
+        _config.setIsXaerosEnabled(isXaerosEnabled());
 
         _radar = new Radar(_config);
         _speedometer = new Speedometer();
@@ -154,11 +155,23 @@ public class ModHelper {
             Class.forName("com.mamiyaotaru.voxelmap.VoxelMap");
         } catch (ClassNotFoundException ex) {
             _logger.info("[CombatRadar]: VoxelMap not found");
-
             return false;
         }
 
         _logger.info("[CombatRadar]: VoxelMap found");
+
+        return true;
+    }
+
+    private boolean isXaerosEnabled() {
+        try {
+            Class.forName("xaero.minimap.XaeroMinimap");
+        } catch (ClassNotFoundException ex) {
+            _logger.info("[CombatRadar]: Xaero's Minimap not found");
+            return false;
+        }
+
+        _logger.info("[CombatRadar]: Xaero's Minimap found");
 
         return true;
     }
