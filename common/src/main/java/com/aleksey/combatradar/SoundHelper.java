@@ -18,6 +18,6 @@ public class SoundHelper {
         Minecraft minecraft = Minecraft.getInstance();
         float playerPitch = .5f + 1.5f * new Random(playerKey.hashCode()).nextFloat();
 
-        minecraft.player.playSound(SoundEvent.createVariableRangeEvent(new ResourceLocation("block.note_block." + soundEventName)), 1, playerPitch);
+        minecraft.player.playSound(SoundEvent.createVariableRangeEvent(ResourceLocation.read("block.note_block." + soundEventName).getOrThrow()), 1, playerPitch);
     }
 }

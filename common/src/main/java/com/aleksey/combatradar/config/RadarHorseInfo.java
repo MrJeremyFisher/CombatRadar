@@ -18,9 +18,9 @@ public class RadarHorseInfo extends RadarEntityInfo {
 
         _icons = new ResourceLocation[HORSE_VARIANTS.length];
         for (int i = 0; i < HORSE_VARIANTS.length; i++)
-            _icons[i] = new ResourceLocation("combatradar", "icons/horse/horse_" + HORSE_VARIANTS[i] + ".png");
+            _icons[i] = ResourceLocation.fromNamespaceAndPath("combatradar", "icons/horse/horse_" + HORSE_VARIANTS[i] + ".png");
 
-        _skeletonHorse = new ResourceLocation("combatradar", "icons/horse/horse_skeleton.png");
+        _skeletonHorse = ResourceLocation.fromNamespaceAndPath("combatradar", "icons/horse/horse_skeleton.png");
     }
 
     @Override

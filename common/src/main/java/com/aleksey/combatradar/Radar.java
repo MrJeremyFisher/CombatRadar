@@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -286,12 +287,11 @@ public class Radar {
         RenderSystem.setShaderColor(color, color, color, 1);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION);
-        buffer.vertex(lastPose, 0f, 3f - offset, 0).endVertex();
-        buffer.vertex(lastPose, 3f - offset, -3f + offset, 0).endVertex();
-        buffer.vertex(lastPose, -3f + offset, -3f + offset, 0).endVertex();
-        tesselator.end();
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION);
+        buffer.addVertex(lastPose, 0f, 3f - offset, 0);
+        buffer.addVertex(lastPose, 3f - offset, -3f + offset, 0);
+        buffer.addVertex(lastPose, -3f + offset, -3f + offset, 0);
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
     }
 
     private void renderLines(PoseStack poseStack, float radius) {
@@ -312,30 +312,29 @@ public class Radar {
         RenderSystem.setShader(GameRenderer::getPositionShader);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
 
-        buffer.vertex(lastPose, -a, -length, 0f).endVertex();
-        buffer.vertex(lastPose, -a, length, 0f).endVertex();
-        buffer.vertex(lastPose, a, length, 0f).endVertex();
-        buffer.vertex(lastPose, a, -length, 0f).endVertex();
+        buffer.addVertex(lastPose, -a, -length, 0f);
+        buffer.addVertex(lastPose, -a, length, 0f);
+        buffer.addVertex(lastPose, a, length, 0f);
+        buffer.addVertex(lastPose, a, -length, 0f);
 
-        buffer.vertex(lastPose, -length, a, 0f).endVertex();
-        buffer.vertex(lastPose, length, a, 0f).endVertex();
-        buffer.vertex(lastPose, length, -a, 0f).endVertex();
-        buffer.vertex(lastPose, -length, -a, 0f).endVertex();
+        buffer.addVertex(lastPose, -length, a, 0f);
+        buffer.addVertex(lastPose, length, a, 0f);
+        buffer.addVertex(lastPose, length, -a, 0f);
+        buffer.addVertex(lastPose, -length, -a, 0f);
 
-        buffer.vertex(lastPose, -c, -d, 0f).endVertex();
-        buffer.vertex(lastPose, d, c, 0f).endVertex();
-        buffer.vertex(lastPose, c, d, 0f).endVertex();
-        buffer.vertex(lastPose, -d, -c, 0f).endVertex();
+        buffer.addVertex(lastPose, -c, -d, 0f);
+        buffer.addVertex(lastPose, d, c, 0f);
+        buffer.addVertex(lastPose, c, d, 0f);
+        buffer.addVertex(lastPose, -d, -c, 0f);
 
-        buffer.vertex(lastPose, -d, c, 0f).endVertex();
-        buffer.vertex(lastPose, c, -d, 0f).endVertex();
-        buffer.vertex(lastPose, d, -c, 0f).endVertex();
-        buffer.vertex(lastPose, -c, d, 0f).endVertex();
+        buffer.addVertex(lastPose, -d, c, 0f);
+        buffer.addVertex(lastPose, c, -d, 0f);
+        buffer.addVertex(lastPose, d, -c, 0f);
+        buffer.addVertex(lastPose, -c, d, 0f);
 
-        tesselator.end();
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
         RenderSystem.disableBlend();
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
@@ -351,16 +350,15 @@ public class Radar {
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
 
         for (int i = 0; i <= 360; i++) {
             float x = _sinList[i] * radius;
             float y = _cosList[i] * radius;
-            buffer.vertex(lastPose, x, y, 0).endVertex();
+            buffer.addVertex(lastPose, x, y, 0);
         }
 
-        tesselator.end();
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
         RenderSystem.disableBlend();
     }
 
@@ -376,8 +374,7 @@ public class Radar {
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
-        buffer.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
+        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
 
         for (int i = 0; i <= 360; i++) {
             float sin = _sinList[i];
@@ -387,11 +384,11 @@ public class Radar {
             float x2 = sin * radius;
             float y2 = cos * radius;
 
-            buffer.vertex(lastPose, x1, y1, 0).endVertex();
-            buffer.vertex(lastPose, x2, y2, 0).endVertex();
+            buffer.addVertex(lastPose, x1, y1, 0);
+            buffer.addVertex(lastPose, x2, y2, 0);
         }
 
-        tesselator.end();
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
         RenderSystem.disableBlend();
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);

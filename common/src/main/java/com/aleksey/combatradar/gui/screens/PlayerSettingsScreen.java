@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
 import java.awt.*;
@@ -34,6 +35,7 @@ public class PlayerSettingsScreen extends Screen {
     private Button _allySoundButton;
     private Button _enemyPingButton;
     private Button _enemySoundButton;
+    private Button _showYLevelButton;
 
 
     public PlayerSettingsScreen(Screen parent, RadarConfig config) {
@@ -83,7 +85,14 @@ public class PlayerSettingsScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(Button.builder(Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(_showYLevelButton = Button.builder(Component.literal("Use Y Levels:"), (btn) -> {
+            _config.setShowYLevel(!_config.getShowYLevel());
+            _config.save();
+        }).bounds(x, y, 200, 20).build());
+
+        y += 24;
+
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
 
     private void changePing(PlayerType playerType) {
@@ -121,6 +130,7 @@ public class PlayerSettingsScreen extends Screen {
         _allySoundButton.setMessage(Component.literal(SoundInfo.getByValue(allyPlayer.soundEventName).name));
         _enemyPingButton.setMessage(Component.literal("Enemy Player Ping: " + (enemyPlayer.ping ? "On" : "Off")));
         _enemySoundButton.setMessage(Component.literal(SoundInfo.getByValue(enemyPlayer.soundEventName).name));
+        _showYLevelButton.setMessage(Component.literal("Use Y Levels: " + (_config.getShowYLevel() ? "On" : "Off")));
     }
 
     private boolean changeColor(PlayerType playerType, Color color) {

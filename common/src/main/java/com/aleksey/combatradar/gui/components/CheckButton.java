@@ -15,7 +15,7 @@ import java.awt.*;
  */
 public class CheckButton extends Button {
     public static final int BUTTON_HEIGHT = 14;
-    private static final ResourceLocation _texture = new ResourceLocation("combatradar", "textures/gui/checkbox.png");
+    private static final ResourceLocation _texture = ResourceLocation.fromNamespaceAndPath("combatradar", "textures/gui/checkbox.png");
     private static final int TEXTURE_SIZE = 7;
     private static final int CHECKED_TEXTURE_X = 8;
     private static final int UNCHECKED_TEXTURE_X = 0;

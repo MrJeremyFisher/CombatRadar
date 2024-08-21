@@ -28,7 +28,7 @@ public class RadarEntityInfo {
         _entityClassName = entityClass;
 
         _entities = new HashMap<>();
-        _entities.put(entityClass, _defaultIcon = new ResourceLocation("combatradar", iconPath));
+        _entities.put(entityClass, _defaultIcon = ResourceLocation.fromNamespaceAndPath("combatradar", iconPath));
     }
 
     public String getName() {
@@ -68,7 +68,7 @@ public class RadarEntityInfo {
     }
 
     public RadarEntityInfo addEntity(Class<? extends Entity> entityClass, String iconPath) {
-        var icon = iconPath != null ? new ResourceLocation("combatradar", iconPath) : null;
+        var icon = iconPath != null ? ResourceLocation.fromNamespaceAndPath("combatradar", iconPath) : null;
         _entities.put(entityClass.getCanonicalName(), icon);
         return this;
     }

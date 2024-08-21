@@ -21,7 +21,6 @@ public class MainScreen extends Screen {
     private Button _playerStatusButton;
     private Button _speedometerButton;
     private Button _enableButton;
-    private Button _showYLevelButton;
     private int _keyHintY;
 
     public MainScreen(Screen parent, RadarConfig config, Speedometer speedometer) {
@@ -80,11 +79,6 @@ public class MainScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(_showYLevelButton = Button.builder(Component.literal("Use Y Levels:"), (btn) -> {
-            _config.setShowYLevel(!_config.getShowYLevel());
-            _config.save();
-        }).bounds(x + 201, y, 100, 20).build());
-
         addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen((_parent))).bounds(x, y, 200, 20).build());
 
         _keyHintY = y + 24;
@@ -95,7 +89,6 @@ public class MainScreen extends Screen {
         _playerStatusButton.setMessage(Component.literal("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
         _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
-        _showYLevelButton.setMessage(Component.literal("Use Y Levels: " + (_config.getShowYLevel() ? "On" : "Off")));
     }
 
     @Override
