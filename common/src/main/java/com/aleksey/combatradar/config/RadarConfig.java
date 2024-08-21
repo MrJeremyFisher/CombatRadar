@@ -23,6 +23,7 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.entity.monster.warden.Warden;
@@ -180,6 +181,8 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Sniffer.class, "Sniffer", "icons/sniffer.png", GroupType.NEUTRAL));
 
         _entityList.add(new RadarEntityInfo(Armadillo.class, "Armadillo", "icons/armadillo.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Bogged.class, "Bogged", "icons/bogged.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Breeze.class, "Breeze", "icons/breeze.png", GroupType.NEUTRAL));
 
         _entityList.sort(new RadarEntityInfo.EntityComparator());
 
