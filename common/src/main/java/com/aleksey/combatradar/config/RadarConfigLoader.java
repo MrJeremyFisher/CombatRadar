@@ -17,6 +17,7 @@ public class RadarConfigLoader {
     public static void save(RadarConfig config, File file) {
         Info info = new Info();
         info.enabled = config.getEnabled();
+        info.pingsEnabled = config.getPingsEnabled();
         info.radarOpacity = config.getRadarOpacity();
         info.radarColor = config.getRadarColor().getRGB();
         info.radarSize = config.getRadarSize();
@@ -108,6 +109,7 @@ public class RadarConfigLoader {
             return false;
 
         config.setEnabled(info.enabled);
+        config.setPingsEnabled(info.pingsEnabled);
         config.setRadarOpacity(info.radarOpacity);
         config.setRadarColor(new Color(info.radarColor));
         config.setRadarSize(info.radarSize);
@@ -174,6 +176,7 @@ public class RadarConfigLoader {
 
     private static class Info {
         public boolean enabled;
+        public boolean pingsEnabled;
         public float radarOpacity;
         public int radarColor;
         public float radarSize;

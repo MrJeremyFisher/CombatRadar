@@ -4,6 +4,7 @@ import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.screens.MainScreen;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -69,14 +70,20 @@ public class ModHelper {
         if (minecraft.level == null)
             return;
 
+        if (_config.getPingsEnabled() || _config.getEnabled()) {
+            _radar.scanEntities();
+        }
+        
         if (_config.getEnabled()) {
             _radar.calcSettings();
-            _radar.scanEntities();
-            _radar.playSounds();
-            _radar.sendMessages();
-
+            
             if (_config.getSpeedometerEnabled())
                 _speedometer.calc();
+        }
+        
+        if (_config.getPingsEnabled()) {
+            _radar.sendMessages();
+            _radar.playSounds();
         }
 
         if (!minecraft.options.hideGui && minecraft.screen == null && _config.getSettingsKey().consumeClick()) {
@@ -100,7 +107,7 @@ public class ModHelper {
         }
     }
 
-    public void render(GuiGraphics guiGraphics, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
 
         if (!_config.getEnabled()
@@ -111,7 +118,7 @@ public class ModHelper {
             return;
         }
 
-        _radar.render(guiGraphics, partialTicks);
+        _radar.render(guiGraphics, deltaTracker);
 
         if (_config.getSpeedometerEnabled())
             _speedometer.render(guiGraphics, _radar.getRadarDisplayX(), _radar.getRadarDisplayY(), _radar.getRadarRadius());

@@ -49,6 +49,7 @@ public class RadarConfig {
     private final Map<String, PlayerInfo> _players;
     private final Map<PlayerType, PlayerTypeInfo> _playerTypes;
     private boolean _enabled = true;
+    private boolean _pingsEnabled = true;
     private boolean _speedometerEnabled = false;
     private float _radarOpacity = 0.5f;
     private Color _radarColor = new Color(128, 128, 128);
@@ -213,6 +214,14 @@ public class RadarConfig {
 
     public void setEnabled(boolean value) {
         _enabled = value;
+    }
+
+    public boolean getPingsEnabled() {
+        return _pingsEnabled;
+    }
+
+    public void setPingsEnabled(boolean value) {
+        _pingsEnabled = value;
     }
 
     public boolean getSpeedometerEnabled() {

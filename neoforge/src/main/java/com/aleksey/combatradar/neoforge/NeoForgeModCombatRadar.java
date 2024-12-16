@@ -46,7 +46,7 @@ public class NeoForgeModCombatRadar {
     @SubscribeEvent
     public void onRender(RenderGuiLayerEvent.Post event) {
         if (event.getName() == VanillaGuiLayers.PLAYER_HEALTH)
-            _modHelper.render(event.getGuiGraphics(), event.getPartialTick().getRealtimeDeltaTicks());
+            _modHelper.render(event.getGuiGraphics(), event.getPartialTick());
     }
 
     @SubscribeEvent

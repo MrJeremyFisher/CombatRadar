@@ -21,6 +21,7 @@ public class MainScreen extends Screen {
     private Button _playerStatusButton;
     private Button _speedometerButton;
     private Button _enableButton;
+    private Button _pingsEnableButton;
     private int _keyHintY;
 
     public MainScreen(Screen parent, RadarConfig config, Speedometer speedometer) {
@@ -54,18 +55,9 @@ public class MainScreen extends Screen {
         _playerStatusButton = Button.builder(Component.literal("Log Players Statuses:"), (btn) -> {
             _config.setLogPlayerStatus(!_config.getLogPlayerStatus());
             _config.save();
-        }).bounds(x, y, 200, 20).build();
-
-        addRenderableWidget(_playerStatusButton);
-
-        y += 24;
-
-        _enableButton = Button.builder(Component.literal("Radar:"), (btn) -> {
-            _config.setEnabled(!_config.getEnabled());
-            _config.save();
         }).bounds(x, y, 100, 20).build();
 
-        addRenderableWidget(_enableButton);
+        addRenderableWidget(_playerStatusButton);
 
         _speedometerButton = Button.builder(Component.literal("Speed:"), (btn) -> {
             _config.setSpeedometerEnabled(!_config.getSpeedometerEnabled());
@@ -79,6 +71,22 @@ public class MainScreen extends Screen {
 
         y += 24;
 
+        _enableButton = Button.builder(Component.literal("Radar:"), (btn) -> {
+            _config.setEnabled(!_config.getEnabled());
+            _config.save();
+        }).bounds(x, y, 100, 20).build();
+
+        addRenderableWidget(_enableButton);
+
+        _pingsEnableButton = Button.builder(Component.literal("Pings:"), (btn) -> {
+            _config.setPingsEnabled(!_config.getPingsEnabled());
+            _config.save();
+        }).bounds(x+101, y, 100, 20).build();
+
+        addRenderableWidget(_pingsEnableButton);
+        
+        y += 24;
+
         addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen((_parent))).bounds(x, y, 200, 20).build());
 
         _keyHintY = y + 24;
@@ -88,6 +96,7 @@ public class MainScreen extends Screen {
     public void tick() {
         _playerStatusButton.setMessage(Component.literal("Log Players Statuses: " + (_config.getLogPlayerStatus() ? "On" : "Off")));
         _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
+        _pingsEnableButton.setMessage(Component.literal("Pings: " + (_config.getPingsEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
     }
 

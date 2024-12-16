@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[49,)"
+loaderVersion = "[52,)"
 issueTrackerURL="${issues_url}"
 license = "Apache"
 
@@ -15,13 +15,13 @@ logoFile = "icon.png"
 [[dependencies.combatradar]]
 modId = "forge"
 mandatory = true
-versionRange = "[49,)"
+versionRange = "[52,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.combatradar]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.20.4,)"
+versionRange = "[1.21.1]"
 ordering = "NONE"
 side = "CLIENT"

@@ -20,6 +20,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -207,13 +208,13 @@ public class Radar {
         _radarScale = (float) _radarRadius / _config.getRadarDistance();
     }
 
-    public void render(GuiGraphics guiGraphics, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, DeltaTracker partialTicks) {
         PoseStack poseStack = guiGraphics.pose();
 
         if (_radarRadius == 0)
             return;
 
-        float rotationYaw = Minecraft.getInstance().player.getViewYRot(partialTicks);
+        float rotationYaw = Minecraft.getInstance().player.getViewYRot(partialTicks.getRealtimeDeltaTicks());
 
         poseStack.pushPose();
         poseStack.translate(_radarDisplayX, _radarDisplayY, 0);
@@ -223,13 +224,13 @@ public class Radar {
         renderCircleBorder(poseStack, _radarRadius);
         renderLines(poseStack, _radarRadius);
 
-        renderNonPlayerEntities(guiGraphics, partialTicks);
+        renderNonPlayerEntities(guiGraphics, partialTicks.getRealtimeDeltaTicks());
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         renderTriangle(poseStack);
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(-rotationYaw));
-        renderPlayerEntities(guiGraphics, partialTicks);
+        renderPlayerEntities(guiGraphics, partialTicks.getRealtimeDeltaTicks());
 
         poseStack.popPose();
     }
