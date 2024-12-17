@@ -29,6 +29,8 @@ processResources {
         expand(
                 [
                         "version"   : project.version,
+                        "neoforge_version"   : project.neoforge_version,
+                        "minecraft_version"   : project.minecraft_version,
                         "issues_url": rootProject.issues_url
                 ]
         )

@@ -22,7 +22,7 @@ configurations {
 }
 
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
@@ -35,6 +35,8 @@ processResources {
         expand(
                 [
                         "version"   : project.version,
+                        "forge_version"   : project.forge_version,
+                        "minecraft_version"   : project.minecraft_version,
                         "issues_url": rootProject.issues_url
                 ]
         )

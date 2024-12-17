@@ -25,6 +25,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -270,7 +271,7 @@ public class Radar {
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(CoreShaders.POSITION);
 
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
@@ -310,7 +311,7 @@ public class Radar {
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(CoreShaders.POSITION);
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -347,7 +348,7 @@ public class Radar {
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(CoreShaders.POSITION);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
 
         Tesselator tesselator = Tesselator.getInstance();
@@ -371,7 +372,7 @@ public class Radar {
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(CoreShaders.POSITION);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
 
         Tesselator tesselator = Tesselator.getInstance();

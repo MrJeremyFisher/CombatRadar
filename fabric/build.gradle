@@ -34,6 +34,7 @@ processResources {
         expand(
                 [
                         "version"   : project.version,
+                        "minecraft_version"   : project.minecraft_version,
                         "issues_url": rootProject.issues_url
                 ]
         )

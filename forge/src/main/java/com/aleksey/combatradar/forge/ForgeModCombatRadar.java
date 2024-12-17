@@ -20,7 +20,7 @@ public class ForgeModCombatRadar {
 
     private static ModHelper _modHelper;
     
-    public ForgeModCombatRadar() {
+    public ForgeModCombatRadar(FMLJavaModLoadingContext fmlJavaModLoadingContext) {
         _modHelper = new ModHelper();
 
         _modHelper.init(LOGGER);
@@ -29,7 +29,7 @@ public class ForgeModCombatRadar {
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerBindings);
+        fmlJavaModLoadingContext.getModEventBus().addListener(this::registerBindings);
     }
 
     @SubscribeEvent

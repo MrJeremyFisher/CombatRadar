@@ -9,19 +9,20 @@ version = "${version}"
 displayName = "CombatRadar"
 authors = "Aleksey Terzi, MrJeremyFisher"
 description = '''
+Radar that helps you find mobs and players.
 '''
 logoFile = "icon.png"
 
 [[dependencies.combatradar]]
 modId = "neoforge"
 mandatory = true
-versionRange = "[21.1,)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.combatradar]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.1]"
+versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "CLIENT"

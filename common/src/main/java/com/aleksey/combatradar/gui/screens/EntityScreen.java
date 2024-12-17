@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -228,7 +229,7 @@ public class EntityScreen extends Screen {
 
         RenderSystem.setShaderTexture(0, info.getIcon((Entity) null));
 
-        guiGraphics.blit(info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderType::guiTextured, info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popPose();
     }

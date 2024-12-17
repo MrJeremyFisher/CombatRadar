@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "CombatRadar",
   "icon": "icon.png",
-  "description": "",
+  "description": "Radar that helps you find mobs and players.",
   "authors": [
     "Aleksey Terzi",
     "MrJeremyFisher"
@@ -21,7 +21,7 @@
   },
   "depends": {
     "fabric": "*",
-    "minecraft": "1.21.1"
+    "minecraft": "${minecraft_version}"
   },
   "mixins": [
     "combatradar.fabric.mixins.json"

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -57,7 +58,7 @@ public class PlayerRadarEntity extends RadarEntity {
 
         RenderSystem.setShaderTexture(0, skin);
 
-        guiGraphics.blit(skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderType::guiTextured, skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64);
     }
 
     private void renderPlayerName(GuiGraphics guiGraphics, RemotePlayer player) {

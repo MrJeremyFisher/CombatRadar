@@ -4,11 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -48,7 +49,7 @@ public class CheckButton extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        guiGraphics.blit(_texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE);
+        guiGraphics.blit(RenderType::guiTextured, _texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE, 256, 256);
 
         int textColor = this.isHovered ? 16777120 : Color.LIGHT_GRAY.getRGB();
 

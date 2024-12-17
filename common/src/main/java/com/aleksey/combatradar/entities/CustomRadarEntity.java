@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -37,7 +38,7 @@ public class CustomRadarEntity extends RadarEntity {
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         poseStack.scale(iconScale, iconScale, iconScale);
 
-        guiGraphics.blit(_resourceLocation, -8, -8, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderType::guiTextured, _resourceLocation, -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popPose();
 

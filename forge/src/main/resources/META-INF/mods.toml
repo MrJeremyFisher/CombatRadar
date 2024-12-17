@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[52,)"
+loaderVersion = "[${forge_version},)"
 issueTrackerURL="${issues_url}"
 license = "Apache"
 
@@ -9,19 +9,20 @@ version = "${version}"
 displayName = "CombatRadar"
 authors = "Aleksey Terzi, MrJeremyFisher"
 description = '''
+Radar that helps you find mobs and players.
 '''
 logoFile = "icon.png"
 
 [[dependencies.combatradar]]
 modId = "forge"
 mandatory = true
-versionRange = "[52,)"
+versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.combatradar]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21.1]"
+versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "CLIENT"
