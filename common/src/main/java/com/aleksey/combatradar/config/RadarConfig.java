@@ -73,6 +73,7 @@ public class RadarConfig {
         _configFile = file;
         _settingsKey = settingsKey;
 
+        // Entity icons from here https://minecraft.wiki/w/Category:Mob_faces
         _entityList = new ArrayList<>();
         _entityList.add(new RadarEntityInfo(Bat.class, "Bat", "icons/bat.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Chicken.class, "Chicken", "icons/chicken.png", GroupType.NEUTRAL));

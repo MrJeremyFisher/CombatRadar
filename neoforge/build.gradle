@@ -24,6 +24,9 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "neoforge_version", project.neoforge_version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "issues_url", project.issues_url
 
     filesMatching("META-INF/neoforge.mods.toml") {
         expand(

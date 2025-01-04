@@ -26,7 +26,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.CoreShaders;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -88,6 +87,7 @@ public class Radar {
     }
 
     private static Radar instance;
+
     public static @NotNull Radar getInstance() {
         return Objects.requireNonNull(instance);
     }

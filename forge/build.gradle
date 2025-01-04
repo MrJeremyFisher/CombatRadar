@@ -30,14 +30,17 @@ dependencies {
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "forge_version", project.forge_version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "issues_url", project.issues_url
 
     filesMatching("META-INF/mods.toml") {
         expand(
                 [
-                        "version"   : project.version,
-                        "forge_version"   : project.forge_version,
-                        "minecraft_version"   : project.minecraft_version,
-                        "issues_url": rootProject.issues_url
+                        "version"          : project.version,
+                        "forge_version"    : project.forge_version,
+                        "minecraft_version": project.minecraft_version,
+                        "issues_url"       : rootProject.issues_url
                 ]
         )
     }

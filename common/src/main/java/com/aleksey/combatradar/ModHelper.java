@@ -131,7 +131,7 @@ public class ModHelper {
         TextColor color1 = message.getStyle().getColor();
 
         List<Component> siblings = message.getSiblings();
-        TextColor color2 = siblings.size() > 1 ? siblings.get(1).getStyle().getColor() : null;
+        TextColor color2 = !siblings.isEmpty()? siblings.getFirst().getStyle().getColor() : null;
 
         TextColor yellow = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
