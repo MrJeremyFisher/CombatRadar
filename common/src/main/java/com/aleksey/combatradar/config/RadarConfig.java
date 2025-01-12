@@ -242,9 +242,9 @@ public class RadarConfig {
 
         _entityList.add(new RadarEntityInfo(Armadillo.class, "Armadillo", "icons/armadillo.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Bogged.class, "Bogged", "icons/bogged.png", GroupType.AGGRESSIVE));
-        _entityList.add(new RadarEntityInfo(Breeze.class, "Breeze", "icons/breeze.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Breeze.class, "Breeze", "icons/breeze.png", GroupType.AGGRESSIVE));
 
-        _entityList.add(new RadarEntityInfo(Creaking.class, "Creaking", "icons/creaking.png", GroupType.NEUTRAL));
+        _entityList.add(new RadarEntityInfo(Creaking.class, "Creaking", "icons/creaking.png", GroupType.AGGRESSIVE));
 
         _entityList.sort(new RadarEntityInfo.EntityComparator());
 
