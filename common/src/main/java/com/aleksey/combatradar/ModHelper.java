@@ -183,4 +183,12 @@ public class ModHelper {
 
         return true;
     }
+    
+    public RadarConfig getConfig() {
+        return _config;
+    }
+
+    public Speedometer getSpeedometer() {
+        return _speedometer;
+    }
 }

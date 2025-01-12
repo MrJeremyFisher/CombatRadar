@@ -17,6 +17,9 @@
   "entrypoints": {
     "client": [
       "com.aleksey.combatradar.fabric.FabricModCombatRadar"
+    ],
+    "modmenu": [
+      "com.aleksey.combatradar.fabric.FabricModCombatRadar"
     ]
   },
   "depends": {

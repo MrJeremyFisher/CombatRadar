@@ -444,6 +444,9 @@ public class Radar {
     private void addEntity(Entity entity, EntitySettings settings, Map<UUID, PlayerInfo> oldPlayers, ResourceLocation icon) {
         RadarEntity radarEntity;
 
+        Minecraft minecraft = Minecraft.getInstance();
+        minecraft.getEntityRenderDispatcher().getRenderer(entity);
+        
         if (entity instanceof ExperienceOrb) {
             radarEntity = new CustomRadarEntity(entity, settings, icon);
         } else if (entity instanceof ItemEntity) {
