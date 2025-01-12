@@ -19,7 +19,7 @@
       "com.aleksey.combatradar.fabric.FabricModCombatRadar"
     ],
     "modmenu": [
-      "com.aleksey.combatradar.fabric.FabricModCombatRadar"
+      "com.aleksey.combatradar.fabric.ModMenuEntrypoint"
     ]
   },
   "depends": {
