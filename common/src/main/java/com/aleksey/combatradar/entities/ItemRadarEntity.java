@@ -1,5 +1,7 @@
 package com.aleksey.combatradar.entities;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -34,11 +36,17 @@ public class ItemRadarEntity extends RadarEntity {
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
 
         poseStack.pushPose();
-        poseStack.translate(displayX, displayY, 100);
+        poseStack.translate(displayX, displayY, 100.0F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         poseStack.scale(iconScale, iconScale, iconScale);
 
-        guiGraphics.renderItem(_item, -8, -8);
+        RenderSystem.enableBlend();
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+
+        guiGraphics.renderFakeItem(_item, -8, -8);
+
+        RenderSystem.enableDepthTest();
 
         poseStack.popPose();
     }
