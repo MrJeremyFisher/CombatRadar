@@ -31,7 +31,6 @@ public class LiveRadarEntity extends RadarEntity {
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, getSettings().iconOpacity);
-//        RenderSystem.enableBlend();
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
@@ -44,6 +43,5 @@ public class LiveRadarEntity extends RadarEntity {
 
         poseStack.popPose();
 
-//        RenderSystem.disableBlend();
     }
 }

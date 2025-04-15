@@ -34,7 +34,6 @@ public class PlayerRadarEntity extends RadarEntity {
         float scale = getSettings().iconScale * 1.7f;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, getSettings().iconOpacity);
-//        RenderSystem.enableBlend();
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
@@ -44,8 +43,6 @@ public class PlayerRadarEntity extends RadarEntity {
         poseStack.scale(scale, scale, scale);
         renderPlayerIcon(guiGraphics, player);
         poseStack.popPose();
-
-//        RenderSystem.disableBlend();
 
         if (getSettings().showPlayerNames)
             renderPlayerName(guiGraphics, player);

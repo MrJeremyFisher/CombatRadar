@@ -31,7 +31,6 @@ public class CustomRadarEntity extends RadarEntity {
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
 
         RenderSystem.setShaderColor(1, 1, 1, getSettings().iconOpacity);
-//        RenderSystem.enableBlend();
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
@@ -41,7 +40,5 @@ public class CustomRadarEntity extends RadarEntity {
         guiGraphics.blit(RenderType::guiTextured, _resourceLocation, -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popPose();
-
-//        RenderSystem.disableBlend();
     }
 }
