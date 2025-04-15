@@ -1,6 +1,5 @@
 package com.aleksey.combatradar.entities;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -40,13 +39,13 @@ public class ItemRadarEntity extends RadarEntity {
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         poseStack.scale(iconScale, iconScale, iconScale);
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+//        RenderSystem.enableBlend();
+//        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         guiGraphics.renderFakeItem(_item, -8, -8);
 
-        RenderSystem.enableDepthTest();
+//        RenderSystem.enableDepthTest();
 
         poseStack.popPose();
     }

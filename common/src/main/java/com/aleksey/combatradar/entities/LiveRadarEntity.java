@@ -31,19 +31,19 @@ public class LiveRadarEntity extends RadarEntity {
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, getSettings().iconOpacity);
-        RenderSystem.enableBlend();
+//        RenderSystem.enableBlend();
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
         poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
         poseStack.scale(iconScale, iconScale, iconScale);
 
-        RenderSystem.setShaderTexture(0, _resourceLocation);
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_resourceLocation).getTexture());
 
         guiGraphics.blit(RenderType::guiTextured, _resourceLocation, -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popPose();
 
-        RenderSystem.disableBlend();
+//        RenderSystem.disableBlend();
     }
 }

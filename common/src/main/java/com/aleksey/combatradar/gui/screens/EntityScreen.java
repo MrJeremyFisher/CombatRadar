@@ -6,6 +6,7 @@ import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.gui.components.SmallButton;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -227,7 +228,7 @@ public class EntityScreen extends Screen {
         poseStack.translate(x, y, 0);
         poseStack.scale(0.6f, 0.6f, 0.6f);
 
-        RenderSystem.setShaderTexture(0, info.getIcon((Entity) null));
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(info.getIcon((Entity) null)).getTexture());
 
         guiGraphics.blit(RenderType::guiTextured, info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 

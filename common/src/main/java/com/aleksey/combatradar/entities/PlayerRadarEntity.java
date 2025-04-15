@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -34,7 +34,7 @@ public class PlayerRadarEntity extends RadarEntity {
         float scale = getSettings().iconScale * 1.7f;
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, getSettings().iconOpacity);
-        RenderSystem.enableBlend();
+//        RenderSystem.enableBlend();
 
         poseStack.pushPose();
         poseStack.translate(displayX, displayY, 0);
@@ -45,7 +45,7 @@ public class PlayerRadarEntity extends RadarEntity {
         renderPlayerIcon(guiGraphics, player);
         poseStack.popPose();
 
-        RenderSystem.disableBlend();
+//        RenderSystem.disableBlend();
 
         if (getSettings().showPlayerNames)
             renderPlayerName(guiGraphics, player);
@@ -56,7 +56,7 @@ public class PlayerRadarEntity extends RadarEntity {
     private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
         ResourceLocation skin = player.getSkin().texture();
 
-        RenderSystem.setShaderTexture(0, skin);
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTexture());
 
         guiGraphics.blit(RenderType::guiTextured, skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64);
     }

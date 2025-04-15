@@ -42,12 +42,9 @@ public class CheckButton extends Button {
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 
-        RenderSystem.setShaderTexture(0, _texture);
-        RenderSystem.enableDepthTest();
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_texture).getTexture());
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
 
         guiGraphics.blit(RenderType::guiTextured, _texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE, 256, 256);
 

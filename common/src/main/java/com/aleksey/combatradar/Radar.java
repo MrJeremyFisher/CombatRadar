@@ -10,11 +10,15 @@ import com.aleksey.combatradar.entities.LiveRadarEntity;
 import com.aleksey.combatradar.entities.PlayerRadarEntity;
 import com.aleksey.combatradar.entities.RadarEntity;
 import com.mojang.authlib.GameProfile;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -25,7 +29,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
@@ -50,6 +53,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -71,6 +76,38 @@ public class Radar {
     private int _radarDisplayY;
     private Map<UUID, PlayerInfo> _radarPlayers;
     private Map<UUID, String> _onlinePlayers;
+    private final RenderPipeline TRIANGLES =
+            RenderPipeline.builder()
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/triangles"))
+                    .withVertexShader("core/position")
+                    .withFragmentShader("core/position")
+                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLES)
+                    .withBlend(BlendFunction.PANORAMA)
+                    .build();
+    private final RenderPipeline LINES =
+            RenderPipeline.builder()
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/lines"))
+                    .withVertexShader("core/position")
+                    .withFragmentShader("core/position")
+                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+                    .withBlend(BlendFunction.PANORAMA)
+                    .build();
+    private final RenderPipeline CIRCLE =
+            RenderPipeline.builder()
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/circle"))
+                    .withVertexShader("core/position")
+                    .withFragmentShader("core/position")
+                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLE_FAN)
+                    .withBlend(BlendFunction.PANORAMA)
+                    .build();
+    private final RenderPipeline BORDER =
+            RenderPipeline.builder()
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/border"))
+                    .withVertexShader("core/position")
+                    .withFragmentShader("core/position")
+                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLE_STRIP)
+                    .withBlend(BlendFunction.PANORAMA)
+                    .build();
 
     public Radar(RadarConfig config) {
         if (instance != null) {
@@ -103,8 +140,8 @@ public class Radar {
                         .withStyle(ChatFormatting.AQUA)
                 );
 
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/jm wpedit " + getChatCoordText(playerInfo, true, true, _config.getShowYLevel()));
+        HoverEvent hoverEvent = new HoverEvent.ShowText(hover);
+        ClickEvent clickEvent = new ClickEvent.RunCommand("/jm wpedit " + getChatCoordText(playerInfo, true, true, _config.getShowYLevel()));
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
@@ -118,8 +155,8 @@ public class Radar {
         Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
                 .withStyle(ChatFormatting.WHITE);
 
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
+        HoverEvent hoverEvent = new HoverEvent.ShowText(hover);
+        ClickEvent clickEvent = new ClickEvent.RunCommand("/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
@@ -133,8 +170,8 @@ public class Radar {
         Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
                 .withStyle(ChatFormatting.WHITE);
 
-        HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover);
-        ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND,
+        HoverEvent hoverEvent = new HoverEvent.ShowText(hover);
+        ClickEvent clickEvent = new ClickEvent.RunCommand(
                 "/xaero_waypoint_add:"
                         + playerInfo.playerName + ":"
                         + playerInfo.playerName.substring(0, 2) + ":"
@@ -269,10 +306,6 @@ public class Radar {
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(CoreShaders.POSITION);
-
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
         renderTriangle(lastPose, 0, 0);
@@ -280,20 +313,20 @@ public class Radar {
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
-        RenderSystem.disableBlend();
-
         poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
     }
 
     private void renderTriangle(Matrix4f lastPose, float color, float offset) {
+
         RenderSystem.setShaderColor(color, color, color, 1);
 
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION);
-        buffer.addVertex(lastPose, 0f, 3f - offset, 0);
-        buffer.addVertex(lastPose, 3f - offset, -3f + offset, 0);
-        buffer.addVertex(lastPose, -3f + offset, -3f + offset, 0);
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
+        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.TRIANGLES, TRIANGLES.getVertexFormat());
+        bufferBuilder.addVertex(lastPose, 0f, 3f - offset, 0);
+        bufferBuilder.addVertex(lastPose, 3f - offset, -3f + offset, 0);
+        bufferBuilder.addVertex(lastPose, -3f + offset, -3f + offset, 0);
+
+        renderOutBuffer(bufferBuilder, TRIANGLES);
     }
 
     private void renderLines(PoseStack poseStack, float radius) {
@@ -309,9 +342,6 @@ public class Radar {
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(CoreShaders.POSITION);
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -336,8 +366,7 @@ public class Radar {
         buffer.addVertex(lastPose, d, -c, 0f);
         buffer.addVertex(lastPose, -c, d, 0f);
 
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.disableBlend();
+        renderOutBuffer(buffer, LINES);
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
     }
@@ -346,9 +375,6 @@ public class Radar {
         float opacity = _config.getRadarOpacity();
         Matrix4f lastPose = poseStack.last().pose();
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(CoreShaders.POSITION);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
 
         Tesselator tesselator = Tesselator.getInstance();
@@ -360,8 +386,7 @@ public class Radar {
             buffer.addVertex(lastPose, x, y, 0);
         }
 
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.disableBlend();
+        renderOutBuffer(buffer, CIRCLE);
     }
 
     private void renderCircleBorder(PoseStack poseStack, float radius) {
@@ -370,9 +395,6 @@ public class Radar {
 
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(CoreShaders.POSITION);
         RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
 
         Tesselator tesselator = Tesselator.getInstance();
@@ -390,10 +412,35 @@ public class Radar {
             buffer.addVertex(lastPose, x2, y2, 0);
         }
 
-        BufferUploader.drawWithShader(buffer.buildOrThrow());
-        RenderSystem.disableBlend();
+        renderOutBuffer(buffer, BORDER);
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+    }
+
+    private void renderOutBuffer(BufferBuilder bufferBuilder, RenderPipeline pipeline) {
+        Minecraft minecraft = Minecraft.getInstance();
+        GpuBuffer indexBuffer;
+        VertexFormat.IndexType indexType;
+        try (MeshData meshData = bufferBuilder.buildOrThrow()) {
+            if (meshData.indexBuffer() == null) {
+                RenderSystem.AutoStorageIndexBuffer autoStorageIndexBuffer = RenderSystem.getSequentialBuffer(meshData.drawState().mode());
+                indexBuffer = autoStorageIndexBuffer.getBuffer(meshData.drawState().indexCount());
+                indexType = autoStorageIndexBuffer.type();
+            } else {
+                indexBuffer = pipeline.getVertexFormat().uploadImmediateIndexBuffer(meshData.indexBuffer());
+                indexType = meshData.drawState().indexType();
+            }
+
+            GpuBuffer vertexBuffer = pipeline.getVertexFormat().uploadImmediateVertexBuffer(meshData.vertexBuffer());
+            try (
+                    RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(minecraft.getMainRenderTarget().getColorTexture(), OptionalInt.empty(), minecraft.getMainRenderTarget().getDepthTexture(), OptionalDouble.empty());
+            ) {
+                renderPass.setPipeline(pipeline);
+                renderPass.setVertexBuffer(0, vertexBuffer);
+                renderPass.setIndexBuffer(indexBuffer, indexType);
+                renderPass.drawIndexed(0, meshData.drawState().indexCount());
+            }
+        }
     }
 
     public void scanEntities() {

@@ -6,10 +6,12 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
-public class FabricModCombatRadar implements ClientModInitializer{
+public class FabricModCombatRadar implements ClientModInitializer {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static ModHelper _modHelper;
 
@@ -18,7 +20,9 @@ public class FabricModCombatRadar implements ClientModInitializer{
         _modHelper = new ModHelper();
 
         KeyBindingHelper.registerKeyBinding(_modHelper.getSettingsKey());
-
+        HudLayerRegistrationCallback.EVENT.register(layeredDrawer -> layeredDrawer.attachLayerAfter(IdentifiedLayer.EXPERIENCE_LEVEL,
+                ResourceLocation.fromNamespaceAndPath("combatradar", "radar"),
+                _modHelper::render));
         ClientLifecycleEvents.CLIENT_STARTED.register(e -> init());
     }
 
@@ -26,7 +30,6 @@ public class FabricModCombatRadar implements ClientModInitializer{
         _modHelper.init(LOGGER);
 
         ClientTickEvents.START_CLIENT_TICK.register(e -> _modHelper.tick());
-        HudRenderCallback.EVENT.register((poseStack, partialTicks) -> _modHelper.render(poseStack, partialTicks));
         ChatCallback.EVENT.register((component) -> _modHelper.processChat(component));
 
         LOGGER.info("[CombatRadar]: Enabled");
