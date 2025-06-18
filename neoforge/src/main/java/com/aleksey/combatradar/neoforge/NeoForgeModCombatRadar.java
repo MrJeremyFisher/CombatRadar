@@ -7,6 +7,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -28,15 +29,16 @@ public class NeoForgeModCombatRadar {
     public NeoForgeModCombatRadar(IEventBus bus, ModContainer modContainer) {
         _modHelper = new ModHelper();
 
-        _modHelper.init(LOGGER);
-
-        LOGGER.info("[CombatRadar]: mod enabled");
-
         NeoForge.EVENT_BUS.register(this);
 
         bus.addListener(this::registerBindings);
 
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (container, parent) -> new MainScreen(parent, _modHelper.getConfig(), _modHelper.getSpeedometer()));
+        bus.addListener(FMLClientSetupEvent.class, (clientSetupEvent) -> {
+            _modHelper.init(LOGGER);
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, (container, parent) -> new MainScreen(parent, _modHelper.getConfig(), _modHelper.getSpeedometer()));
+
+            LOGGER.info("[CombatRadar]: mod enabled");
+        });
     }
 
     public void registerBindings(RegisterKeyMappingsEvent event) {
@@ -45,7 +47,7 @@ public class NeoForgeModCombatRadar {
 
     @SubscribeEvent
     public void onClientTick(ClientTickEvent.Pre event) {
-            _modHelper.tick();
+        _modHelper.tick();
     }
 
     @SubscribeEvent
