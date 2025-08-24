@@ -5,15 +5,15 @@ import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.gui.components.SmallButton;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import org.joml.Matrix3x2fStack;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -221,18 +221,17 @@ public class EntityScreen extends Screen {
     }
 
     private void renderIcon(GuiGraphics guiGraphics, float x, float y, RadarEntityInfo info) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
 
-        poseStack.pushPose();
-        poseStack.translate(x, y, 0);
-        poseStack.scale(0.6f, 0.6f, 0.6f);
+        poseStack.pushMatrix();
+        poseStack.translate(x, y);
+        poseStack.scale(0.6f, 0.6f);
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(info.getIcon((Entity) null)).getTexture());
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(info.getIcon((Entity) null)).getTextureView());
 
-        guiGraphics.blit(RenderType::guiTextured, info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     private static class EntityGroup {

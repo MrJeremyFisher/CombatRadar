@@ -8,7 +8,7 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class ForgeModCombatRadar {
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        fmlJavaModLoadingContext.getModEventBus().addListener(this::registerBindings);
+        RegisterKeyMappingsEvent.getBus(fmlJavaModLoadingContext.getModBusGroup()).addListener(this::registerBindings);
 
         fmlJavaModLoadingContext.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory(
                         (parent) -> new MainScreen(parent, _modHelper.getConfig(), _modHelper.getSpeedometer())
@@ -45,15 +45,13 @@ public class ForgeModCombatRadar {
     }
 
     @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START)
-            _modHelper.tick();
+    public void onClientTick(TickEvent.ClientTickEvent.Pre event) {
+        _modHelper.tick();
     }
 
     @SubscribeEvent
-    public void onClientChat(ClientChatReceivedEvent event) {
-        if (_modHelper.processChat(event.getMessage()))
-            event.setCanceled(true);
+    public boolean onClientChat(ClientChatReceivedEvent event) {
+        return _modHelper.processChat(event.getMessage()); // Forge handles setCancelled as a return now. True cancels the event, false does not.
     }
 
     public static ModHelper getModHelper() {

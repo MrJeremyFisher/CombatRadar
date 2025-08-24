@@ -1,13 +1,11 @@
 package com.aleksey.combatradar.entities;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Matrix3x2fStack;
 
 /**
  * @author Aleksey Terzi
@@ -28,21 +26,19 @@ public class ItemRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
         float iconScale = getSettings().iconScale;
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
 
-        poseStack.pushPose();
-        poseStack.translate(displayX, displayY, 100.0F);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
-        poseStack.scale(iconScale, iconScale, iconScale);
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        poseStack.pushMatrix();
+        poseStack.translate(displayX, displayY);
+        poseStack.rotate(org.joml.Math.toRadians(rotationYaw));
+        poseStack.scale(iconScale, iconScale);
 
         guiGraphics.renderFakeItem(_item, -8, -8);
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 }

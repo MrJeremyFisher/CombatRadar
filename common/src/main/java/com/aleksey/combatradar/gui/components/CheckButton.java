@@ -4,12 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * @author Aleksey Terzi
@@ -42,11 +42,9 @@ public class CheckButton extends Button {
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_texture).getTexture());
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_texture).getTextureView());
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1);
-
-        guiGraphics.blit(RenderType::guiTextured, _texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, _texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE, 256, 256);
 
         int textColor = this.isHovered ? 16777120 : Color.LIGHT_GRAY.getRGB();
 

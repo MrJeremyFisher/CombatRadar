@@ -2,7 +2,6 @@ package com.aleksey.combatradar.gui.screens;
 
 import com.aleksey.combatradar.Speedometer;
 import com.aleksey.combatradar.config.RadarConfig;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -103,8 +102,6 @@ public class MainScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         String keyName = _config.getSettingsKey().getTranslatedKeyMessage().getString().toUpperCase();
-
-        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ctrl+Alt+" + keyName + " - enable/disable radar", this.width / 2, _keyHintY, Color.LIGHT_GRAY.getRGB());

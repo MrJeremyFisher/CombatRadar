@@ -2,7 +2,14 @@ package com.aleksey.combatradar;
 
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.screens.MainScreen;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.SourceFactor;
+import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
@@ -10,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -21,6 +29,35 @@ public class ModHelper {
     private RadarConfig _config;
     private Radar _radar;
     private Speedometer _speedometer;
+    private static final BlendFunction blendFunc = new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
+    private static final RenderPipeline.Snippet UNIFORM_SNIPPET =
+            RenderPipeline.builder()
+                    .withVertexShader("core/position_color")
+                    .withFragmentShader("core/position_color")
+                    .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
+                    .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+                    .withBlend(BlendFunction.TRANSLUCENT)
+                    .buildSnippet();
+    public static final RenderPipeline TRIANGLES =
+            RenderPipeline.builder(UNIFORM_SNIPPET)
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/triangles"))
+                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+                    .build();
+    public static final RenderPipeline LINES =
+            RenderPipeline.builder(UNIFORM_SNIPPET)
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/lines"))
+                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+                    .build();
+    public static final RenderPipeline CIRCLE =
+            RenderPipeline.builder(UNIFORM_SNIPPET)
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/circle"))
+                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINE_STRIP)
+                    .build();
+    public static final RenderPipeline BORDER =
+            RenderPipeline.builder(UNIFORM_SNIPPET)
+                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/border"))
+                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
+                    .build();
 
     private final KeyMapping _settingsKey;
 
@@ -73,14 +110,14 @@ public class ModHelper {
         if (_config.getPingsEnabled() || _config.getEnabled()) {
             _radar.scanEntities();
         }
-        
+
         if (_config.getEnabled()) {
             _radar.calcSettings();
-            
+
             if (_config.getSpeedometerEnabled())
                 _speedometer.calc();
         }
-        
+
         if (_config.getPingsEnabled()) {
             _radar.sendMessages();
             _radar.playSounds();
@@ -131,7 +168,7 @@ public class ModHelper {
         TextColor color1 = message.getStyle().getColor();
 
         List<Component> siblings = message.getSiblings();
-        TextColor color2 = !siblings.isEmpty()? siblings.getFirst().getStyle().getColor() : null;
+        TextColor color2 = !siblings.isEmpty() ? siblings.getFirst().getStyle().getColor() : null;
 
         TextColor yellow = TextColor.fromLegacyFormat(ChatFormatting.YELLOW);
 
@@ -183,7 +220,7 @@ public class ModHelper {
 
         return true;
     }
-    
+
     public RadarConfig getConfig() {
         return _config;
     }

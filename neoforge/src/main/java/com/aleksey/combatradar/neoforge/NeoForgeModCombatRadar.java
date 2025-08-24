@@ -8,10 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
@@ -52,7 +49,7 @@ public class NeoForgeModCombatRadar {
 
     @SubscribeEvent
     public void onRender(RenderGuiLayerEvent.Post event) {
-        if (event.getName() == VanillaGuiLayers.PLAYER_HEALTH)
+        if (event.getName() == VanillaGuiLayers.BOSS_OVERLAY)
             _modHelper.render(event.getGuiGraphics(), event.getPartialTick());
     }
 

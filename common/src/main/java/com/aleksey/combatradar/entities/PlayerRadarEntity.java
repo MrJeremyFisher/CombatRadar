@@ -2,17 +2,17 @@ package com.aleksey.combatradar.entities;
 
 import com.aleksey.combatradar.config.PlayerType;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
+import org.joml.Matrix3x2fStack;
 
-import java.awt.Color;
+import java.awt.*;
 
 /**
  * @author Aleksey Terzi
@@ -26,48 +26,46 @@ public class PlayerRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
         RemotePlayer player = (RemotePlayer) getEntity();
         float rotationYaw = minecraft.player.getViewYRot(partialTicks);
         float scale = getSettings().iconScale * 1.7f;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, getSettings().iconOpacity);
+        poseStack.pushMatrix();
+        poseStack.translate(displayX, displayY);
+        poseStack.rotate(org.joml.Math.toRadians(rotationYaw));
 
-        poseStack.pushPose();
-        poseStack.translate(displayX, displayY, 0);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
-
-        poseStack.pushPose();
-        poseStack.scale(scale, scale, scale);
+        poseStack.pushMatrix();
+        poseStack.scale(scale, scale);
         renderPlayerIcon(guiGraphics, player);
-        poseStack.popPose();
+        poseStack.popMatrix();
 
         if (getSettings().showPlayerNames)
             renderPlayerName(guiGraphics, player);
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
         ResourceLocation skin = player.getSkin().texture();
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTexture());
+        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTextureView());
 
-        guiGraphics.blit(RenderType::guiTextured, skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64,
+                ARGB.colorFromFloat(getSettings().iconOpacity, 1.0F, 1.0F, 1.0F));
     }
 
     private void renderPlayerName(GuiGraphics guiGraphics, RemotePlayer player) {
         Minecraft minecraft = Minecraft.getInstance();
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
 
         Color color = _playerType == PlayerType.Ally
                 ? getSettings().allyPlayerColor
                 : (_playerType == PlayerType.Enemy ? getSettings().enemyPlayerColor : getSettings().neutralPlayerColor);
 
-        poseStack.pushPose();
-        poseStack.scale(getSettings().fontScale, getSettings().fontScale, getSettings().fontScale);
+        poseStack.scale(getSettings().fontScale, getSettings().fontScale, poseStack.pushMatrix());
 
         String playerName = player.getScoreboardName();
         if (getSettings().showExtraPlayerInfo && getSettings().showYLevel) {
@@ -87,6 +85,6 @@ public class PlayerRadarEntity extends RadarEntity {
 
         guiGraphics.drawString(font, playerName, xOffset, yOffset, color.getRGB());
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 }

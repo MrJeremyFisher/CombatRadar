@@ -18,15 +18,15 @@ public abstract class RadarEntity {
         _settings = settings;
     }
 
-    private static double getPartialX(Entity entity, float partialTicks) {
-        return getPartial(entity.xOld, entity.getX(), partialTicks);
+    private static float getPartialX(Entity entity, float partialTicks) {
+        return getPartial((float) entity.xOld, (float) entity.getX(), partialTicks);
     }
 
-    private static double getPartialZ(Entity entity, float partialTicks) {
-        return getPartial(entity.zOld, entity.getZ(), partialTicks);
+    private static float getPartialZ(Entity entity, float partialTicks) {
+        return getPartial((float) entity.zOld, (float) entity.getZ(), partialTicks);
     }
 
-    private static double getPartial(double oldValue, double newValue, float partialTicks) {
+    private static float getPartial(float oldValue, float newValue, float partialTicks) {
         return oldValue + (newValue - oldValue) * partialTicks;
     }
 
@@ -41,8 +41,8 @@ public abstract class RadarEntity {
     public final void render(GuiGraphics guiGraphics, float partialTicks) {
         Player player = Minecraft.getInstance().player;
 
-        double displayX = getPartialX(player, partialTicks) - getPartialX(_entity, partialTicks);
-        double displayZ = getPartialZ(player, partialTicks) - getPartialZ(_entity, partialTicks); // Convert to 2D where Z is Y
+        float displayX = getPartialX(player, partialTicks) - getPartialX(_entity, partialTicks);
+        float displayZ = getPartialZ(player, partialTicks) - getPartialZ(_entity, partialTicks); // Convert to 2D where Z is Y
         double distanceSq = Mth.lengthSquared(displayX, displayZ);
 
         if (distanceSq > _settings.radarDistanceSq)
@@ -51,5 +51,5 @@ public abstract class RadarEntity {
         renderInternal(guiGraphics, displayX, displayZ, partialTicks);
     }
 
-    protected abstract void renderInternal(GuiGraphics guiGraphics, double displayX, double displayY, float partialTicks);
+    protected abstract void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks);
 }

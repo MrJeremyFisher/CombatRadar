@@ -3,38 +3,24 @@ package com.aleksey.combatradar;
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.PlayerTypeInfo;
 import com.aleksey.combatradar.config.RadarConfig;
-import com.aleksey.combatradar.entities.CustomRadarEntity;
-import com.aleksey.combatradar.entities.EntitySettings;
-import com.aleksey.combatradar.entities.ItemRadarEntity;
-import com.aleksey.combatradar.entities.LiveRadarEntity;
-import com.aleksey.combatradar.entities.PlayerRadarEntity;
-import com.aleksey.combatradar.entities.RadarEntity;
+import com.aleksey.combatradar.entities.*;
+import com.aleksey.combatradar.gui.CircleElementRenderState;
 import com.mojang.authlib.GameProfile;
 import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Axis;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -44,18 +30,11 @@ import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
+import org.joml.Matrix3x2f;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -76,38 +55,6 @@ public class Radar {
     private int _radarDisplayY;
     private Map<UUID, PlayerInfo> _radarPlayers;
     private Map<UUID, String> _onlinePlayers;
-    private final RenderPipeline TRIANGLES =
-            RenderPipeline.builder()
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/triangles"))
-                    .withVertexShader("core/position")
-                    .withFragmentShader("core/position")
-                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLES)
-                    .withBlend(BlendFunction.PANORAMA)
-                    .build();
-    private final RenderPipeline LINES =
-            RenderPipeline.builder()
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/lines"))
-                    .withVertexShader("core/position")
-                    .withFragmentShader("core/position")
-                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
-                    .withBlend(BlendFunction.PANORAMA)
-                    .build();
-    private final RenderPipeline CIRCLE =
-            RenderPipeline.builder()
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/circle"))
-                    .withVertexShader("core/position")
-                    .withFragmentShader("core/position")
-                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLE_FAN)
-                    .withBlend(BlendFunction.PANORAMA)
-                    .build();
-    private final RenderPipeline BORDER =
-            RenderPipeline.builder()
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar","pipelines/border"))
-                    .withVertexShader("core/position")
-                    .withFragmentShader("core/position")
-                    .withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.TRIANGLE_STRIP)
-                    .withBlend(BlendFunction.PANORAMA)
-                    .build();
 
     public Radar(RadarConfig config) {
         if (instance != null) {
@@ -247,89 +194,84 @@ public class Radar {
     }
 
     public void render(GuiGraphics guiGraphics, DeltaTracker partialTicks) {
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
 
         if (_radarRadius == 0)
             return;
 
         float rotationYaw = Minecraft.getInstance().player.getViewYRot(partialTicks.getRealtimeDeltaTicks());
 
-        poseStack.pushPose();
-        poseStack.translate(_radarDisplayX, _radarDisplayY, 0);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-rotationYaw));
-
-        renderCircleBg(poseStack, _radarRadius);
-        renderCircleBorder(poseStack, _radarRadius);
-        renderLines(poseStack, _radarRadius);
-
+        poseStack.pushMatrix();
+        poseStack.translate(_radarDisplayX, _radarDisplayY);
+//        poseStack.rotate(org.joml.Math.toRadians(-rotationYaw));
+        renderCircleBg(guiGraphics, _radarRadius);
+//        guiGraphics
+//        renderCircleBorder(poseStack, _radarRadius);
+//        renderLines(poseStack, _radarRadius);
         renderNonPlayerEntities(guiGraphics, partialTicks.getRealtimeDeltaTicks());
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(rotationYaw));
-        renderTriangle(poseStack);
+        poseStack.rotate(org.joml.Math.toRadians(rotationYaw));
+//        renderTriangle(poseStack);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-rotationYaw));
+//        poseStack.rotate(org.joml.Math.toRadians(-rotationYaw));
         renderPlayerEntities(guiGraphics, partialTicks.getRealtimeDeltaTicks());
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     private void renderNonPlayerEntities(GuiGraphics guiGraphics, float partialTicks) {
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
 
-        poseStack.pushPose();
-        poseStack.scale(_radarScale, _radarScale, _radarScale);
+        poseStack.pushMatrix();
+        poseStack.scale(_radarScale, _radarScale);
 
         for (RadarEntity radarEntity : _entities) {
             if (!(radarEntity instanceof PlayerRadarEntity))
                 radarEntity.render(guiGraphics, partialTicks);
         }
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
     private void renderPlayerEntities(GuiGraphics guiGraphics, float partialTicks) {
-        PoseStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
 
-        poseStack.pushPose();
-        poseStack.scale(_radarScale, _radarScale, _radarScale);
+        poseStack.pushMatrix();
+        poseStack.scale(_radarScale, _radarScale);
 
         for (RadarEntity radarEntity : _entities) {
             if (radarEntity instanceof PlayerRadarEntity)
                 radarEntity.render(guiGraphics, partialTicks);
         }
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
-    private void renderTriangle(PoseStack poseStack) {
-        Matrix4f lastPose = poseStack.last().pose();
-
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+    private void renderTriangle(Matrix3x2fStack poseStack) {
+        poseStack.rotate(org.joml.Math.toRadians(180));
 
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
-        renderTriangle(lastPose, 0, 0);
-        renderTriangle(lastPose, 1, 0.5f);
+        renderTriangle(poseStack, 0, 0);
+        renderTriangle(poseStack, 1, 0.5f);
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-180));
+        poseStack.rotate(org.joml.Math.toRadians(-180));
     }
 
-    private void renderTriangle(Matrix4f lastPose, float color, float offset) {
-
-        RenderSystem.setShaderColor(color, color, color, 1);
-
+    private void renderTriangle(Matrix3x2fStack lastPose, int color, float offset) {
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.TRIANGLES, TRIANGLES.getVertexFormat());
-        bufferBuilder.addVertex(lastPose, 0f, 3f - offset, 0);
-        bufferBuilder.addVertex(lastPose, 3f - offset, -3f + offset, 0);
-        bufferBuilder.addVertex(lastPose, -3f + offset, -3f + offset, 0);
+        BufferBuilder bufferBuilder = tesselator.begin(VertexFormat.Mode.TRIANGLES, ModHelper.TRIANGLES.getVertexFormat());
+        bufferBuilder.addVertexWith2DPose(lastPose, 0f, 3f - offset, 0).setColor(color);
+        bufferBuilder.addVertexWith2DPose(lastPose, 3f - offset, -3f + offset, 0).setColor(color);
+        bufferBuilder.addVertexWith2DPose(lastPose, -3f + offset, -3f + offset, 0).setColor(color);
 
-        renderOutBuffer(bufferBuilder, TRIANGLES);
+        renderOutBuffer(bufferBuilder, ModHelper.TRIANGLES);
+        tesselator.clear();
     }
 
-    private void renderLines(PoseStack poseStack, float radius) {
+    private void renderLines(Matrix3x2fStack lastPose, float radius) {
         final float cos45 = 0.7071f;
         final float a = 0.25f;
         float length = radius - a;
@@ -337,65 +279,152 @@ public class Radar {
         float c = d + a / cos45;
 
         float opacity = _config.getRadarOpacity() + 0.5f;
-        Matrix4f lastPose = poseStack.last().pose();
 
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
-        RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
+        int color = ARGB.colorFromFloat(opacity, _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
 
-        buffer.addVertex(lastPose, -a, -length, 0f);
-        buffer.addVertex(lastPose, -a, length, 0f);
-        buffer.addVertex(lastPose, a, length, 0f);
-        buffer.addVertex(lastPose, a, -length, 0f);
+        buffer.addVertexWith2DPose(lastPose, -a, -length, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, -a, length, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, a, length, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, a, -length, 0f).setColor(color);
 
-        buffer.addVertex(lastPose, -length, a, 0f);
-        buffer.addVertex(lastPose, length, a, 0f);
-        buffer.addVertex(lastPose, length, -a, 0f);
-        buffer.addVertex(lastPose, -length, -a, 0f);
+        buffer.addVertexWith2DPose(lastPose, -length, a, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, length, a, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, length, -a, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, -length, -a, 0f).setColor(color);
 
-        buffer.addVertex(lastPose, -c, -d, 0f);
-        buffer.addVertex(lastPose, d, c, 0f);
-        buffer.addVertex(lastPose, c, d, 0f);
-        buffer.addVertex(lastPose, -d, -c, 0f);
+        buffer.addVertexWith2DPose(lastPose, -c, -d, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, d, c, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, c, d, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, -d, -c, 0f).setColor(color);
 
-        buffer.addVertex(lastPose, -d, c, 0f);
-        buffer.addVertex(lastPose, c, -d, 0f);
-        buffer.addVertex(lastPose, d, -c, 0f);
-        buffer.addVertex(lastPose, -c, d, 0f);
+        buffer.addVertexWith2DPose(lastPose, -d, c, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, c, -d, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, d, -c, 0f).setColor(color);
+        buffer.addVertexWith2DPose(lastPose, -c, d, 0f).setColor(color);
 
-        renderOutBuffer(buffer, LINES);
+        renderOutBuffer(buffer, ModHelper.LINES);
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+        tesselator.clear();
     }
 
-    private void renderCircleBg(PoseStack poseStack, float radius) {
-        float opacity = _config.getRadarOpacity();
-        Matrix4f lastPose = poseStack.last().pose();
+    private void renderCircleBg(GuiGraphics graphics, float radius) {
+//        float opacity = _config.getRadarOpacity() + 0.5f;
+//
+        int color = ARGB.colorFromFloat(_config.getRadarOpacity(), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
+//        graphics.fill(0,0, 200, 200, color);
+        GuiState.submit(graphics, new CircleElementRenderState(
+                ModHelper.CIRCLE,
+                new Matrix3x2f(graphics.pose()),
+                GuiState.peekScissorStack(graphics),
+                radius, color
 
-        RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION);
-
-        for (int i = 0; i <= 360; i++) {
-            float x = _sinList[i] * radius;
-            float y = _cosList[i] * radius;
-            buffer.addVertex(lastPose, x, y, 0);
-        }
-
-        renderOutBuffer(buffer, CIRCLE);
+        ));
+//                new GuiElementRenderState() {
+//
+//            // Store the current pose of the stack
+//            private final Matrix3x2f pose = new Matrix3x2f(graphics.pose());
+//            // Store the current scissor area
+//            @Nullable
+//            private final ScreenRectangle scissorArea = GuiState.peekScissorStack(graphics);
+//
+//            @Override
+//            public ScreenRectangle bounds() {
+//                // We will assume the bounds is 0, 0, 10, 10
+//
+//                // Compute the initial rectangle
+//                ScreenRectangle rectangle = new ScreenRectangle(
+//                        // The XY position
+//                        _radarDisplayX, _radarDisplayY,
+//                        // The width and height of the element
+//                        (int) (radius * 2), (int) (radius * 2)
+//                ).transformMaxBounds(this.pose);
+//
+//                return this.scissorArea != null
+//                        ? this.scissorArea.intersection(rectangle)
+//                        : rectangle;
+//            }
+//
+//            @Override
+//            @Nullable
+//            public ScreenRectangle scissorArea() {
+//                return this.scissorArea;
+//            }
+//
+//            @Override
+//            public RenderPipeline pipeline() {
+//                return ModHelper.CIRCLE;
+//            }
+//
+//            @Override
+//            public TextureSetup textureSetup() {
+//                // Returns the textures to be used by the samplers in a fragment shader
+//                // When used by the fragment shader:
+//                // - Sampler0 typically contains the element texture
+//                // - Sampler1 typically provides a second element texture, currently only used by the end portal pipeline
+//                // - Sampler2 typically contains the game's lightmap texture
+//
+//                // Should generally specify at least one texture in Sampler0
+//                return TextureSetup.noTexture();
+//            }
+//
+//            private void addV(VertexConsumer consumer, float x, float y, float z, int color) {
+//                consumer.addVertexWith2DPose(this.pose, x, y, z)
+//                        .setColor(color);
+//            }
+//
+//            @Override
+//            public void buildVertices(VertexConsumer consumer, float z) {
+//                int color = ARGB.colorFromFloat(_config.getRadarOpacity(), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
+//                float theta = 0;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFFFF0000);
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFF00FF00);
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFF0000FF);
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFFFF0000); // cos 0
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFF00FF00); // cos -'ve, sin +'ve and the jump happens??
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFF0000FF); // return to normal?? cos -'ve, sin +'ve
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFFFF0000);
+//                theta += Math.PI / 6;
+//                addV(consumer, (float) (100 * Math.cos(theta)), (float) (100 * Math.sin(theta)), z, 0xFF00FF00); // still normal, cos and sin -'ve
+////                for (int i = 0; i <= 360; i += 30) {
+////                    float x = _cosList[i] * 100;
+////                    float y = _sinList[i] * 100;
+////
+////                    if (!run) {
+////                        System.out.println("Adding vertex with x: " + (100 * Math.cos(Math.toRadians(i))) + " y: " + (100 * Math.sin(Math.toRadians(i))) + "ang: " + i);
+////                    }
+////                    consumer.addVertexWith2DPose(this.pose, (float) (Math.cos(Math.toRadians(i)) * radius), (float) (Math.sin(Math.toRadians(i)) * radius), z)
+////                            .setColor(color);
+////
+//////                    x = _sinList[i-1] * radius;
+//////                    y = _cosList[i-1] * radius;
+//////                    consumer.addVertexWith2DPose(this.pose, y, x, z)
+//////                            .setColor(color);
+////                }
+////                run = true;
+//            }
+//        });
     }
 
-    private void renderCircleBorder(PoseStack poseStack, float radius) {
+    public boolean run = false;
+
+    private void renderCircleBorder(Matrix3x2fStack poseStack, float radius) {
         float opacity = _config.getRadarOpacity() + 0.5f;
-        Matrix4f lastPose = poseStack.last().pose();
 
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
-        RenderSystem.setShaderColor(_config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f, opacity);
+        int color = ARGB.colorFromFloat(opacity, _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
 
         Tesselator tesselator = Tesselator.getInstance();
         BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
@@ -408,14 +437,16 @@ public class Radar {
             float x2 = sin * radius;
             float y2 = cos * radius;
 
-            buffer.addVertex(lastPose, x1, y1, 0);
-            buffer.addVertex(lastPose, x2, y2, 0);
+            buffer.addVertexWith2DPose(poseStack, x1, y1, 0).setColor(color);
+            buffer.addVertexWith2DPose(poseStack, x2, y2, 0).setColor(color);
         }
 
-        renderOutBuffer(buffer, BORDER);
+        renderOutBuffer(buffer, ModHelper.BORDER);
 
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+        tesselator.clear();
     }
+
 
     private void renderOutBuffer(BufferBuilder bufferBuilder, RenderPipeline pipeline) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -433,12 +464,12 @@ public class Radar {
 
             GpuBuffer vertexBuffer = pipeline.getVertexFormat().uploadImmediateVertexBuffer(meshData.vertexBuffer());
             try (
-                    RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(minecraft.getMainRenderTarget().getColorTexture(), OptionalInt.empty(), minecraft.getMainRenderTarget().getDepthTexture(), OptionalDouble.empty());
+                    RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "", minecraft.getMainRenderTarget().getColorTextureView(), OptionalInt.empty(), minecraft.getMainRenderTarget().getDepthTextureView(), OptionalDouble.empty());
             ) {
                 renderPass.setPipeline(pipeline);
                 renderPass.setVertexBuffer(0, vertexBuffer);
                 renderPass.setIndexBuffer(indexBuffer, indexType);
-                renderPass.drawIndexed(0, meshData.drawState().indexCount());
+                renderPass.drawIndexed(0, 0, meshData.drawState().indexCount(), 1);
             }
         }
     }

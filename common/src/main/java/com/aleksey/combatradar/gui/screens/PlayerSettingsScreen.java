@@ -5,7 +5,6 @@ import com.aleksey.combatradar.config.PlayerTypeInfo;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.SoundInfo;
 import com.aleksey.combatradar.gui.components.SliderButton;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -146,8 +145,6 @@ public class PlayerSettingsScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
         guiGraphics.drawCenteredString(this.font, "Neutral", this.width / 2, _neutralRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Neutral).color.getRGB());
         guiGraphics.drawCenteredString(this.font, "Ally", this.width / 2, _allyRedSlider.getY() - 12, _config.getPlayerTypeInfo(PlayerType.Ally).color.getRGB());
