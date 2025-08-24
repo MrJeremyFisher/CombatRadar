@@ -21,7 +21,7 @@ public class FabricModCombatRadar implements ClientModInitializer {
         _modHelper = new ModHelper();
 
         KeyBindingHelper.registerKeyBinding(_modHelper.getSettingsKey());
-        RenderPipelines.register(ModHelper.GUI_TRIANGLE_FAN);
+        RenderPipelines.register(ModHelper.CIRCLE);
         ClientLifecycleEvents.CLIENT_STARTED.register(e -> init());
     }
 
