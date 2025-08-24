@@ -51,7 +51,7 @@ public class ModHelper {
     public static final RenderPipeline CIRCLE =
             RenderPipeline.builder(UNIFORM_SNIPPET)
                     .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/circle"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.DEBUG_LINE_STRIP)
+                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN)
                     .build();
     public static final RenderPipeline BORDER =
             RenderPipeline.builder(UNIFORM_SNIPPET)
