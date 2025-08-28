@@ -22,6 +22,7 @@
       "com.aleksey.combatradar.fabric.ModMenuEntrypoint"
     ]
   },
+  "accessWidener": "combatradar.accesswidener",
   "depends": {
     "fabric": "*",
     "minecraft": "${minecraft_version}"

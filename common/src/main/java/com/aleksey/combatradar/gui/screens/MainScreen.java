@@ -19,6 +19,7 @@ public class MainScreen extends Screen {
     private final Screen _parent;
     private Button _playerStatusButton;
     private Button _speedometerButton;
+    private Button _scaleButton;
     private Button _enableButton;
     private Button _pingsEnableButton;
     private int _keyHintY;
@@ -54,9 +55,18 @@ public class MainScreen extends Screen {
         _playerStatusButton = Button.builder(Component.literal("Log Players Statuses:"), (btn) -> {
             _config.setLogPlayerStatus(!_config.getLogPlayerStatus());
             _config.save();
-        }).bounds(x, y, 100, 20).build();
+        }).bounds(x, y, 200, 20).build();
 
         addRenderableWidget(_playerStatusButton);
+
+        y += 24;
+
+        _scaleButton = Button.builder(Component.literal("Scale:"), (btn) -> {
+            _config.setLogScaleEnabled(!_config.getLogScaleEnabled());
+            _config.save();
+        }).bounds(x, y, 100, 20).build();
+
+        addRenderableWidget(_scaleButton);
 
         _speedometerButton = Button.builder(Component.literal("Speed:"), (btn) -> {
             _config.setSpeedometerEnabled(!_config.getSpeedometerEnabled());
@@ -97,6 +107,7 @@ public class MainScreen extends Screen {
         _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
         _pingsEnableButton.setMessage(Component.literal("Pings: " + (_config.getPingsEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
+        _scaleButton.setMessage(Component.literal("Scale: " + (_config.getLogScaleEnabled() ? "LOGARITHMIC" : "LINEAR")));
     }
 
     @Override

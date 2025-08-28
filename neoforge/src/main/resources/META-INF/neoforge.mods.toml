@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-issueTrackerURL="${issues_url}"
+issueTrackerURL = "${issues_url}"
 license = "Apache"
 
 [[mods]]
@@ -12,6 +12,9 @@ description = '''
 Radar that helps you find mobs and players.
 '''
 logoFile = "icon.png"
+
+[[mixins]]
+config = "combatradar.neoforge.mixins.json"
 
 [[dependencies.combatradar]]
 modId = "neoforge"

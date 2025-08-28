@@ -1,11 +1,10 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.aleksey.combatradar.fabric.mixin",
+  "package": "com.aleksey.combatradar.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "ChatMixin",
     "GuiRendererMixin"
   ],
   "server": [],

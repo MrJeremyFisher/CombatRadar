@@ -36,7 +36,6 @@ public class LiveRadarEntity extends RadarEntity {
         poseStack.scale(iconScale, iconScale);
 
         RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_resourceLocation).getTextureView());
-
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, _resourceLocation, -8, -8, 0, 0, 16, 16, 16, 16,
                 ARGB.colorFromFloat(getSettings().iconOpacity, 1.0F, 1.0F, 1.0F));
 

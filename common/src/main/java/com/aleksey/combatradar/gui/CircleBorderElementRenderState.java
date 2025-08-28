@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
 
-public record CircleElementRenderState(
+public record CircleBorderElementRenderState(
         RenderPipeline pipeline,
         Matrix3x2f pose,
         ScreenRectangle scissorArea,
@@ -19,13 +19,16 @@ public record CircleElementRenderState(
 ) implements GuiElementRenderState {
     @Override
     public void buildVertices(VertexConsumer vertices, float depth) {
-        vertices.addVertexWith2DPose(this.pose, 0, 0, depth).setColor(color);
 
-        for (int i = 360; i >= 0; i--) {
+        for (int i = 0; i <= 360; i++) {
             double theta = Math.toRadians(i);
-            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * this.radius), (float) (Math.sin(theta) * this.radius), depth)
+
+            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * (radius + 0.5f)), (float) (Math.sin(theta) * (radius + 0.5f)), depth)
+                    .setColor(color);
+            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * (radius)), (float) (Math.sin(theta) * (radius)), depth)
                     .setColor(color);
         }
+
     }
 
     @Override

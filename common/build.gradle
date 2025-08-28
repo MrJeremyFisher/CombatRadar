@@ -5,3 +5,7 @@ architectury {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
 }
+
+loom {
+    accessWidenerPath = file("src/main/resources/combatradar.accesswidener")
+}

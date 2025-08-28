@@ -122,6 +122,7 @@ public class RadarConfig {
     private boolean _showExtraPlayerInfo = true;
     private boolean _logPlayerStatus = true;
     private boolean _showYLevel = false;
+    private boolean _useLogScale = false;
     private List<String> _playersExcludedFromLog;
     // Calculated settings
     private boolean _isJourneyMapEnabled;
@@ -569,6 +570,14 @@ public class RadarConfig {
 
     public boolean load() {
         return RadarConfigLoader.load(this, _configFile);
+    }
+
+    public void setLogScaleEnabled(boolean b) {
+        _useLogScale = b;
+    }
+
+    public boolean getLogScaleEnabled() {
+        return _useLogScale;
     }
 
     private static class PlayerInfo {

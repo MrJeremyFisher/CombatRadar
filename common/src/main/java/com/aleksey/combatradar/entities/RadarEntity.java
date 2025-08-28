@@ -1,10 +1,7 @@
 package com.aleksey.combatradar.entities;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 
 /**
  * @author Aleksey Terzi
@@ -18,36 +15,19 @@ public abstract class RadarEntity {
         _settings = settings;
     }
 
-    private static float getPartialX(Entity entity, float partialTicks) {
-        return getPartial((float) entity.xOld, (float) entity.getX(), partialTicks);
-    }
-
-    private static float getPartialZ(Entity entity, float partialTicks) {
-        return getPartial((float) entity.zOld, (float) entity.getZ(), partialTicks);
-    }
-
-    private static float getPartial(float oldValue, float newValue, float partialTicks) {
-        return oldValue + (newValue - oldValue) * partialTicks;
-    }
-
-    protected Entity getEntity() {
+    public Entity getEntity() {
         return _entity;
     }
 
-    protected EntitySettings getSettings() {
+    public EntitySettings getSettings() {
         return _settings;
     }
 
-    public final void render(GuiGraphics guiGraphics, float partialTicks) {
-        Player player = Minecraft.getInstance().player;
-
-        float displayX = getPartialX(player, partialTicks) - getPartialX(_entity, partialTicks);
-        float displayZ = getPartialZ(player, partialTicks) - getPartialZ(_entity, partialTicks); // Convert to 2D where Z is Y
-        double distanceSq = Mth.lengthSquared(displayX, displayZ);
-
+    public final void render(GuiGraphics guiGraphics, float partialTicks, float displayX, float displayZ, double distanceSq) {
         if (distanceSq > _settings.radarDistanceSq)
             return;
 
+        guiGraphics.nextStratum();
         renderInternal(guiGraphics, displayX, displayZ, partialTicks);
     }
 

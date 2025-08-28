@@ -22,6 +22,9 @@ public class FabricModCombatRadar implements ClientModInitializer {
 
         KeyBindingHelper.registerKeyBinding(_modHelper.getSettingsKey());
         RenderPipelines.register(ModHelper.CIRCLE);
+        RenderPipelines.register(ModHelper.TRIANGLES);
+        RenderPipelines.register(ModHelper.BORDER);
+        RenderPipelines.register(ModHelper.LINES);
         ClientLifecycleEvents.CLIENT_STARTED.register(e -> init());
     }
 
@@ -36,7 +39,6 @@ public class FabricModCombatRadar implements ClientModInitializer {
         ChatCallback.EVENT.register((component) -> _modHelper.processChat(component));
 
         LOGGER.info("[CombatRadar]: Enabled");
-
     }
 
     public static ModHelper getModHelper() {

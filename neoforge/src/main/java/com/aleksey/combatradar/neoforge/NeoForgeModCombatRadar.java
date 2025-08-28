@@ -30,6 +30,14 @@ public class NeoForgeModCombatRadar {
 
         bus.addListener(this::registerBindings);
 
+
+        bus.addListener(RegisterRenderPipelinesEvent.class, (renderPipelinesEvent) -> {
+            renderPipelinesEvent.registerPipeline(ModHelper.CIRCLE);
+            renderPipelinesEvent.registerPipeline(ModHelper.TRIANGLES);
+            renderPipelinesEvent.registerPipeline(ModHelper.BORDER);
+            renderPipelinesEvent.registerPipeline(ModHelper.LINES);
+        });
+
         bus.addListener(FMLClientSetupEvent.class, (clientSetupEvent) -> {
             _modHelper.init(LOGGER);
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, (container, parent) -> new MainScreen(parent, _modHelper.getConfig(), _modHelper.getSpeedometer()));
@@ -49,7 +57,7 @@ public class NeoForgeModCombatRadar {
 
     @SubscribeEvent
     public void onRender(RenderGuiLayerEvent.Post event) {
-        if (event.getName() == VanillaGuiLayers.BOSS_OVERLAY)
+        if (event.getName() == VanillaGuiLayers.SUBTITLE_OVERLAY)
             _modHelper.render(event.getGuiGraphics(), event.getPartialTick());
     }
 
