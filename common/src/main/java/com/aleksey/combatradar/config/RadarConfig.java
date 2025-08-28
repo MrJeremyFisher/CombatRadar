@@ -13,6 +13,7 @@ import net.minecraft.world.entity.animal.Cod;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.Dolphin;
 import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.HappyGhast;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.MushroomCow;
 import net.minecraft.world.entity.animal.Ocelot;
@@ -246,6 +247,8 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Breeze.class, "Breeze", "icons/breeze.png", GroupType.AGGRESSIVE));
 
         _entityList.add(new RadarEntityInfo(Creaking.class, "Creaking", "icons/creaking.png", GroupType.AGGRESSIVE));
+
+        _entityList.add(new RadarEntityInfo(HappyGhast.class, "Happy Ghast", "icons/ghast/happy_ghast.png", GroupType.NEUTRAL));
 
         _entityList.sort(new RadarEntityInfo.EntityComparator());
 
