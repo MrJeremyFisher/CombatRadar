@@ -3,7 +3,12 @@ package com.aleksey.combatradar;
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.PlayerTypeInfo;
 import com.aleksey.combatradar.config.RadarConfig;
-import com.aleksey.combatradar.entities.*;
+import com.aleksey.combatradar.entities.CustomRadarEntity;
+import com.aleksey.combatradar.entities.EntitySettings;
+import com.aleksey.combatradar.entities.ItemRadarEntity;
+import com.aleksey.combatradar.entities.LiveRadarEntity;
+import com.aleksey.combatradar.entities.PlayerRadarEntity;
+import com.aleksey.combatradar.entities.RadarEntity;
 import com.aleksey.combatradar.gui.CircleBorderElementRenderState;
 import com.aleksey.combatradar.gui.CircleElementRenderState;
 import com.aleksey.combatradar.gui.LineElementRenderState;
@@ -16,7 +21,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -33,8 +42,16 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.opengl.GL11;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -42,6 +59,7 @@ import java.util.regex.Pattern;
  */
 public class Radar {
     private static final Pattern MinecraftSpecialCodes = Pattern.compile("(?i)§[0-9A-FK-OR]");
+    private static final Logger log = LoggerFactory.getLogger(Radar.class);
     private static RadarConfig _config;
     private final List<RadarEntity> _entities = new ArrayList<>();
     private final HashMap<UUID, MessageInfo> _messages = new HashMap<>();
@@ -74,14 +92,21 @@ public class Radar {
     }
 
     private static Component getJourneyMapCoord(PlayerInfo playerInfo) {
-        MutableComponent hover = Component.literal("JourneyMap: ")
-                .withStyle(ChatFormatting.YELLOW)
-                .append(Component.literal("Click to create Waypoint.\nCtrl+Click to view on map.")
-                        .withStyle(ChatFormatting.AQUA)
-                );
+        Component hover = Component.literal("Click to add/edit waypoint.")
+                .withStyle(ChatFormatting.WHITE);
 
         HoverEvent hoverEvent = new HoverEvent.ShowText(hover);
-        ClickEvent clickEvent = new ClickEvent.RunCommand("/jm wpedit " + getChatCoordText(playerInfo, true, true, _config.getShowYLevel()));
+        ClickEvent clickEvent = new ClickEvent.RunCommand(
+                "/jm waypoint create "
+                        + playerInfo.playerName + " "
+                        + Minecraft.getInstance().player.level().dimension().location() + " "
+                        + (int) playerInfo.posX + " "
+                        + (_config.getShowYLevel() ? (int) playerInfo.posY : "~") + " "
+                        + (int) playerInfo.posZ + " "
+                        + "aqua" + " "
+                        + Minecraft.getInstance().player.getName().getString() + " "
+                        + "false"
+        );
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
@@ -92,11 +117,16 @@ public class Radar {
     }
 
     private static Component getVoxelMapCoord(PlayerInfo playerInfo) {
-        Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
+        Component hover = Component.literal("Click to add/edit waypoint.")
                 .withStyle(ChatFormatting.WHITE);
 
         HoverEvent hoverEvent = new HoverEvent.ShowText(hover);
-        ClickEvent clickEvent = new ClickEvent.RunCommand("/newWaypoint " + getChatCoordText(playerInfo, true, false, _config.getShowYLevel()));
+        ClickEvent clickEvent = new ClickEvent.RunCommand("/newWaypoint "
+                + "name:" + playerInfo.playerName + ", "
+                + "x:" + (int) playerInfo.posX + ", "
+                + "y:" + (int) (_config.getShowYLevel() ? playerInfo.posY : Minecraft.getInstance().player.getY()) + ", "
+                + "z:" + (int) playerInfo.posZ + ", "
+                + "dim:" + Minecraft.getInstance().player.level().dimension().location());
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
@@ -107,7 +137,7 @@ public class Radar {
     }
 
     private static Component getXaerosCoord(PlayerInfo playerInfo) {
-        Component hover = Component.literal("Click to highlight coordinate,\nor Ctrl-Click to add/edit waypoint.")
+        Component hover = Component.literal("Click to add/edit waypoint.")
                 .withStyle(ChatFormatting.WHITE);
 
         HoverEvent hoverEvent = new HoverEvent.ShowText(hover);
@@ -138,7 +168,12 @@ public class Radar {
             coordText.append("[");
         }
 
-        coordText.append("x:");
+        if (_config.getIsJourneyMapEnabled() || _config.getIsVoxelMapEnabled()) {
+            coordText.append("§'x:"); // §' Renders as nothing. Stupid hack for journey and voxel which are overzealous with their text replacement and modification
+        } else {
+            coordText.append("x:");
+        }
+
         coordText.append((int) playerInfo.posX);
         if (includeY) {
             coordText.append(", y:");
@@ -275,7 +310,7 @@ public class Radar {
         if (distance > 0.1 && _config.getLogScaleEnabled()) {
             scale = (1 / distance) * (Math.log1p(distance) / Math.log1p(_config.getRadarDistance())) * _config.getRadarDistance();
         }
-        radarEntity.render(guiGraphics, partialTicks, (float) (displayX * scale), (float) (displayZ *scale), Math.pow(distance, 2));
+        radarEntity.render(guiGraphics, partialTicks, (float) (displayX * scale), (float) (displayZ * scale), Math.pow(distance, 2));
     }
 
     private void renderTriangle(GuiGraphics graphics) {
