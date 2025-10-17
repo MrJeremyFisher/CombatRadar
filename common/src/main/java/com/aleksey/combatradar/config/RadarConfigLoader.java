@@ -27,6 +27,7 @@ public class RadarConfigLoader {
         info.iconScale = config.getIconScale();
         info.fontScale = config.getFontScale();
         info.speedometerEnabled = config.getSpeedometerEnabled();
+        info.useLogScale = config.getLogScaleEnabled();
 
         PlayerTypeInfo neutralPlayer = config.getPlayerTypeInfo(PlayerType.Neutral);
         info.neutralPlayerColor = neutralPlayer.color.getRGB();
@@ -119,6 +120,7 @@ public class RadarConfigLoader {
         config.setIconScale(info.iconScale);
         config.setFontScale(info.fontScale);
         config.setSpeedometerEnabled(info.speedometerEnabled);
+        config.setLogScaleEnabled(info.useLogScale);
 
         PlayerTypeInfo neutralInfo = config.getPlayerTypeInfo(PlayerType.Neutral);
         neutralInfo.color = new Color(info.neutralPlayerColor);
@@ -189,6 +191,7 @@ public class RadarConfigLoader {
         public int neutralPlayerColor;
         public int allyPlayerColor;
         public int enemyPlayerColor;
+        public boolean useLogScale;
         public boolean neutralPlayerPing;
         public boolean allyPlayerPing;
         public boolean enemyPlayerPing;
