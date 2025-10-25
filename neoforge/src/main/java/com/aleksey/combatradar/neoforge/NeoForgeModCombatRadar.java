@@ -30,7 +30,6 @@ public class NeoForgeModCombatRadar {
 
         bus.addListener(this::registerBindings);
 
-
         bus.addListener(RegisterRenderPipelinesEvent.class, (renderPipelinesEvent) -> {
             renderPipelinesEvent.registerPipeline(ModHelper.CIRCLE);
             renderPipelinesEvent.registerPipeline(ModHelper.TRIANGLES);

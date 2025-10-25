@@ -3,9 +3,12 @@ package com.aleksey.combatradar.forge;
 import com.aleksey.combatradar.ModHelper;
 import com.aleksey.combatradar.gui.screens.MainScreen;
 import com.mojang.logging.LogUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.AddGuiOverlayLayersEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.gui.overlay.ForgeLayeredDraw;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
@@ -28,6 +31,8 @@ public class ForgeModCombatRadar {
         _modHelper.init(LOGGER);
 
         LOGGER.info("[CombatRadar]: mod enabled");
+
+        AddGuiOverlayLayersEvent.getBus(fmlJavaModLoadingContext.getModBusGroup()).addListener(this::initOverlays);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -56,5 +61,15 @@ public class ForgeModCombatRadar {
 
     public static ModHelper getModHelper() {
         return _modHelper;
+    }
+
+    public void initOverlays(AddGuiOverlayLayersEvent event) {
+        ForgeLayeredDraw lDraw = new ForgeLayeredDraw(ResourceLocation.fromNamespaceAndPath("combatradar", "forgelayer"));
+        lDraw.add(lDraw.getName(),
+                (arg, arg2) -> ForgeModCombatRadar.getModHelper().render(arg, arg2)
+        );
+
+        event.getLayeredDraw().add(lDraw.getName(), lDraw, () -> true);
+        event.getLayeredDraw().move(lDraw.getName(), ForgeLayeredDraw.SUBTITLE_OVERLAY, ForgeLayeredDraw.LayerOffset.ABOVE);
     }
 }
