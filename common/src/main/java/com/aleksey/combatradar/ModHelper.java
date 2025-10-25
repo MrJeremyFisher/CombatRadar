@@ -29,6 +29,7 @@ public class ModHelper {
     private RadarConfig _config;
     private Radar _radar;
     private Speedometer _speedometer;
+    private KeyMapping.Category _category = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("combatradar", "keybind"));
     private static final BlendFunction blendFunc = new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
     private static final RenderPipeline.Snippet UNIFORM_SNIPPET =
             RenderPipeline.builder()
@@ -62,11 +63,15 @@ public class ModHelper {
     private final KeyMapping _settingsKey;
 
     public ModHelper() {
-        _settingsKey = new KeyMapping("Combat Radar Settings", GLFW.GLFW_KEY_R, "Combat Radar");
+        _settingsKey = new KeyMapping("Combat Radar Settings", GLFW.GLFW_KEY_R, _category);
     }
 
     public KeyMapping getSettingsKey() {
         return _settingsKey;
+    }
+
+    public KeyMapping.Category getKeyBindCategory() {
+        return _category;
     }
 
     public void init(Logger logger) {
@@ -124,7 +129,7 @@ public class ModHelper {
         }
 
         if (!minecraft.options.hideGui && minecraft.screen == null && _config.getSettingsKey().consumeClick()) {
-            var windowId = minecraft.getWindow().getWindow();
+            var windowId = minecraft.getWindow();
 
             if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_CONTROL)
                     || InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT_CONTROL)

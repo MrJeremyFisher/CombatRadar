@@ -69,7 +69,7 @@ public class LocationAndColorScreen extends Screen {
         var isChanged = false;
 
         var window = this.minecraft.getWindow();
-        var windowId = window.getWindow();
+        var windowId = window;
         var xSpeed = 1.f / window.getGuiScaledWidth();
         var ySpeed = 1.f / window.getGuiScaledHeight();
 

@@ -18,14 +18,14 @@ public record CircleBorderElementRenderState(
         int color
 ) implements GuiElementRenderState {
     @Override
-    public void buildVertices(VertexConsumer vertices, float depth) {
+    public void buildVertices(VertexConsumer vertices) {
 
         for (int i = 0; i <= 360; i++) {
             double theta = Math.toRadians(i);
 
-            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * (radius + 0.5f)), (float) (Math.sin(theta) * (radius + 0.5f)), depth)
+            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * (radius + 0.5f)), (float) (Math.sin(theta) * (radius + 0.5f)))
                     .setColor(color);
-            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * (radius)), (float) (Math.sin(theta) * (radius)), depth)
+            vertices.addVertexWith2DPose(this.pose, (float) (Math.cos(theta) * (radius)), (float) (Math.sin(theta) * (radius)))
                     .setColor(color);
         }
 

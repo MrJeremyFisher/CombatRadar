@@ -49,7 +49,7 @@ public class PlayerRadarEntity extends RadarEntity {
     }
 
     private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
-        ResourceLocation skin = player.getSkin().texture();
+        ResourceLocation skin = player.getSkin().body().texturePath();
 
         RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTextureView());
 

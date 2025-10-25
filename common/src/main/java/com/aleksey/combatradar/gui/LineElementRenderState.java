@@ -17,32 +17,32 @@ public record LineElementRenderState(
         int color
 ) implements GuiElementRenderState {
     @Override
-    public void buildVertices(VertexConsumer vertices, float depth) {
+    public void buildVertices(VertexConsumer vertices) {
         final float cos45 = 0.7071f;
         final float a = 0.25f;
         float length = radius - a;
         float d = cos45 * length;
         float c = d + a / cos45;
 
-        vertices.addVertexWith2DPose(this.pose, -a, -length, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, -a, length, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, a, length, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, a, -length, depth).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -a, -length).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -a, length).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, a, length).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, a, -length).setColor(color);
 
-        vertices.addVertexWith2DPose(this.pose, -length, a, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, length, a, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, length, -a, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, -length, -a, depth).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -length, a).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, length, a).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, length, -a).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -length, -a).setColor(color);
 
-        vertices.addVertexWith2DPose(this.pose, -c, -d, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, d, c, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, c, d, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, -d, -c, depth).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -c, -d).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, d, c).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, c, d).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -d, -c).setColor(color);
 
-        vertices.addVertexWith2DPose(this.pose, -d, c, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, c, -d, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, d, -c, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, -c, d, depth).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -d, c).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, c, -d).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, d, -c).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -c, d).setColor(color);
     }
 
     @Override

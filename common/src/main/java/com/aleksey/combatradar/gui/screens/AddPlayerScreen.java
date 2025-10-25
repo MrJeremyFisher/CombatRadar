@@ -6,11 +6,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -48,8 +49,8 @@ public class AddPlayerScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int p_96553_, int p_96554_) {
-        switch (keyCode) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        switch (keyEvent.key()) {
             case GLFW.GLFW_KEY_ENTER -> {
                 actionAdd();
                 return true;
@@ -60,7 +61,7 @@ public class AddPlayerScreen extends Screen {
             }
         }
 
-        return super.keyPressed(keyCode, p_96553_, p_96554_);
+        return super.keyPressed(keyEvent);
     }
 
     private void actionAdd() {

@@ -484,12 +484,12 @@ public class Radar {
 
         for (net.minecraft.client.multiplayer.PlayerInfo p : players) {
             GameProfile profile = p.getProfile();
-            UUID playerKey = profile.getId();
+            UUID playerKey = profile.id();
 
             if (playerKey.equals(currentPlayerId))
                 continue;
 
-            String playerName = profile.getName();
+            String playerName = profile.name();
             String playerNameTrimmed = MinecraftSpecialCodes.matcher(playerName).replaceAll("");
             if (_config.isPlayerExcluded(playerNameTrimmed))
                 continue;

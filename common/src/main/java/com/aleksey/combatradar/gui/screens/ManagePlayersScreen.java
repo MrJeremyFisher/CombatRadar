@@ -8,11 +8,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-import java.awt.*;
-import java.util.List;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -62,11 +62,7 @@ public class ManagePlayersScreen extends Screen {
     private void loadPlayers(PlayerType playerType) {
         _activePlayerType = playerType;
 
-        _playerListContainer.children().clear();
-
-        List<String> players = _config.getPlayers(playerType);
-        for (String playerName : players)
-            _playerListContainer.children().add(new PlayerListItem(playerName));
+        _playerListContainer.replaceEntries(_config.getPlayers(playerType).stream().map(PlayerListItem::new).toList());
 
         _allyButton.active = playerType != PlayerType.Ally;
         _enemyButton.active = playerType != PlayerType.Enemy;
@@ -101,12 +97,12 @@ public class ManagePlayersScreen extends Screen {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int itemIndex, int y, int x, int p_93527_, int p_93528_, int p_93529_, int p_93530_, boolean p_93531_, float p_93532_) {
-            guiGraphics.drawString(ManagePlayersScreen.this.font, _playerName, x + 1, y + 1, Color.WHITE.getRGB(), true);
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            guiGraphics.drawString(ManagePlayersScreen.this.font, _playerName, this.getContentX() + 1, this.getContentY() + 1, Color.WHITE.getRGB(), true);
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
             ManagePlayersScreen.this._playerListContainer.setSelected(this);
             ManagePlayersScreen.this._deleteButton.active = true;
 

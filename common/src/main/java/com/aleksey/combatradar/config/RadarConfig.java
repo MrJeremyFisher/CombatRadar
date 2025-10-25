@@ -32,6 +32,7 @@ import net.minecraft.world.entity.animal.allay.Allay;
 import net.minecraft.world.entity.animal.armadillo.Armadillo;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.animal.coppergolem.CopperGolem;
 import net.minecraft.world.entity.animal.frog.Frog;
 import net.minecraft.world.entity.animal.frog.Tadpole;
 import net.minecraft.world.entity.animal.goat.Goat;
@@ -249,6 +250,9 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Creaking.class, "Creaking", "icons/creaking.png", GroupType.AGGRESSIVE));
 
         _entityList.add(new RadarEntityInfo(HappyGhast.class, "Happy Ghast", "icons/ghast/happy_ghast.png", GroupType.NEUTRAL));
+
+        _entityList.add(new RadarEntityInfo(CopperGolem.class, "Copper Golem", "icons/copper_golem.png", GroupType.NEUTRAL));
+
 
         _entityList.sort(new RadarEntityInfo.EntityComparator());
 

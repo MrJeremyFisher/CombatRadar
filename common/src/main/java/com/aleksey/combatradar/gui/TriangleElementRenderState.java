@@ -17,10 +17,10 @@ public record TriangleElementRenderState(
         int color
 ) implements GuiElementRenderState {
     @Override
-    public void buildVertices(VertexConsumer vertices, float depth) {
-        vertices.addVertexWith2DPose(this.pose, 0f, 3f - this.offset, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, 3f - this.offset, -3f + this.offset, depth).setColor(color);
-        vertices.addVertexWith2DPose(this.pose, -3f + this.offset, -3f + this.offset, depth).setColor(color);
+    public void buildVertices(VertexConsumer vertices) {
+        vertices.addVertexWith2DPose(this.pose, 0f, 3f - this.offset).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, 3f - this.offset, -3f + this.offset).setColor(color);
+        vertices.addVertexWith2DPose(this.pose, -3f + this.offset, -3f + this.offset).setColor(color);
     }
 
     @Override
