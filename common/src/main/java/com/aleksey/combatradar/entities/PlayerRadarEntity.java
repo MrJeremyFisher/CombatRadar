@@ -1,18 +1,17 @@
 package com.aleksey.combatradar.entities;
 
 import com.aleksey.combatradar.config.PlayerType;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3x2fStack;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -49,9 +48,9 @@ public class PlayerRadarEntity extends RadarEntity {
     }
 
     private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
-        ResourceLocation skin = player.getSkin().body().texturePath();
+        Identifier skin = player.getSkin().body().texturePath();
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTextureView());
+//        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTextureView());
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, skin, -4, -4, 8, 8, 8, 8, 8, 8, 64, 64,
                 ARGB.colorFromFloat(getSettings().iconOpacity, 1.0F, 1.0F, 1.0F));

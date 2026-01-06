@@ -1,22 +1,21 @@
 package com.aleksey.combatradar.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
  */
 public class CheckButton extends Button {
     public static final int BUTTON_HEIGHT = 14;
-    private static final ResourceLocation _texture = ResourceLocation.fromNamespaceAndPath("combatradar", "textures/gui/checkbox.png");
+    private static final Identifier _texture = Identifier.fromNamespaceAndPath("combatradar", "textures/gui/checkbox.png");
     private static final int TEXTURE_SIZE = 7;
     private static final int CHECKED_TEXTURE_X = 8;
     private static final int UNCHECKED_TEXTURE_X = 0;
@@ -37,12 +36,12 @@ public class CheckButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int xPos, int yPos, float p_93846_) {
+    public void renderContents(GuiGraphics guiGraphics, int xPos, int yPos, float p_93846_) {
         Minecraft minecraft = Minecraft.getInstance();
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_texture).getTextureView());
+//        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_texture).getTextureView());
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, _texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE, 256, 256);
 

@@ -1,6 +1,6 @@
 package com.aleksey.combatradar.config;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 
 import java.util.Comparator;
@@ -11,8 +11,8 @@ import java.util.Map;
  * @author Aleksey Terzi
  */
 public class RadarEntityInfo {
-    private final Map<String, ResourceLocation> _entities;
-    private final ResourceLocation _defaultIcon;
+    private final Map<String, Identifier> _entities;
+    private final Identifier _defaultIcon;
     private final String _name;
     private final GroupType _groupType;
     private final String _entityClassName;
@@ -28,7 +28,7 @@ public class RadarEntityInfo {
         _entityClassName = entityClass;
 
         _entities = new HashMap<>();
-        _entities.put(entityClass, _defaultIcon = ResourceLocation.fromNamespaceAndPath("combatradar", iconPath));
+        _entities.put(entityClass, _defaultIcon = Identifier.fromNamespaceAndPath("combatradar", iconPath));
     }
 
     public String getName() {
@@ -43,7 +43,7 @@ public class RadarEntityInfo {
         return _entityClassName;
     }
 
-    public ResourceLocation getIcon(Entity entity) {
+    public Identifier getIcon(Entity entity) {
         if (entity == null || _entities.size() == 1)
             return _defaultIcon;
 
@@ -52,7 +52,7 @@ public class RadarEntityInfo {
         return _entities.get(entityClassName);
     }
 
-    public ResourceLocation getIcon(String entity) {
+    public Identifier getIcon(String entity) {
         if (entity == null || _entities.size() == 1)
             return _defaultIcon;
 
@@ -68,7 +68,7 @@ public class RadarEntityInfo {
     }
 
     public RadarEntityInfo addEntity(Class<? extends Entity> entityClass, String iconPath) {
-        var icon = iconPath != null ? ResourceLocation.fromNamespaceAndPath("combatradar", iconPath) : null;
+        var icon = iconPath != null ? Identifier.fromNamespaceAndPath("combatradar", iconPath) : null;
         _entities.put(entityClass.getCanonicalName(), icon);
         return this;
     }

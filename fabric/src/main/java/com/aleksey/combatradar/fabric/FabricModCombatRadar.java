@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 
 public class FabricModCombatRadar implements ClientModInitializer {
@@ -31,7 +31,7 @@ public class FabricModCombatRadar implements ClientModInitializer {
     private void init() {
         _modHelper.init(LOGGER);
         HudElementRegistry.attachElementAfter(VanillaHudElements.SUBTITLES,
-                ResourceLocation.fromNamespaceAndPath("combatradar", "radar"),
+                Identifier.fromNamespaceAndPath("combatradar", "radar"),
                 _modHelper::render
         );
 

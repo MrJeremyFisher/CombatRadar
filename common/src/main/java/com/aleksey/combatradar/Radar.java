@@ -26,16 +26,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.vehicle.AbstractMinecart;
-import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.ChestBoat;
+import net.minecraft.world.entity.vehicle.boat.Boat;
+import net.minecraft.world.entity.vehicle.boat.ChestBoat;
+import net.minecraft.world.entity.vehicle.minecart.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -99,7 +99,7 @@ public class Radar {
         ClickEvent clickEvent = new ClickEvent.RunCommand(
                 "/jm waypoint create "
                         + playerInfo.playerName + " "
-                        + Minecraft.getInstance().player.level().dimension().location() + " "
+                        + Minecraft.getInstance().player.level().dimension().identifier() + " "
                         + (int) playerInfo.posX + " "
                         + (_config.getShowYLevel() ? (int) playerInfo.posY : "~") + " "
                         + (int) playerInfo.posZ + " "
@@ -126,7 +126,7 @@ public class Radar {
                 + "x:" + (int) playerInfo.posX + ", "
                 + "y:" + (int) (_config.getShowYLevel() ? playerInfo.posY : Minecraft.getInstance().player.getY()) + ", "
                 + "z:" + (int) playerInfo.posZ + ", "
-                + "dim:" + Minecraft.getInstance().player.level().dimension().location());
+                + "dim:" + Minecraft.getInstance().player.level().dimension().identifier());
 
         Style coordStyle = Style.EMPTY
                 .withClickEvent(clickEvent)
@@ -397,7 +397,7 @@ public class Radar {
             if (entity == minecraft.player)
                 continue;
 
-            ResourceLocation icon = _config.getEnabledIcon(entity);
+            Identifier icon = _config.getEnabledIcon(entity);
             if (icon != null)
                 addEntity(entity, settings, oldPlayers, icon);
         }
@@ -415,7 +415,7 @@ public class Radar {
         }
     }
 
-    private void addEntity(Entity entity, EntitySettings settings, Map<UUID, PlayerInfo> oldPlayers, ResourceLocation icon) {
+    private void addEntity(Entity entity, EntitySettings settings, Map<UUID, PlayerInfo> oldPlayers, Identifier icon) {
         RadarEntity radarEntity;
 
         if (entity instanceof ExperienceOrb) {

@@ -4,18 +4,15 @@ import com.aleksey.combatradar.config.GroupType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.gui.components.SmallButton;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3x2fStack;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -227,7 +224,7 @@ public class EntityScreen extends Screen {
         poseStack.translate(x, y);
         poseStack.scale(0.6f, 0.6f);
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(info.getIcon((Entity) null)).getTextureView());
+//        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(info.getIcon((Entity) null)).getTextureView());
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 

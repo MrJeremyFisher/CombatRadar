@@ -3,7 +3,7 @@ package com.aleksey.combatradar.forge;
 import com.aleksey.combatradar.ModHelper;
 import com.aleksey.combatradar.gui.screens.MainScreen;
 import com.mojang.logging.LogUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.AddGuiOverlayLayersEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -32,11 +32,11 @@ public class ForgeModCombatRadar {
 
         LOGGER.info("[CombatRadar]: mod enabled");
 
-        AddGuiOverlayLayersEvent.getBus(fmlJavaModLoadingContext.getModBusGroup()).addListener(this::initOverlays);
+        AddGuiOverlayLayersEvent.BUS.addListener(this::initOverlays);
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        RegisterKeyMappingsEvent.getBus(fmlJavaModLoadingContext.getModBusGroup()).addListener(this::registerBindings);
+        RegisterKeyMappingsEvent.BUS.addListener(this::registerBindings);
 
         fmlJavaModLoadingContext.registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory(
                         (parent) -> new MainScreen(parent, _modHelper.getConfig(), _modHelper.getSpeedometer())
@@ -64,7 +64,7 @@ public class ForgeModCombatRadar {
     }
 
     public void initOverlays(AddGuiOverlayLayersEvent event) {
-        ForgeLayeredDraw lDraw = new ForgeLayeredDraw(ResourceLocation.fromNamespaceAndPath("combatradar", "forgelayer"));
+        ForgeLayeredDraw lDraw = new ForgeLayeredDraw(Identifier.fromNamespaceAndPath("combatradar", "forgelayer"));
         lDraw.add(lDraw.getName(),
                 (arg, arg2) -> ForgeModCombatRadar.getModHelper().render(arg, arg2)
         );

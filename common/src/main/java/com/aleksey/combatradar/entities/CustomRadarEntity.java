@@ -3,7 +3,7 @@ package com.aleksey.combatradar.entities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3x2fStack;
@@ -14,9 +14,9 @@ import org.joml.Matrix3x2fStack;
  */
 
 public class CustomRadarEntity extends RadarEntity {
-    private final ResourceLocation _resourceLocation;
+    private final Identifier _resourceLocation;
 
-    public CustomRadarEntity(Entity entity, EntitySettings settings, ResourceLocation icon) {
+    public CustomRadarEntity(Entity entity, EntitySettings settings, Identifier icon) {
         super(entity, settings);
 
         _resourceLocation = icon;

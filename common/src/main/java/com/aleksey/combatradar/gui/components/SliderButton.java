@@ -31,7 +31,7 @@ public class SliderButton extends AbstractSliderButton {
 
     @Override
     public void applyValue() {
-        _value = _integer ? (float) Mth.floor(Mth.clampedLerp(this._minValue, this._maxValue, this.value)) : (float) Mth.clampedLerp(this._minValue, this._maxValue, this.value);
+        _value = _integer ? (float) Mth.floor(Mth.clampedLerp(this.value, this._minValue, this._maxValue)) : (float) Mth.clampedLerp(this.value, this._minValue, this._maxValue);
     }
 
     @Override

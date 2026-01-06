@@ -1,10 +1,9 @@
 package com.aleksey.combatradar.entities;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3x2fStack;
@@ -15,9 +14,9 @@ import org.joml.Matrix3x2fStack;
 public class LiveRadarEntity extends RadarEntity {
     private static final String[] HORSE_VARIANTS = {"white", "creamy", "chestnut", "brown", "black", "gray", "darkbrown"};
 
-    private ResourceLocation _resourceLocation;
+    private Identifier _resourceLocation;
 
-    public LiveRadarEntity(Entity entity, EntitySettings settings, ResourceLocation icon) {
+    public LiveRadarEntity(Entity entity, EntitySettings settings, Identifier icon) {
         super(entity, settings);
 
         _resourceLocation = icon;
@@ -35,7 +34,7 @@ public class LiveRadarEntity extends RadarEntity {
         poseStack.rotate(org.joml.Math.toRadians(rotationYaw));
         poseStack.scale(iconScale, iconScale);
 
-        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_resourceLocation).getTextureView());
+//        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_resourceLocation).getTextureView());
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, _resourceLocation, -8, -8, 0, 0, 16, 16, 16, 16,
                 ARGB.colorFromFloat(getSettings().iconOpacity, 1.0F, 1.0F, 1.0F));
 

@@ -17,7 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -29,7 +29,7 @@ public class ModHelper {
     private RadarConfig _config;
     private Radar _radar;
     private Speedometer _speedometer;
-    private KeyMapping.Category _category = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("combatradar", "keybind"));
+    private KeyMapping.Category _category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("combatradar", "keybind"));
     private static final BlendFunction blendFunc = new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
     private static final RenderPipeline.Snippet UNIFORM_SNIPPET =
             RenderPipeline.builder()
@@ -41,22 +41,22 @@ public class ModHelper {
                     .buildSnippet();
     public static final RenderPipeline TRIANGLES =
             RenderPipeline.builder(UNIFORM_SNIPPET)
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/triangles"))
+                    .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/triangles"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
                     .build();
     public static final RenderPipeline LINES =
             RenderPipeline.builder(UNIFORM_SNIPPET)
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/lines"))
+                    .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/lines"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
                     .build();
     public static final RenderPipeline CIRCLE =
             RenderPipeline.builder(UNIFORM_SNIPPET)
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/circle"))
+                    .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/circle"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN)
                     .build();
     public static final RenderPipeline BORDER =
             RenderPipeline.builder(UNIFORM_SNIPPET)
-                    .withLocation(ResourceLocation.fromNamespaceAndPath("combatradar", "pipelines/border"))
+                    .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/border"))
                     .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
                     .build();
 
