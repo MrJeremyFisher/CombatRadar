@@ -1,0 +1,44 @@
+name: Gradle build
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          java-version: "21"
+          distribution: "adopt"
+      - run: ./gradlew build
+
+      - name: Upload Forge Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Forge
+          path: dist/*-forge.jar
+
+      - name: Upload Fabric Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fabric
+          path: dist/*-fabric.jar
+
+      - name: Upload Neoforge Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: Neoforge
+          path: dist/*-neoforge.jar
+
+      - name: Release Tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          fail_on_unmatched_files: true
+          files: |
+            dist/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
