@@ -155,7 +155,7 @@ public class ModHelper {
         if (!_config.getEnabled()
                 || minecraft.level == null
                 || minecraft.options.hideGui
-                || minecraft.getDebugOverlay().showDebugScreen()
+                || minecraft.debugEntries.isOverlayVisible()
         ) {
             return;
         }

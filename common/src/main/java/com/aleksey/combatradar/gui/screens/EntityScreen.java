@@ -224,8 +224,6 @@ public class EntityScreen extends Screen {
         poseStack.translate(x, y);
         poseStack.scale(0.6f, 0.6f);
 
-//        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(info.getIcon((Entity) null)).getTextureView());
-
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, info.getIcon(info.getEntityClassName()), -8, -8, 0, 0, 16, 16, 16, 16);
 
         poseStack.popMatrix();

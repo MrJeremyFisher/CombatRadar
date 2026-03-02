@@ -107,7 +107,7 @@ public class MainScreen extends Screen {
         _enableButton.setMessage(Component.literal("Radar: " + (_config.getEnabled() ? "On" : "Off")));
         _pingsEnableButton.setMessage(Component.literal("Pings: " + (_config.getPingsEnabled() ? "On" : "Off")));
         _speedometerButton.setMessage(Component.literal("Speed: " + (_config.getSpeedometerEnabled() ? "On" : "Off")));
-        _scaleButton.setMessage(Component.literal("Scale: " + (_config.getLogScaleEnabled() ? "LOGARITHMIC" : "LINEAR")));
+        _scaleButton.setMessage(Component.literal("Scale: " + (_config.getLogScaleEnabled() ? "Logarithmic" : "Linear")));
     }
 
     @Override
