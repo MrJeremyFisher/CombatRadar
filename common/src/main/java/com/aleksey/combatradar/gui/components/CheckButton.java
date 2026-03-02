@@ -41,11 +41,9 @@ public class CheckButton extends Button {
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
 
-//        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(_texture).getTextureView());
-
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, _texture, this.getX(), this.getY() + (this.getHeight() - TEXTURE_SIZE) / 2, textureX, 0, TEXTURE_SIZE, TEXTURE_SIZE, 256, 256);
 
-        int textColor = this.isHovered ? 16777120 : Color.LIGHT_GRAY.getRGB();
+        int textColor = this.isHovered ? 0xFFFFFFA0 : Color.LIGHT_GRAY.getRGB();
 
         guiGraphics.drawString(minecraft.font, this.getMessage(), this.getX() + INDENT, (int) (this.getY() + (this.getHeight() - 8f) / 2f), textColor);
     }
