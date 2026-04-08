@@ -1,7 +1,7 @@
 package com.aleksey.combatradar.entities;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +26,7 @@ public class ItemRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphicsExtractor guiGraphics, float displayX, float displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         Matrix3x2fStack poseStack = guiGraphics.pose();
         float iconScale = getSettings().iconScale;
@@ -37,7 +37,7 @@ public class ItemRadarEntity extends RadarEntity {
         poseStack.rotate(org.joml.Math.toRadians(rotationYaw));
         poseStack.scale(iconScale, iconScale);
 
-        guiGraphics.renderFakeItem(_item, -8, -8);
+        guiGraphics.fakeItem(_item, -8, -8);
 
         poseStack.popMatrix();
     }

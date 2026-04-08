@@ -2,7 +2,7 @@ package com.aleksey.combatradar;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import org.joml.Matrix3x2fStack;
 
@@ -69,7 +69,7 @@ public class Speedometer {
         return speed;
     }
 
-    public void render(GuiGraphics guiGraphics, int radarDisplayX, int radarDisplayY, int radarRadius) {
+    public void render(GuiGraphicsExtractor guiGraphics, int radarDisplayX, int radarDisplayY, int radarRadius) {
         final int yMargin = 2;
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -86,7 +86,7 @@ public class Speedometer {
         poseStack.pushMatrix();
         poseStack.translate(radarDisplayX, radarDisplayY);
 
-        guiGraphics.drawString(font, _speedText, (int) xOffset, (int) yOffset, Color.WHITE.getRGB());
+        guiGraphics.text(font, _speedText, (int) xOffset, (int) yOffset, Color.WHITE.getRGB());
 
         poseStack.popMatrix();
     }

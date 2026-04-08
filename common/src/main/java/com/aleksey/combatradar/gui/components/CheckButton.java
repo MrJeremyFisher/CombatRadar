@@ -1,7 +1,7 @@
 package com.aleksey.combatradar.gui.components;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
@@ -36,7 +36,7 @@ public class CheckButton extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int xPos, int yPos, float p_93846_) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int xPos, int yPos, float p_93846_) {
         Minecraft minecraft = Minecraft.getInstance();
 
         int textureX = _checked ? CHECKED_TEXTURE_X : UNCHECKED_TEXTURE_X;
@@ -45,6 +45,6 @@ public class CheckButton extends Button {
 
         int textColor = this.isHovered ? 0xFFFFFFA0 : Color.LIGHT_GRAY.getRGB();
 
-        guiGraphics.drawString(minecraft.font, this.getMessage(), this.getX() + INDENT, (int) (this.getY() + (this.getHeight() - 8f) / 2f), textColor);
+        guiGraphics.text(minecraft.font, this.getMessage(), this.getX() + INDENT, (int) (this.getY() + (this.getHeight() - 8f) / 2f), textColor);
     }
 }

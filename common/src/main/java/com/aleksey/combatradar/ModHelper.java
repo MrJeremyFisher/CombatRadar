@@ -3,10 +3,9 @@ package com.aleksey.combatradar;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.screens.MainScreen;
 import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -14,7 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
@@ -30,14 +29,13 @@ public class ModHelper {
     private Radar _radar;
     private Speedometer _speedometer;
     private KeyMapping.Category _category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("combatradar", "keybind"));
-    private static final BlendFunction blendFunc = new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
     private static final RenderPipeline.Snippet UNIFORM_SNIPPET =
             RenderPipeline.builder()
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/position_color")
                     .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
                     .withUniform("Projection", UniformType.UNIFORM_BUFFER)
-                    .withBlend(BlendFunction.TRANSLUCENT)
+                    .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .buildSnippet();
     public static final RenderPipeline TRIANGLES =
             RenderPipeline.builder(UNIFORM_SNIPPET)
@@ -149,7 +147,7 @@ public class ModHelper {
         }
     }
 
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
 
         if (!_config.getEnabled()

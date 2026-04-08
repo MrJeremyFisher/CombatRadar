@@ -5,13 +5,13 @@ import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.SoundInfo;
 import com.aleksey.combatradar.gui.components.CheckButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -92,9 +92,9 @@ public class ChooseSoundScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        guiGraphics.centeredText(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

@@ -3,7 +3,7 @@ package com.aleksey.combatradar.entities;
 import com.aleksey.combatradar.config.PlayerType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -25,7 +25,7 @@ public class PlayerRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphicsExtractor guiGraphics, float displayX, float displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         Matrix3x2fStack poseStack = guiGraphics.pose();
         RemotePlayer player = (RemotePlayer) getEntity();
@@ -47,7 +47,7 @@ public class PlayerRadarEntity extends RadarEntity {
         poseStack.popMatrix();
     }
 
-    private void renderPlayerIcon(GuiGraphics guiGraphics, RemotePlayer player) {
+    private void renderPlayerIcon(GuiGraphicsExtractor guiGraphics, RemotePlayer player) {
         Identifier skin = player.getSkin().body().texturePath();
 
 //        RenderSystem.setShaderTexture(0, Minecraft.getInstance().getTextureManager().getTexture(skin).getTextureView());
@@ -56,7 +56,7 @@ public class PlayerRadarEntity extends RadarEntity {
                 ARGB.colorFromFloat(getSettings().iconOpacity, 1.0F, 1.0F, 1.0F));
     }
 
-    private void renderPlayerName(GuiGraphics guiGraphics, RemotePlayer player) {
+    private void renderPlayerName(GuiGraphicsExtractor guiGraphics, RemotePlayer player) {
         Minecraft minecraft = Minecraft.getInstance();
         Matrix3x2fStack poseStack = guiGraphics.pose();
 
@@ -82,7 +82,7 @@ public class PlayerRadarEntity extends RadarEntity {
         int yOffset = -4 + (int) ((getSettings().iconScale * getSettings().radarScale + 8));
         int xOffset = -font.width(playerName) / 2;
 
-        guiGraphics.drawString(font, playerName, xOffset, yOffset, color.getRGB());
+        guiGraphics.text(font, playerName, xOffset, yOffset, color.getRGB());
 
         poseStack.popMatrix();
     }

@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.gradleup.shadow" version "9.3.0"
 }
 
 architectury {
@@ -20,26 +20,30 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    api "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
-    modImplementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
+    implementation("com.terraformersmc:modmenu:${rootProject.modmenu_version}")
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "fabric_loader_version", project.fabric_loader_version
+    inputs.property "fabric_api_version", project.fabric_api_version
     inputs.property "minecraft_version", project.minecraft_version
     inputs.property "issues_url", project.issues_url
 
     filesMatching("fabric.mod.json") {
         expand(
                 [
-                        "version"          : project.version,
-                        "minecraft_version": project.minecraft_version,
-                        "issues_url"       : project.issues_url
+                        "version"              : project.version,
+                        "fabric_loader_version": project.fabric_loader_version,
+                        "fabric_api_version"   : project.fabric_api_version,
+                        "minecraft_version"    : project.minecraft_version,
+                        "issues_url"           : project.issues_url
                 ]
         )
     }
@@ -48,31 +52,23 @@ processResources {
 shadowJar {
     exclude "architectury.common.json"
 
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
-}
+    dependsOn(jar)
+    mainSpec.sourcePaths.clear()       // Remove default source set inclusion
+    from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
 
-remapJar {
-    injectAccessWidener = true
-    input.set shadowJar.archiveFile
-    dependsOn shadowJar
+    configurations = [project.configurations.shadowCommon]
     archiveClassifier = "fabric"
+    from rootProject.file("LICENSE")
 }
 
 jar {
-    archiveClassifier = "dev"
+    archiveClassifier = "raw"
 }
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
 }
 
 tasks.register('cleanJar', Delete) {
@@ -82,7 +78,7 @@ tasks.register('cleanJar', Delete) {
 }
 
 tasks.register('copyJar', Copy) {
-    from remapJar
+    from shadowJar
     into '../dist'
 }
 

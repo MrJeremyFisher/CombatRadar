@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.gradleup.shadow" version "9.3.0"
 }
 
 architectury {
@@ -23,10 +23,10 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:0.5.0"))
+//    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
+//    implementation(include("io.github.llamalad7:mixinextras-forge:0.5.0"))
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }
 
@@ -51,30 +51,23 @@ processResources {
 shadowJar {
     exclude "fabric.mod.json"
 
-    configurations = [project.configurations.shadowCommon]
-    archiveClassifier = "dev-shadow"
-}
+    dependsOn(jar)
+    mainSpec.sourcePaths.clear()       // Remove default source set inclusion
+    from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
 
-remapJar {
-    inputFile.set shadowJar.archiveFile
-    dependsOn shadowJar
+    configurations = [project.configurations.shadowCommon]
     archiveClassifier = "forge"
+    from rootProject.file("LICENSE")
 }
 
 jar {
-    archiveClassifier = "dev"
+    archiveClassifier = "raw"
 }
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
 }
 
 tasks.register('cleanJar', Delete) {
@@ -84,7 +77,7 @@ tasks.register('cleanJar', Delete) {
 }
 
 tasks.register('copyJar', Copy) {
-    from remapJar
+    from shadowJar
     into '../dist'
 }
 

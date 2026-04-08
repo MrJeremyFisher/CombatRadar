@@ -3,7 +3,7 @@ package com.aleksey.combatradar.gui.screens;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.components.SliderButton;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -104,20 +104,20 @@ public class LocationAndColorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.drawCenteredString(this.font, "Location and Color", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
-        guiGraphics.drawCenteredString(this.font, "Use arrow keys to reposition radar", this.width / 2, _iconScaleSlider.getY() + 24 + 12, Color.WHITE.getRGB());
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        guiGraphics.centeredText(this.font, "Location and Color", this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        guiGraphics.centeredText(this.font, "Use arrow keys to reposition radar", this.width / 2, _iconScaleSlider.getY() + 24 + 12, Color.WHITE.getRGB());
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderTransparentBackground(guiGraphics);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
     }
 
     @Override
-    public void renderTransparentBackground(GuiGraphics guiGraphics) {
+    public void extractTransparentBackground(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0, 0);
     }
 }

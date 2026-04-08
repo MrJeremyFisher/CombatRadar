@@ -1,7 +1,7 @@
 package com.aleksey.combatradar.entities;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -23,7 +23,7 @@ public class LiveRadarEntity extends RadarEntity {
     }
 
     @Override
-    protected void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks) {
+    protected void renderInternal(GuiGraphicsExtractor guiGraphics, float displayX, float displayY, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         Matrix3x2fStack poseStack = guiGraphics.pose();
         float iconScale = getSettings().iconScale;

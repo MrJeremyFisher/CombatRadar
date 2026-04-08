@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
  * @author Aleksey Terzi
  */
 public class SliderButton extends AbstractSliderButton {
-    private static final DecimalFormat _decimalFormat = new DecimalFormat("#.##");
+    private static final DecimalFormat _decimalFormat = new DecimalFormat("0.00");
     private final float _minValue;
     private final float _maxValue;
     private final String _name;

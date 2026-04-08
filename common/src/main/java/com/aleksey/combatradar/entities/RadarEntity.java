@@ -1,6 +1,6 @@
 package com.aleksey.combatradar.entities;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.Entity;
 
 /**
@@ -23,7 +23,7 @@ public abstract class RadarEntity {
         return _settings;
     }
 
-    public final void render(GuiGraphics guiGraphics, float partialTicks, float displayX, float displayZ, double distanceSq) {
+    public final void render(GuiGraphicsExtractor guiGraphics, float partialTicks, float displayX, float displayZ, double distanceSq) {
         if (distanceSq > _settings.radarDistanceSq)
             return;
 
@@ -31,5 +31,5 @@ public abstract class RadarEntity {
         renderInternal(guiGraphics, displayX, displayZ, partialTicks);
     }
 
-    protected abstract void renderInternal(GuiGraphics guiGraphics, float displayX, float displayY, float partialTicks);
+    protected abstract void renderInternal(GuiGraphicsExtractor guiGraphics, float displayX, float displayY, float partialTicks);
 }

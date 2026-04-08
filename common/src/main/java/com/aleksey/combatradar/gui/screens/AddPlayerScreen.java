@@ -2,7 +2,7 @@ package com.aleksey.combatradar.gui.screens;
 
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -80,10 +80,10 @@ public class AddPlayerScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
-        guiGraphics.drawString(this.font, "Player username", (int) (this.width / 2f - 100), _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB(), true);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        guiGraphics.centeredText(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        guiGraphics.text(this.font, "Player username", (int) (this.width / 2f - 100), _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB(), true);
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 }

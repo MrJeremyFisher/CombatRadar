@@ -18,7 +18,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.network.chat.ClickEvent;
@@ -233,7 +233,7 @@ public class Radar {
         _radarScale = (float) _radarRadius / _config.getRadarDistance();
     }
 
-    public void render(GuiGraphics guiGraphics, DeltaTracker partialTicks) {
+    public void render(GuiGraphicsExtractor guiGraphics, DeltaTracker partialTicks) {
         Matrix3x2fStack poseStack = guiGraphics.pose();
 
         if (_radarRadius == 0)
@@ -261,7 +261,7 @@ public class Radar {
         poseStack.popMatrix();
     }
 
-    private void renderNonPlayerEntities(GuiGraphics guiGraphics, float partialTicks) {
+    private void renderNonPlayerEntities(GuiGraphicsExtractor guiGraphics, float partialTicks) {
         Matrix3x2fStack poseStack = guiGraphics.pose();
         Player player = Minecraft.getInstance().player;
 
@@ -285,7 +285,7 @@ public class Radar {
         poseStack.popMatrix();
     }
 
-    private void renderPlayerEntities(GuiGraphics guiGraphics, float partialTicks) {
+    private void renderPlayerEntities(GuiGraphicsExtractor guiGraphics, float partialTicks) {
         Matrix3x2fStack poseStack = guiGraphics.pose();
         Player player = Minecraft.getInstance().player;
 
@@ -301,7 +301,7 @@ public class Radar {
         poseStack.popMatrix();
     }
 
-    private void renderEntity(GuiGraphics guiGraphics, float partialTicks, Player player, RadarEntity radarEntity) {
+    private void renderEntity(GuiGraphicsExtractor guiGraphics, float partialTicks, Player player, RadarEntity radarEntity) {
         float displayX = getPartialX(player, partialTicks) - getPartialX(radarEntity.getEntity(), partialTicks);
         float displayZ = getPartialZ(player, partialTicks) - getPartialZ(radarEntity.getEntity(), partialTicks); // Convert to 2D where Z is Y
         double distance = Mth.length(displayX, displayZ);
@@ -313,7 +313,7 @@ public class Radar {
         radarEntity.render(guiGraphics, partialTicks, (float) (displayX * scale), (float) (displayZ * scale), Math.pow(distance, 2));
     }
 
-    private void renderTriangle(GuiGraphics graphics) {
+    private void renderTriangle(GuiGraphicsExtractor graphics) {
         graphics.pose().rotate(org.joml.Math.toRadians(180));
 
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
@@ -326,19 +326,19 @@ public class Radar {
         graphics.pose().rotate(org.joml.Math.toRadians(-180));
     }
 
-    private void renderTriangle(GuiGraphics graphics, int color, float offset) {
-        graphics.guiRenderState.submitGuiElement(new TriangleElementRenderState(
+    private void renderTriangle(GuiGraphicsExtractor graphics, int color, float offset) {
+        graphics.guiRenderState.addGuiElement(new TriangleElementRenderState(
                 ModHelper.TRIANGLES,
                 new Matrix3x2f(graphics.pose()),
                 graphics.scissorStack.peek(), offset, color
         ));
     }
 
-    private void renderLines(GuiGraphics graphics, float radius) {
+    private void renderLines(GuiGraphicsExtractor graphics, float radius) {
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
         int color = ARGB.colorFromFloat(Math.clamp(_config.getRadarOpacity() + 0.5f, 0, 1), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
-        graphics.guiRenderState.submitGuiElement(new LineElementRenderState(
+        graphics.guiRenderState.addGuiElement(new LineElementRenderState(
                 ModHelper.LINES,
                 new Matrix3x2f(graphics.pose()),
                 graphics.scissorStack.peek(), radius, color
@@ -347,21 +347,21 @@ public class Radar {
         GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
     }
 
-    private void renderCircleBg(GuiGraphics graphics, float radius) {
+    private void renderCircleBg(GuiGraphicsExtractor graphics, float radius) {
         int color = ARGB.colorFromFloat(_config.getRadarOpacity(), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
-        graphics.guiRenderState.submitGuiElement(new CircleElementRenderState(
+        graphics.guiRenderState.addGuiElement(new CircleElementRenderState(
                 ModHelper.CIRCLE,
                 new Matrix3x2f(graphics.pose()),
                 graphics.scissorStack.peek(), radius, color
         ));
     }
 
-    private void renderCircleBorder(GuiGraphics graphics, float radius) {
+    private void renderCircleBorder(GuiGraphicsExtractor graphics, float radius) {
         GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
 
         int color = ARGB.colorFromFloat(Math.clamp(_config.getRadarOpacity() + 0.5f, 0, 1), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
 
-        graphics.guiRenderState.submitGuiElement(new CircleBorderElementRenderState(
+        graphics.guiRenderState.addGuiElement(new CircleBorderElementRenderState(
                 ModHelper.BORDER,
                 new Matrix3x2f(graphics.pose()),
                 graphics.scissorStack.peek(), radius, color
@@ -610,7 +610,7 @@ public class Radar {
 
         }
 
-        minecraft.player.displayClientMessage(text, false);
+        minecraft.player.sendSystemMessage(text);
     }
 
     private enum MessageReason {Login, Logout, Appeared, Disappeared}

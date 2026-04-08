@@ -2,13 +2,13 @@ package com.aleksey.combatradar.gui.screens;
 
 import com.aleksey.combatradar.Speedometer;
 import com.aleksey.combatradar.config.RadarConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -111,23 +111,23 @@ public class MainScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         String keyName = _config.getSettingsKey().getTranslatedKeyMessage().getString().toUpperCase();
 
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
-        guiGraphics.drawCenteredString(this.font, "Ctrl+Alt+" + keyName + " - enable/disable radar", this.width / 2, _keyHintY, Color.LIGHT_GRAY.getRGB());
-        guiGraphics.drawCenteredString(this.font, "Ctrl+" + keyName + " - enable/disable mobs", this.width / 2, _keyHintY + 12, Color.LIGHT_GRAY.getRGB());
+        guiGraphics.centeredText(this.font, this.title, this.width / 2, this.height / 4 - 40, Color.WHITE.getRGB());
+        guiGraphics.centeredText(this.font, "Ctrl+Alt+" + keyName + " - enable/disable radar", this.width / 2, _keyHintY, Color.LIGHT_GRAY.getRGB());
+        guiGraphics.centeredText(this.font, "Ctrl+" + keyName + " - enable/disable mobs", this.width / 2, _keyHintY + 12, Color.LIGHT_GRAY.getRGB());
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderTransparentBackground(guiGraphics);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
     }
 
     @Override
-    public void renderTransparentBackground(GuiGraphics guiGraphics) {
+    public void extractTransparentBackground(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.fillGradient(0, 0, this.width, this.height, 0, 0);
     }
 }

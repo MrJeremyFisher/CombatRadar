@@ -4,7 +4,7 @@ import com.aleksey.combatradar.config.GroupType;
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.config.RadarEntityInfo;
 import com.aleksey.combatradar.gui.components.SmallButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -183,14 +183,14 @@ public class EntityScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
+        guiGraphics.centeredText(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
         renderIcons(guiGraphics);
     }
 
-    private void renderIcons(GuiGraphics guiGraphics) {
+    private void renderIcons(GuiGraphicsExtractor guiGraphics) {
         int colIndex = 0;
         int rowIndex = 0;
         int x = _iconLeft;
@@ -209,7 +209,7 @@ public class EntityScreen extends Screen {
 
             boolean isEnabled = info.getEnabled() && _config.isGroupEnabled(_activeGroupType);
             Color color = isEnabled ? Color.WHITE : Color.DARK_GRAY;
-            guiGraphics.drawString(this.font, info.getName(), x + ICON_WIDTH, y, color.getRGB(), true);
+            guiGraphics.text(this.font, info.getName(), x + ICON_WIDTH, y, color.getRGB(), true);
 
             y += LINE_HEIGHT;
 
@@ -217,7 +217,7 @@ public class EntityScreen extends Screen {
         }
     }
 
-    private void renderIcon(GuiGraphics guiGraphics, float x, float y, RadarEntityInfo info) {
+    private void renderIcon(GuiGraphicsExtractor guiGraphics, float x, float y, RadarEntityInfo info) {
         Matrix3x2fStack poseStack = guiGraphics.pose();
 
         poseStack.pushMatrix();

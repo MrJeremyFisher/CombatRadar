@@ -2,7 +2,7 @@ package com.aleksey.combatradar.gui.screens;
 
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -79,10 +79,10 @@ public class ManagePlayersScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 20, Color.WHITE.getRGB());
+        guiGraphics.centeredText(this.font, this.title, this.width / 2, 20, Color.WHITE.getRGB());
     }
 
     private class PlayerListItem extends ObjectSelectionList.Entry<PlayerListItem> {
@@ -97,8 +97,8 @@ public class ManagePlayersScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-            guiGraphics.drawString(ManagePlayersScreen.this.font, _playerName, this.getContentX() + 1, this.getContentY() + 1, Color.WHITE.getRGB(), true);
+        public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            guiGraphics.text(ManagePlayersScreen.this.font, _playerName, this.getContentX() + 1, this.getContentY() + 1, Color.WHITE.getRGB(), true);
         }
 
         @Override
