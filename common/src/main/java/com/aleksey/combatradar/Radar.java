@@ -253,6 +253,7 @@ public class Radar {
         renderNonPlayerEntities(guiGraphics, partialTicks.getRealtimeDeltaTicks());
 
         poseStack.rotate(org.joml.Math.toRadians(rotationYaw));
+        guiGraphics.nextStratum();
         renderTriangle(guiGraphics);
 
         poseStack.rotate(org.joml.Math.toRadians(-rotationYaw));
