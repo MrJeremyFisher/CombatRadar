@@ -55,7 +55,7 @@ public class LocationAndColorScreen extends Screen {
         addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Snap bottom left"), (btn) -> setRadar(0, 1)).bounds(x, y, 100, 20).build());
         addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Snap bottom right"), (btn) -> setRadar(1, 1)).bounds(x + 101, y, 100, 20).build());
         y += 24;
-        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Done"), (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(net.minecraft.network.chat.Component.literal("Done"), (btn) -> this.minecraft.gui.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
 
     private void setRadar(float x, float y) {

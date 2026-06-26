@@ -56,18 +56,19 @@ import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Guardian;
-import net.minecraft.world.entity.monster.MagmaCube;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.monster.Ravager;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.monster.Silverfish;
-import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.monster.Strider;
 import net.minecraft.world.entity.monster.Vex;
 import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.monster.Zoglin;
 import net.minecraft.world.entity.monster.breeze.Breeze;
 import net.minecraft.world.entity.monster.creaking.Creaking;
+import net.minecraft.world.entity.monster.cubemob.MagmaCube;
+import net.minecraft.world.entity.monster.cubemob.Slime;
+import net.minecraft.world.entity.monster.cubemob.SulfurCube;
 import net.minecraft.world.entity.monster.illager.Evoker;
 import net.minecraft.world.entity.monster.illager.Illusioner;
 import net.minecraft.world.entity.monster.illager.Pillager;
@@ -174,7 +175,7 @@ public class RadarConfig {
                         .addEntity(ElderGuardian.class, "icons/elder_guardian.png")
         );
         _entityList.add(new RadarEntityInfo(IronGolem.class, "Iron Golem", "icons/iron_golem.png", GroupType.NEUTRAL));
-        _entityList.add(new RadarEntityInfo(MagmaCube.class, "Magma Cube", "icons/slime/magmacube.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(MagmaCube.class, "Magma Cube", "icons/slime/magma_cube.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(Silverfish.class, "Silverfish", "icons/silverfish.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(Skeleton.class, "Skeleton", "icons/skeleton/skeleton.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(Slime.class, "Slime", "icons/slime/slime.png", GroupType.AGGRESSIVE));
@@ -261,6 +262,8 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Nautilus.class, "Nautilus", "icons/nautilus/nautilus.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(ZombieNautilus.class, "Zombie Nautilus", "icons/nautilus/zombie_nautilus.png", GroupType.NEUTRAL));
         _entityList.add(new RadarEntityInfo(Parched.class, "Parched", "icons/parched.png", GroupType.AGGRESSIVE));
+
+        _entityList.add(new RadarEntityInfo(SulfurCube.class, "Sulfur Cube", "icons/slime/sulfur_cube.png", GroupType.NEUTRAL));
 
         _entityList.sort(new RadarEntityInfo.EntityComparator());
 

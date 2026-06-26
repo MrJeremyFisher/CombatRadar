@@ -69,7 +69,7 @@ public class ChooseSoundScreen extends Screen {
             }
         }
 
-        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> this.minecraft.setScreen(_parent)).bounds(this.width / 2 - 100, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> this.minecraft.gui.setScreen(_parent)).bounds(this.width / 2 - 100, y, 200, 20).build());
     }
 
     @Override
@@ -96,5 +96,10 @@ public class ChooseSoundScreen extends Screen {
         guiGraphics.centeredText(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
 
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
     }
 }

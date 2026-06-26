@@ -2,18 +2,18 @@ package com.aleksey.combatradar;
 
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.screens.MainScreen;
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
@@ -33,29 +33,32 @@ public class ModHelper {
             RenderPipeline.builder()
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/position_color")
-                    .withUniform("DynamicTransforms", UniformType.UNIFORM_BUFFER)
-                    .withUniform("Projection", UniformType.UNIFORM_BUFFER)
+                    .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .buildSnippet();
     public static final RenderPipeline TRIANGLES =
             RenderPipeline.builder(UNIFORM_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/triangles"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLES)
+                    .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+                    .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .build();
     public static final RenderPipeline LINES =
             RenderPipeline.builder(UNIFORM_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/lines"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS)
+                    .withPrimitiveTopology(PrimitiveTopology.QUADS)
+                    .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .build();
     public static final RenderPipeline CIRCLE =
             RenderPipeline.builder(UNIFORM_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/circle"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_FAN)
+                    .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_FAN)
+                    .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .build();
     public static final RenderPipeline BORDER =
             RenderPipeline.builder(UNIFORM_SNIPPET)
                     .withLocation(Identifier.fromNamespaceAndPath("combatradar", "pipelines/border"))
-                    .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP)
+                    .withPrimitiveTopology(PrimitiveTopology.TRIANGLE_STRIP)
+                    .withVertexBinding(0, DefaultVertexFormat.POSITION_COLOR)
                     .build();
 
     private final KeyMapping _settingsKey;
@@ -126,7 +129,7 @@ public class ModHelper {
             _radar.playSounds();
         }
 
-        if (!minecraft.options.hideGui && minecraft.screen == null && _config.getSettingsKey().consumeClick()) {
+        if (!minecraft.gui.hud.isHidden() && minecraft.gui.screen() == null && _config.getSettingsKey().consumeClick()) {
             var windowId = minecraft.getWindow();
 
             if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_CONTROL)
@@ -142,7 +145,7 @@ public class ModHelper {
                     _config.save();
                 }
             } else {
-                minecraft.setScreen(new MainScreen(minecraft.screen, _config, _speedometer));
+                minecraft.gui.setScreen(new MainScreen(minecraft.gui.screen(), _config, _speedometer));
             }
         }
     }
@@ -152,7 +155,7 @@ public class ModHelper {
 
         if (!_config.getEnabled()
                 || minecraft.level == null
-                || minecraft.options.hideGui
+                || minecraft.gui.hud.isHidden()
                 || minecraft.debugEntries.isOverlayVisible()
         ) {
             return;

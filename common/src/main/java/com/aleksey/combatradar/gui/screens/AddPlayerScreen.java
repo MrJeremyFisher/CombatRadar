@@ -72,11 +72,11 @@ public class AddPlayerScreen extends Screen {
         _config.setPlayerType(playerName, _playerType);
         _config.save();
 
-        this.minecraft.setScreen(_parent);
+        this.minecraft.gui.setScreen(_parent);
     }
 
     private void actionCancel() {
-        this.minecraft.setScreen(_parent);
+        this.minecraft.gui.setScreen(_parent);
     }
 
     @Override
@@ -85,5 +85,10 @@ public class AddPlayerScreen extends Screen {
         guiGraphics.text(this.font, "Player username", (int) (this.width / 2f - 100), _playerNameEditBox.getY() - 12, Color.LIGHT_GRAY.getRGB(), true);
 
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
     }
 }

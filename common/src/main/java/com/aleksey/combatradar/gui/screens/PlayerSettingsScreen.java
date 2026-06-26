@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -91,7 +91,7 @@ public class PlayerSettingsScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.gui.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
 
     private void changePing(PlayerType playerType) {
@@ -101,7 +101,7 @@ public class PlayerSettingsScreen extends Screen {
     }
 
     private void changePingSound(PlayerType playerType) {
-        this.minecraft.setScreen(new ChooseSoundScreen(this, _config, playerType));
+        this.minecraft.gui.setScreen(new ChooseSoundScreen(this, _config, playerType));
     }
 
     @Override
@@ -153,13 +153,8 @@ public class PlayerSettingsScreen extends Screen {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
-//    @Override
-//    public void extractBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-//        this.renderTransparentBackground(guiGraphics);
-//    }
-//
-//    @Override
-//    public void renderTransparentBackground(GuiGraphics guiGraphics) {
-//        guiGraphics.fillGradient(0, 0, this.width, this.height, 0, 0);
-//    }
+    @Override
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
+    }
 }

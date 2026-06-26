@@ -41,7 +41,6 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.opengl.GL11;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -241,6 +240,7 @@ public class Radar {
 
         float rotationYaw = Minecraft.getInstance().player.getViewYRot(partialTicks.getRealtimeDeltaTicks());
 
+        guiGraphics.nextStratum();
         poseStack.pushMatrix();
         poseStack.translate(_radarDisplayX, _radarDisplayY);
 
@@ -317,12 +317,8 @@ public class Radar {
     private void renderTriangle(GuiGraphicsExtractor graphics) {
         graphics.pose().rotate(org.joml.Math.toRadians(180));
 
-        GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
-
         renderTriangle(graphics, 0xFF000000, 0);
         renderTriangle(graphics, 0xFFFFFFFF, 0.5f);
-
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
 
         graphics.pose().rotate(org.joml.Math.toRadians(-180));
     }
@@ -336,16 +332,12 @@ public class Radar {
     }
 
     private void renderLines(GuiGraphicsExtractor graphics, float radius) {
-        GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
-
         int color = ARGB.colorFromFloat(Math.clamp(_config.getRadarOpacity() + 0.5f, 0, 1), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
         graphics.guiRenderState.addGuiElement(new LineElementRenderState(
                 ModHelper.LINES,
                 new Matrix3x2f(graphics.pose()),
                 graphics.scissorStack.peek(), radius, color
         ));
-
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
     }
 
     private void renderCircleBg(GuiGraphicsExtractor graphics, float radius) {
@@ -358,8 +350,6 @@ public class Radar {
     }
 
     private void renderCircleBorder(GuiGraphicsExtractor graphics, float radius) {
-        GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
-
         int color = ARGB.colorFromFloat(Math.clamp(_config.getRadarOpacity() + 0.5f, 0, 1), _config.getRadarColor().getRed() / 255.0f, _config.getRadarColor().getGreen() / 255.0f, _config.getRadarColor().getBlue() / 255.0f);
 
         graphics.guiRenderState.addGuiElement(new CircleBorderElementRenderState(
@@ -367,8 +357,6 @@ public class Radar {
                 new Matrix3x2f(graphics.pose()),
                 graphics.scissorStack.peek(), radius, color
         ));
-
-        GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
     }
 
     public void scanEntities() {

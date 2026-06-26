@@ -79,7 +79,7 @@ public class EntityScreen extends Screen {
 
         y += 24;
 
-        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.gui.setScreen(_parent)).bounds(x, y, 200, 20).build());
     }
 
     private void addIconButtons() {
@@ -188,6 +188,11 @@ public class EntityScreen extends Screen {
 
         guiGraphics.centeredText(this.font, this.title, this.width / 2, _titleTop, Color.WHITE.getRGB());
         renderIcons(guiGraphics);
+    }
+
+    @Override
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
     }
 
     private void renderIcons(GuiGraphicsExtractor guiGraphics) {

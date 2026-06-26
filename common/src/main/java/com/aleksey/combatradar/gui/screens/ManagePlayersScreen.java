@@ -47,14 +47,14 @@ public class ManagePlayersScreen extends Screen {
         y += 24;
 
         addRenderableWidget(Button.builder(Component.literal("Add Player"), (btn) -> {
-            this.minecraft.setScreen(new AddPlayerScreen(this, _config, _activePlayerType));
+            this.minecraft.gui.setScreen(new AddPlayerScreen(this, _config, _activePlayerType));
         }).bounds(x, y, 100, 20).build());
 
         _deleteButton = addRenderableWidget(Button.builder(Component.literal("Delete Player"), (btn) -> deletePlayer()).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
 
-        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen(_parent)).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.gui.setScreen(_parent)).bounds(x, y, 200, 20).build());
 
         loadPlayers(_activePlayerType);
     }
@@ -83,6 +83,11 @@ public class ManagePlayersScreen extends Screen {
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.centeredText(this.font, this.title, this.width / 2, 20, Color.WHITE.getRGB());
+    }
+
+    @Override
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractTransparentBackground(guiGraphics);
     }
 
     private class PlayerListItem extends ObjectSelectionList.Entry<PlayerListItem> {

@@ -4,9 +4,7 @@
   "package": "com.aleksey.combatradar.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
-  "client": [
-    "GuiRendererMixin"
-  ],
+  "client": [],
   "server": [],
   "injectors": {
     "defaultRequire": 1

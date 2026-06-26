@@ -38,17 +38,18 @@ public class MainScreen extends Screen {
 
         final Screen screen = this;
 
-        addRenderableWidget(Button.builder(Component.literal("Location and Color"), (btn) -> this.minecraft.setScreen(new LocationAndColorScreen(screen, _config))).bounds(x, y, 200, 20).build());
+        // 26.2 -- using .gui.setScreen instead of .setScreenAndShow avoids a flickering issue on opening a new screen.
+        addRenderableWidget(Button.builder(Component.literal("Location and Color"), (btn) -> this.minecraft.gui.setScreen(new LocationAndColorScreen(screen, _config))).bounds(x, y, 200, 20).build());
 
         y += 24;
 
-        addRenderableWidget(Button.builder(Component.literal("Player Settings"), (btn) -> this.minecraft.setScreen(new PlayerSettingsScreen(screen, _config))).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Player Settings"), (btn) -> this.minecraft.gui.setScreen(new PlayerSettingsScreen(screen, _config))).bounds(x, y, 200, 20).build());
 
         y += 24;
 
-        addRenderableWidget(Button.builder(Component.literal("Radar Entities"), (btn) -> this.minecraft.setScreen(new EntityScreen(screen, _config))).bounds(x, y, 100, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Radar Entities"), (btn) -> this.minecraft.gui.setScreen(new EntityScreen(screen, _config))).bounds(x, y, 100, 20).build());
 
-        addRenderableWidget(Button.builder(Component.literal("Manage Players"), (btn) -> this.minecraft.setScreen(new ManagePlayersScreen(screen, _config))).bounds(x + 101, y, 100, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Manage Players"), (btn) -> this.minecraft.gui.setScreen(new ManagePlayersScreen(screen, _config))).bounds(x + 101, y, 100, 20).build());
 
         y += 24;
 
@@ -96,7 +97,7 @@ public class MainScreen extends Screen {
         
         y += 24;
 
-        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.setScreen((_parent))).bounds(x, y, 200, 20).build());
+        addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (btn) -> this.minecraft.gui.setScreen((_parent))).bounds(x, y, 200, 20).build());
 
         _keyHintY = y + 24;
     }
@@ -124,10 +125,5 @@ public class MainScreen extends Screen {
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.extractTransparentBackground(guiGraphics);
-    }
-
-    @Override
-    public void extractTransparentBackground(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.fillGradient(0, 0, this.width, this.height, 0, 0);
     }
 }

@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
-    "ChatMixin",
-    "GuiRendererMixin"
+    "ChatMixin"
   ],
   "server": [],
   "injectors": {
