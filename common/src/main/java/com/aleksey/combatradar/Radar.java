@@ -277,6 +277,7 @@ public class Radar {
                 if (radarEntity instanceof ItemRadarEntity) {
                     i++;
                     if (i > 10000) { // TODO: configurable and maybe make per item type?
+                        poseStack.popMatrix();
                         return;
                     }
                 }
