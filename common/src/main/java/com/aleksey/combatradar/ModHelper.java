@@ -2,12 +2,12 @@ package com.aleksey.combatradar;
 
 import com.aleksey.combatradar.config.RadarConfig;
 import com.aleksey.combatradar.gui.screens.MainScreen;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BlendFunction;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -31,9 +30,10 @@ public class ModHelper {
     private KeyMapping.Category _category = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("combatradar", "keybind"));
     private static final RenderPipeline.Snippet UNIFORM_SNIPPET =
             RenderPipeline.builder()
+                    .withBindGroupLayout(BindGroupLayouts.PROJECTION)
+                    .withBindGroupLayout(BindGroupLayouts.DYNAMIC_TRANSFORMS)
                     .withVertexShader("core/position_color")
                     .withFragmentShader("core/position_color")
-                    .withBindGroupLayout(BindGroupLayouts.MATRICES_PROJECTION)
                     .withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
                     .buildSnippet();
     public static final RenderPipeline TRIANGLES =
@@ -64,7 +64,7 @@ public class ModHelper {
     private final KeyMapping _settingsKey;
 
     public ModHelper() {
-        _settingsKey = new KeyMapping("Combat Radar Settings", GLFW.GLFW_KEY_R, _category);
+        _settingsKey = new KeyMapping("Combat Radar Settings", InputConstants.KEY_R, _category);
     }
 
     public KeyMapping getSettingsKey() {
@@ -132,11 +132,11 @@ public class ModHelper {
         if (!minecraft.gui.hud.isHidden() && minecraft.gui.screen() == null && _config.getSettingsKey().consumeClick()) {
             var windowId = minecraft.getWindow();
 
-            if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_CONTROL)
-                    || InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT_CONTROL)
+            if (InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)
+                    || InputConstants.isKeyDown(InputConstants.KEY_RCONTROL)
             ) {
-                if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT_ALT)
-                        || InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT_ALT)
+                if (InputConstants.isKeyDown(InputConstants.KEY_LALT)
+                        || InputConstants.isKeyDown(InputConstants.KEY_RALT)
                 ) {
                     _config.setEnabled(!_config.getEnabled());
                     _config.save();

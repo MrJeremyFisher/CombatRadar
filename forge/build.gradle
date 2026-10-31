@@ -7,12 +7,6 @@ architectury {
     forge()
 }
 
-loom {
-    forge {
-        mixinConfig "combatradar.forge.mixins.json"
-    }
-}
-
 configurations {
     common
     shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
@@ -23,8 +17,6 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
-//    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.0"))
-//    implementation(include("io.github.llamalad7:mixinextras-forge:0.5.0"))
 
     common(project(path: ":common")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

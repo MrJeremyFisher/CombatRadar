@@ -52,7 +52,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Blaze;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.ElderGuardian;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Guardian;
@@ -168,7 +168,7 @@ public class RadarConfig {
         _entityList.add(new RadarEntityInfo(Blaze.class, "Blaze", "icons/blaze.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(CaveSpider.class, "Cave Spider", "icons/spider/cave_spider.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(Creeper.class, "Creeper", "icons/creeper.png", GroupType.AGGRESSIVE));
-        _entityList.add(new RadarEntityInfo(EnderMan.class, "Enderman", "icons/enderman/enderman.png", GroupType.AGGRESSIVE));
+        _entityList.add(new RadarEntityInfo(Enderman.class, "Enderman", "icons/enderman/enderman.png", GroupType.AGGRESSIVE));
         _entityList.add(new RadarEntityInfo(Ghast.class, "Ghast", "icons/ghast/ghast.png", GroupType.AGGRESSIVE));
         _entityList.add(
                 new RadarEntityInfo(Guardian.class, "Guardian", "icons/guardian.png", GroupType.AGGRESSIVE)

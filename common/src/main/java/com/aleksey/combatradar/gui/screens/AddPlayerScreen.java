@@ -2,6 +2,7 @@ package com.aleksey.combatradar.gui.screens;
 
 import com.aleksey.combatradar.config.PlayerType;
 import com.aleksey.combatradar.config.RadarConfig;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -9,7 +10,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.Color;
 
@@ -51,11 +51,11 @@ public class AddPlayerScreen extends Screen {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         switch (keyEvent.key()) {
-            case GLFW.GLFW_KEY_ENTER -> {
+            case InputConstants.KEY_RETURN -> {
                 actionAdd();
                 return true;
             }
-            case GLFW.GLFW_KEY_ESCAPE -> {
+            case InputConstants.KEY_ESCAPE -> {
                 actionCancel();
                 return true;
             }

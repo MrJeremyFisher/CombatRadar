@@ -7,9 +7,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
-import org.lwjgl.glfw.GLFW;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * @author Aleksey Terzi
@@ -69,23 +68,22 @@ public class LocationAndColorScreen extends Screen {
         var isChanged = false;
 
         var window = this.minecraft.getWindow();
-        var windowId = window;
         var xSpeed = 1.f / window.getGuiScaledWidth();
         var ySpeed = 1.f / window.getGuiScaledHeight();
 
-        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_LEFT)) {
+        if (InputConstants.isKeyDown(InputConstants.KEY_LEFT)) {
             _config.setRadarX(_config.getRadarX() - xSpeed);
             isChanged = true;
         }
-        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_RIGHT)) {
+        if (InputConstants.isKeyDown(InputConstants.KEY_RIGHT)) {
             _config.setRadarX(_config.getRadarX() + xSpeed);
             isChanged = true;
         }
-        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_UP)) {
+        if (InputConstants.isKeyDown(InputConstants.KEY_UP)) {
             _config.setRadarY(_config.getRadarY() - ySpeed);
             isChanged = true;
         }
-        if (InputConstants.isKeyDown(windowId, GLFW.GLFW_KEY_DOWN)) {
+        if (InputConstants.isKeyDown(InputConstants.KEY_DOWN)) {
             _config.setRadarY(_config.getRadarY() + ySpeed);
             isChanged = true;
         }
